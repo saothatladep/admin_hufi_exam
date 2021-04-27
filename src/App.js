@@ -1,9 +1,15 @@
-function App() {
+import React from 'react'
+import { Route, Switch } from 'react-router'
+import Login from './screens/Login/Index'
+
+const app = () => {
   return (
     <>
-      <h1>dfsdf</h1>
+      <Switch>
+        <Route path='/' component={Login} exact/>
+      </Switch>
     </>
   )
 }
 
-export default App
+export default app
