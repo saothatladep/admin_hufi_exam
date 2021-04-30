@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import login from '../../assets/login/login2.svg'
 import LoginForm from './components/LoginForm'
+import logo from '../../assets/logo.png'
 
 const usedStyles = makeStyles((theme) => ({
   root: {
@@ -33,8 +34,8 @@ const Login = (props) => {
         <CssBaseline />
         <div className={classes.paper}>
           <img
-            src='https://hufionlineexam.web.app/img/logo_exam.09f8e106.png'
-            alt='login'
+            src={logo}
+            alt='logo'
           />
           <LoginForm location={location} history={history}/>
           

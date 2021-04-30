@@ -1,6 +1,8 @@
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
+import Messages from '../../../components/Messages'
+import Loading from '../../../components/Loading'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -81,49 +83,63 @@ const LoginForm = (props) => {
 
   useEffect(() => {
     if (userInfo) {
-      history.push(redirect)
+      if (userInfo.role === 1 || userInfo.role === 2) {
+        // history.push(redirect)
+        console.log(userInfo)
+      }
+      else if (userInfo.role === 3) {
+        alert('You are not authorized to access')
+      }
     }
+    // else {
+    //   alert('You are not authorized to access')
+    //   // setNotify()
+    // }
     window.scrollTo(0, 0)
   }, [history, userInfo, redirect])
 
   return (
-    <form className={classes.form} onSubmit={submitHandler}>
-      <TextField
-        variant='outlined'
-        margin='normal'
-        fullWidth
-        id='ID'
-        label='ID'
-        name='ID'
-        autoComplete='ID'
-        autoFocus
-        onChange={(e) => setID({ ...id, ID: e.target.value })}
-        error={id.isErr}
-        helperText={id.err}
-      />
-      <TextField
-        variant='outlined'
-        margin='normal'
-        fullWidth
-        name='password'
-        label='Password'
-        type='password'
-        id='password'
-        autoComplete='current-password'
-        onChange={(e) => setPassword({ ...password, pass: e.target.value })}
-        error={password.isErr}
-        helperText={password.err}
-      />
-      <Button
-        type='submit'
-        fullWidth
-        variant='contained'
-        color='primary'
-        className={classes.submit}
-      >
-        Log In
-      </Button>
-    </form>
+    <>
+      {error && <Messages severity={'error'} message={error} />}
+      {loading && <Loading />}
+      <form className={classes.form} onSubmit={submitHandler}>
+        <TextField
+          variant='outlined'
+          margin='normal'
+          fullWidth
+          id='ID'
+          label='ID'
+          name='ID'
+          autoComplete='ID'
+          autoFocus
+          onChange={(e) => setID({ ...id, ID: e.target.value })}
+          error={id.isErr}
+          helperText={id.err}
+        />
+        <TextField
+          variant='outlined'
+          margin='normal'
+          fullWidth
+          name='password'
+          label='Password'
+          type='password'
+          id='password'
+          autoComplete='current-password'
+          onChange={(e) => setPassword({ ...password, pass: e.target.value })}
+          error={password.isErr}
+          helperText={password.err}
+        />
+        <Button
+          type='submit'
+          fullWidth
+          variant='contained'
+          color='primary'
+          className={classes.submit}
+        >
+          Log In
+        </Button>
+      </form>
+    </>
   )
 }
 
