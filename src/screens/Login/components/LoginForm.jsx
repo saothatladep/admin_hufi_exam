@@ -6,7 +6,7 @@ import Loading from '../../../components/Loading'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { login } from '../../../actions/userActions'
+import { login, logout } from '../../../actions/userActions'
 
 const usedStyles = makeStyles((theme) => ({
   form: {
@@ -27,7 +27,7 @@ const LoginForm = (props) => {
 
   const redirect = location.search
     ? location.search.split('=')[1]
-    : '/dashboard'
+    : '/subject'
 
   const userLogin = useSelector((state) => state.userLogin)
   const { loading, error, userInfo } = userLogin
@@ -84,19 +84,16 @@ const LoginForm = (props) => {
   useEffect(() => {
     if (userInfo) {
       if (userInfo.role === 1 || userInfo.role === 2) {
-        // history.push(redirect)
-        console.log(userInfo)
+        history.push(redirect)
+        // console.log(userInfo)
       }
       else if (userInfo.role === 3) {
         alert('You are not authorized to access')
+        dispatch(logout())
       }
     }
-    // else {
-    //   alert('You are not authorized to access')
-    //   // setNotify()
-    // }
     window.scrollTo(0, 0)
-  }, [history, userInfo, redirect])
+  }, [history, userInfo, redirect, dispatch])
 
   return (
     <>

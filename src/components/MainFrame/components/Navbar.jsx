@@ -6,7 +6,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { logout } from '../../../actions/userActions'
 import logo from '../../../assets/logo1.png'
+import { useDispatch, useSelector } from 'react-redux'
 
 const usedStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +43,11 @@ const usedStyles = makeStyles((theme) => ({
 const Navbar = () => {
   const classes = usedStyles()
 
+  const dispatch = useDispatch()
+
+  const logOutHandler = () => {
+    dispatch(logout())
+  }
   return (
     <div className={classes.root}>
       <AppBar position='static'>
@@ -55,7 +62,7 @@ const Navbar = () => {
             <Link to={''}>
               <NotificationsIcon />
             </Link>
-            <Link to={''}>
+            <Link to={'/'} onClick={logOutHandler}>
               <ExitToAppIcon />
             </Link>
           </div>

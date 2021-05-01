@@ -1,18 +1,12 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import InboxIcon from '@material-ui/icons/Inbox'
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
-import PeopleAltIcon from '@material-ui/icons/PeopleAlt'
-import ListAltIcon from '@material-ui/icons/ListAlt'
-import LiveHelpIcon from '@material-ui/icons/LiveHelp'
-import ScheduleIcon from '@material-ui/icons/Schedule'
-import KeyboardHideIcon from '@material-ui/icons/KeyboardHide'
-import dashboardAction from '../../../mocks/dashboardAction.js'
+import { makeStyles } from '@material-ui/core/styles'
+import React from 'react'
 import { Link } from 'react-router-dom'
+import dashboardAction from '../../../mocks/dashboardAction.js'
+import { useDispatch, useSelector } from 'react-redux'
+
 const usedStyles = makeStyles((theme) => ({
   root: {
     position: 'fixed',
@@ -78,30 +72,35 @@ const usedStyles = makeStyles((theme) => ({
       fontSize: 18,
       fontWeight: '500',
       color: '#666',
+      margin: '0 0 0 24px',
+    },
+    '& img': {
+      width: 30,
     },
   },
 }))
 const Dashboard = () => {
   const classes = usedStyles()
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
   return (
     <div className={classes.root}>
       <div className={classes.container}>
         <div className={classes.user}>
           <img
-            src='https://weandthecolor.com/wp-content/uploads/2019/03/1-Vans-illustrations-by-Leo-Natsume-696x684.jpg'
+            src={userInfo.avatar}
             alt='avatar'
           />
-          <h3>Pham Toan</h3>
-          <h2>position</h2>
+          <h3>{userInfo.fullName}</h3>
+          <h2>{userInfo.role === 1 ? 'Admin' : 'Teacher'}</h2>
         </div>
         <div className={classes.dashboard}>
           <List component='nav'>
             {dashboardAction.map((action, index) => (
               <ListItem key={index}>
                 <Link to={action.link} className={classes.action}>
-                  {/* <ListItemIcon>
-                    <{action.icon.toString()}/>
-                  </ListItemIcon> */}
+                  <img src={action.icon} alt={action.title}/>
                   <ListItemText primary={action.title} />
                 </Link>
               </ListItem>
