@@ -6,12 +6,18 @@ import { userLoginReducer } from './reducers/userReducers'
 import {
   subjectListReducer,
   subjectDetailsReducer,
+  subjectUpdateReducer,
+  subjectCreateReducer,
+  subjectDeleteReducer,
 } from './reducers/subjectReducers'
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   subjectList: subjectListReducer,
   subjectDetails: subjectDetailsReducer,
+  subjectUpdate: subjectUpdateReducer,
+  subjectCreate: subjectCreateReducer,
+  subjectDelete: subjectDeleteReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

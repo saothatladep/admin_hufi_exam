@@ -7,8 +7,15 @@ const app = () => {
   return (
     <>
       <Switch>
-        <Route path='/' component={Login} exact/>
-        <Route path='/subject' component={Subject}/>
+        <Route path='/' component={Login} exact />
+        <Route path='/subject' component={Subject} />
+        <Route path='subject/search/:keyword' component={Subject} exact />
+        <Route path='subject/page/:pageNumber' component={Subject} exact />
+        <Route
+          path='subject/search/:keyword/page/:pageNumber'
+          component={Subject}
+          exact
+        />
       </Switch>
     </>
   )

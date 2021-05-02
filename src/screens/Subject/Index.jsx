@@ -4,7 +4,7 @@ import MainFrame from '../../components/MainFrame/Index'
 import ContentSubject from './components/ContentSubject'
 
 const Subject = (props) => {
-  const { history } = props
+  const { history, location } = props
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
   return (
@@ -14,7 +14,7 @@ const Subject = (props) => {
       ) : (
         <>
           <MainFrame />
-          <ContentSubject history={history} />
+          <ContentSubject history={history} location={location} />
         </>
       )}
     </div>

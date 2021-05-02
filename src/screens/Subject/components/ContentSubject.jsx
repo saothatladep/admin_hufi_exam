@@ -14,12 +14,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import {
   listSubjectDetails,
-  listSubjects
+  listSubjects,
+  updateSubject,
+  createSubject,
+  deleteSubject,
 } from '../../../actions/subjectActions'
 import search from '../../../assets/search.png'
 import Loading from '../../../components/Loading'
 import Messages from '../../../components/Messages'
-import { SUBJECT_DETAILS_RESET } from '../../../constants/subjectConstants'
+import {
+  SUBJECT_CREATE_RESET,
+  SUBJECT_DETAILS_RESET,
+  SUBJECT_UPDATE_RESET,
+} from '../../../constants/subjectConstants'
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -126,16 +133,61 @@ const ContentSubject = (props) => {
   const { history } = props
   const classes = usedStyles()
   const [keyword, setKeyWord] = useState('')
-  const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState('')
+  const [openUpdate, setOpenUpdate] = useState(false)
+  const [titleAdd, setTitleAdd] = useState({
+    name: '',
+    isErr: false,
+    err: '',
+  })
+  const [openAdd, setOpenAdd] = useState(false)
+  const [titleUpdate, setTitleUpdate] = useState({
+    name: '',
+    isErr: false,
+    err: '',
+  })
 
+  const [page, setPage] = useState('')
   const dispatch = useDispatch()
+
+  const validateUpdate = () => {
+    if (titleUpdate.name.length === 0) {
+      setTitleUpdate({
+        ...titleAdd,
+        isErr: true,
+        err: 'Please enter a subject name',
+      })
+    } else {
+      setTitleUpdate({
+        ...titleAdd,
+        isErr: false,
+        err: '',
+      })
+    }
+    // console.log(titleUpdate)
+  }
+
+  const validateAdd = () => {
+    if (titleAdd.name.length === 0) {
+      setTitleAdd({
+        ...titleAdd,
+        isErr: true,
+        err: 'Please enter a subject name',
+      })
+    } else {
+      setTitleAdd({
+        ...titleAdd,
+        isErr: false,
+        err: '',
+      })
+    }
+    // console.log(titleAdd)
+  }
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
   const subjectList = useSelector((state) => state.subjectList)
-  const { loading, error, subjects } = subjectList
+  const { loading, error, subjects: subjectsList } = subjectList
 
   const subjectDetails = useSelector((state) => state.subjectDetails)
   const {
@@ -144,39 +196,132 @@ const ContentSubject = (props) => {
     subjects: subjectsDetails,
   } = subjectDetails
 
-  const handleClickOpen = (id) => {
-    dispatch(listSubjectDetails(id))
-    setOpen(true)
-  }
+  const subjectUpdate = useSelector((state) => state.subjectUpdate)
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = subjectUpdate
 
-  const handleClose = () => {
-    dispatch({ type: SUBJECT_DETAILS_RESET })
-    setOpen(false)
-  }
+  const subjectCreate = useSelector((state) => state.subjectCreate)
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+  } = subjectCreate
+
+  const subjectDelete = useSelector((state) => state.subjectDelete)
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = subjectDelete
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listSubjects())
+      dispatch(listSubjects(keyword, page))
     } else {
       history.push('/')
     }
+
+    if (!loadingDetails) {
+      setTitleUpdate({ ...titleUpdate, name: subjectsDetails.data.name })
+      if (successUpdate) {
+        dispatch({
+          type: SUBJECT_UPDATE_RESET,
+        })
+      }
+    }
     window.scrollTo(0, 0)
-  }, [userInfo, history, dispatch])
+  }, [
+    userInfo,
+    history,
+    dispatch,
+    subjectsDetails,
+    successUpdate,
+    successCreate,
+    successDelete,
+    page,
+    // keyword,
+    // subjects,
+  ])
 
   const submitHandler = (e) => {
     e.preventDefault()
-    // if (keyword.trim()) {
-    //   history.push(`/search/${keyword}`)
-    // } else {
-    //   history.push(`/subject`)
+    if (keyword) {
+      dispatch(listSubjects(keyword))
+      console.log(keyword)
+    } else if (keyword.length === 0) {
+      window.location.reload()
+    }
+    console.log(keyword.length)
+  }
+
+  const handleClickOpenUpdate = (id) => {
+    dispatch(listSubjectDetails(id))
+    setOpenUpdate(true)
+  }
+
+  const handleCloseUpdate = () => {
+    dispatch({ type: SUBJECT_DETAILS_RESET })
+    setOpenUpdate(false)
+  }
+
+  const handleClickOpenAdd = () => {
+    setOpenAdd(true)
+  }
+  const handleCloseAdd = () => {
+    dispatch({ type: SUBJECT_CREATE_RESET })
+    setOpenAdd(false)
+  }
+
+  const addHandler = (e) => {
+    e.preventDefault()
+    // console.log(titleUpdate)
+    validateAdd()
+    // console.log(titleUpdate)
+    // setOpenUpdate(true)
+
+    // if (titleAdd.isErr === false) {
+    dispatch(
+      createSubject({
+        name: titleAdd.name,
+        user: userInfo._id,
+      })
+    )
+    setOpenAdd(false)
     // }
   }
 
   const deleteHandler = (id) => {
-    // if (window.confirm('Are you sure?')) {
-    //   dispatch(deleteUser(id))
-    // }
+    if (window.confirm('Are you sure?')) {
+      dispatch(deleteSubject(id))
+    }
   }
+
+  const updateHandler = (e) => {
+    e.preventDefault()
+    // console.log(titleUpdate)
+    validateUpdate()
+    // console.log(titleUpdate)
+    // setOpenUpdate(true)
+
+    if (titleUpdate.isErr === false) {
+      dispatch(
+        updateSubject({
+          _id: subjectsDetails.data._id,
+          name: titleUpdate.name,
+          user: userInfo._id,
+        })
+      )
+      setOpenUpdate(false)
+    }
+  }
+
+  const pageHandler = (e, page) => {
+    setPage(page)
+  }
+
   return (
     <div className={classes.root}>
       {loading ? (
@@ -185,6 +330,12 @@ const ContentSubject = (props) => {
         <Messages severity={'error'} message={error} />
       ) : (
         <>
+          {loadingUpdate && <Loading />}
+          {errorUpdate && <Messages severity={'error'} message={errorUpdate} />}
+          {loadingCreate && <Loading />}
+          {errorCreate && <Messages severity={'error'} message={errorCreate} />}
+          {loadingDelete && <Loading />}
+          {errorDelete && <Messages severity={'error'} message={errorDelete} />}
           <div>
             <form className={classes.search} onSubmit={submitHandler}>
               <div className={classes.searchIcon}>
@@ -196,11 +347,18 @@ const ContentSubject = (props) => {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                autoFocus
+                value={keyword}
                 onChange={(e) => setKeyWord(e.target.value)}
               />
             </form>
           </div>
-          <Button size='large' variant='contained' color='secondary'>
+          <Button
+            size='large'
+            variant='contained'
+            color='secondary'
+            onClick={() => handleClickOpenAdd()}
+          >
             New subject
           </Button>
           <div>
@@ -209,17 +367,19 @@ const ContentSubject = (props) => {
                 <tr>
                   <th>ID</th>
                   <th>NAME</th>
+                  <th>CREATED BY</th>
                   <th></th>
                 </tr>
               </thead>
 
               <tbody>
-                {subjects.data.map((subject, index) => (
+                {subjectsList.subjects.map((subject, index) => (
                   <tr key={index}>
                     <td>{subject._id}</td>
                     <td>{subject.name}</td>
+                    <td>{subject.user.fullName}</td>
                     <td>
-                      <Link onClick={() => handleClickOpen(subject._id)}>
+                      <Link onClick={() => handleClickOpenUpdate(subject._id)}>
                         <Button>
                           <EditIcon />
                         </Button>
@@ -238,17 +398,17 @@ const ContentSubject = (props) => {
           <Pagination
             className={classes.pagination}
             color='primary'
-            count={10}
-            // page={Number(pageNumber)}
+            count={subjectsList.pages}
+            page={subjectsList.page}
             size='large'
-            // onChange={pageHandler}
+            onChange={pageHandler}
           ></Pagination>
         </>
       )}
 
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={openUpdate}
+        onClose={handleCloseUpdate}
         disableBackdropClick
         disableEscapeKeyDown
         aria-labelledby='form-dialog-title'
@@ -270,16 +430,62 @@ const ContentSubject = (props) => {
               autoComplete='name'
               autoFocus
               style={{ width: 500 }}
-              value={subjectsDetails.data.name}
-              onChange={(e) => setTitle(e.target.value)}
+              value={titleUpdate.name}
+              onChange={(e) =>
+                setTitleUpdate({ ...titleUpdate, name: e.target.value })
+              }
+              error={titleUpdate.isErr}
+              helperText={titleUpdate.err}
             />
           )}
         </DialogContent>
         <DialogActions style={{ margin: '0 16px 16px 0' }}>
-          <Button onClick={handleClose} color='primary' variant='contained'>
+          <Button onClick={updateHandler} color='primary' variant='contained'>
             Update
           </Button>
-          <Button onClick={handleClose} color='secondary' variant='contained'>
+          <Button
+            onClick={handleCloseUpdate}
+            color='secondary'
+            variant='contained'
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openAdd}
+        onClose={handleCloseUpdate}
+        disableBackdropClick
+        disableEscapeKeyDown
+        aria-labelledby='form-dialog-title-add'
+      >
+        <DialogTitle id='form-dialog-title-add'>Subject</DialogTitle>
+        <DialogContent>
+          <TextField
+            variant='outlined'
+            margin='normal'
+            fullWidth
+            id='name'
+            label='name'
+            name='name'
+            autoComplete='name'
+            autoFocus
+            style={{ width: 500 }}
+            onChange={(e) => setTitleAdd({ ...titleAdd, name: e.target.value })}
+            error={titleAdd.isErr}
+            helperText={titleAdd.err}
+          />
+        </DialogContent>
+        <DialogActions style={{ margin: '0 16px 16px 0' }}>
+          <Button onClick={addHandler} color='primary' variant='contained'>
+            Add
+          </Button>
+          <Button
+            onClick={handleCloseAdd}
+            color='secondary'
+            variant='contained'
+          >
             Cancel
           </Button>
         </DialogActions>
