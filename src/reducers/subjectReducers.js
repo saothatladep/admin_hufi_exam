@@ -19,7 +19,10 @@ import {
   SUBJECT_UPDATE_SUCCESS,
 } from '../constants/subjectConstants'
 
-export const subjectListReducer = (state = { subjects: [], loading: true }, action) => {
+export const subjectListReducer = (
+  state = { subjects: [], loading: true },
+  action
+) => {
   switch (action.type) {
     case SUBJECT_LIST_REQUEST:
       return { loading: true, subjects: [] }
@@ -35,19 +38,22 @@ export const subjectListReducer = (state = { subjects: [], loading: true }, acti
   }
 }
 
-export const subjectDetailsReducer = (state = { subjects: [], loading: true }, action) => {
+export const subjectDetailsReducer = (
+  state = { subject: {}, loading: true },
+  action
+) => {
   switch (action.type) {
     case SUBJECT_DETAILS_REQUEST:
       return { loading: true, ...state }
     case SUBJECT_DETAILS_SUCCESS:
       return {
         loading: false,
-        subjects: action.payload,
+        subject: action.payload,
       }
     case SUBJECT_DETAILS_FAIL:
       return { loading: false, error: action.payload }
     case SUBJECT_DETAILS_RESET:
-        return { loading: true, subjects: [] }
+      return { loading: true, subject: {} }
     default:
       return state
   }
@@ -73,7 +79,7 @@ export const subjectCreateReducer = (state = {}, action) => {
     case SUBJECT_CREATE_REQUEST:
       return { loading: true }
     case SUBJECT_CREATE_SUCCESS:
-      return { loading: false, success: true, product: action.payload }
+      return { loading: false, success: true, subject: action.payload }
     case SUBJECT_CREATE_FAIL:
       return { loading: false, error: action.payload }
     case SUBJECT_CREATE_RESET:

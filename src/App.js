@@ -2,6 +2,8 @@ import React from 'react'
 import { Route, Switch } from 'react-router'
 import Login from './screens/Login/Index'
 import Subject from './screens/Subject/Index'
+import Chapter from './screens/Chapter/Index'
+import User from './screens/User/Index'
 
 const app = () => {
   return (
@@ -9,13 +11,8 @@ const app = () => {
       <Switch>
         <Route path='/' component={Login} exact />
         <Route path='/subject' component={Subject} />
-        <Route path='subject/search/:keyword' component={Subject} exact />
-        <Route path='subject/page/:pageNumber' component={Subject} exact />
-        <Route
-          path='subject/search/:keyword/page/:pageNumber'
-          component={Subject}
-          exact
-        />
+        <Route path='/chapter' component={Chapter} />
+        <Route path='/user' component={User} />
       </Switch>
     </>
   )

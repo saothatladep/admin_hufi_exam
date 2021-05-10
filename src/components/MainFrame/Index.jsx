@@ -1,16 +1,16 @@
 import React from 'react'
-import Navbar from './components/Navbar'
 import Dashboard from './components/Dashboard'
-import { makeStyles } from '@material-ui/core/styles'
+import Navbar from './components/Navbar'
 
+const MainFrame = (props) => {
+  const { location } = props
 
-const MainFrame = () => {
-    return (
-        <div>
-            <Navbar/>
-            <Dashboard/>
-        </div>
-    )
+  return (
+    <div>
+      <Navbar />
+      <Dashboard location={location}/>
+    </div>
+  )
 }
 
 export default MainFrame

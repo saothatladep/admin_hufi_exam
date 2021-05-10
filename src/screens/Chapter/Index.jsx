@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import MainFrame from '../../components/MainFrame/Index'
-import ContentSubject from './components/ContentSubject'
+import ContentChapter from './components/ContentChapter'
 
-const Subject = (props) => {
+const Chapter = (props) => {
   const { history, location } = props
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -14,11 +14,11 @@ const Subject = (props) => {
       ) : (
         <>
           <MainFrame location={location} />
-          <ContentSubject history={history} location={location} />
+          <ContentChapter history={history} location={location} />
         </>
       )}
     </div>
   )
 }
 
-export default Subject
+export default Chapter

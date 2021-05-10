@@ -134,54 +134,12 @@ const ContentSubject = (props) => {
   const classes = usedStyles()
   const [keyword, setKeyWord] = useState('')
   const [openUpdate, setOpenUpdate] = useState(false)
-  const [titleAdd, setTitleAdd] = useState({
-    name: '',
-    isErr: false,
-    err: '',
-  })
+  const [titleAdd, setTitleAdd] = useState('')
   const [openAdd, setOpenAdd] = useState(false)
-  const [titleUpdate, setTitleUpdate] = useState({
-    name: '',
-    isErr: false,
-    err: '',
-  })
+  const [titleUpdate, setTitleUpdate] = useState('')
 
   const [page, setPage] = useState('')
   const dispatch = useDispatch()
-
-  const validateUpdate = () => {
-    if (titleUpdate.name.length === 0) {
-      setTitleUpdate({
-        ...titleAdd,
-        isErr: true,
-        err: 'Please enter a subject name',
-      })
-    } else {
-      setTitleUpdate({
-        ...titleAdd,
-        isErr: false,
-        err: '',
-      })
-    }
-    // console.log(titleUpdate)
-  }
-
-  const validateAdd = () => {
-    if (titleAdd.name.length === 0) {
-      setTitleAdd({
-        ...titleAdd,
-        isErr: true,
-        err: 'Please enter a subject name',
-      })
-    } else {
-      setTitleAdd({
-        ...titleAdd,
-        isErr: false,
-        err: '',
-      })
-    }
-    // console.log(titleAdd)
-  }
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -193,7 +151,7 @@ const ContentSubject = (props) => {
   const {
     loading: loadingDetails,
     error: errorDetails,
-    subjects: subjectsDetails,
+    subject: subjectsDetails,
   } = subjectDetails
 
   const subjectUpdate = useSelector((state) => state.subjectUpdate)
@@ -225,7 +183,7 @@ const ContentSubject = (props) => {
     }
 
     if (!loadingDetails) {
-      setTitleUpdate({ ...titleUpdate, name: subjectsDetails.data.name })
+      setTitleUpdate(subjectsDetails.data.name)
       if (successUpdate) {
         dispatch({
           type: SUBJECT_UPDATE_RESET,
@@ -242,8 +200,6 @@ const ContentSubject = (props) => {
     successCreate,
     successDelete,
     page,
-    // keyword,
-    // subjects,
   ])
 
   const submitHandler = (e) => {
@@ -254,7 +210,6 @@ const ContentSubject = (props) => {
     } else if (keyword.length === 0) {
       window.location.reload()
     }
-    console.log(keyword.length)
   }
 
   const handleClickOpenUpdate = (id) => {
@@ -277,20 +232,13 @@ const ContentSubject = (props) => {
 
   const addHandler = (e) => {
     e.preventDefault()
-    // console.log(titleUpdate)
-    validateAdd()
-    // console.log(titleUpdate)
-    // setOpenUpdate(true)
-
-    // if (titleAdd.isErr === false) {
     dispatch(
       createSubject({
-        name: titleAdd.name,
+        name: titleAdd,
         user: userInfo._id,
       })
     )
     setOpenAdd(false)
-    // }
   }
 
   const deleteHandler = (id) => {
@@ -301,21 +249,14 @@ const ContentSubject = (props) => {
 
   const updateHandler = (e) => {
     e.preventDefault()
-    // console.log(titleUpdate)
-    validateUpdate()
-    // console.log(titleUpdate)
-    // setOpenUpdate(true)
-
-    if (titleUpdate.isErr === false) {
-      dispatch(
-        updateSubject({
-          _id: subjectsDetails.data._id,
-          name: titleUpdate.name,
-          user: userInfo._id,
-        })
-      )
-      setOpenUpdate(false)
-    }
+    dispatch(
+      updateSubject({
+        _id: subjectsDetails.data._id,
+        name: titleUpdate,
+        user: userInfo._id,
+      })
+    )
+    setOpenUpdate(false)
   }
 
   const pageHandler = (e, page) => {
@@ -413,44 +354,43 @@ const ContentSubject = (props) => {
         disableEscapeKeyDown
         aria-labelledby='form-dialog-title'
       >
-        <DialogTitle id='form-dialog-title'>Subject</DialogTitle>
+        <DialogTitle id='form-dialog-title'>SUBJECT</DialogTitle>
         <DialogContent>
           {loadingDetails ? (
             <Loading />
           ) : errorDetails ? (
             <Messages severity={'error'} message={errorDetails} />
           ) : (
-            <TextField
-              variant='outlined'
-              margin='normal'
-              fullWidth
-              id='name'
-              label='name'
-              name='name'
-              autoComplete='name'
-              autoFocus
-              style={{ width: 500 }}
-              value={titleUpdate.name}
-              onChange={(e) =>
-                setTitleUpdate({ ...titleUpdate, name: e.target.value })
-              }
-              error={titleUpdate.isErr}
-              helperText={titleUpdate.err}
-            />
+            <form onSubmit={updateHandler}>
+              <TextField
+                variant='outlined'
+                margin='normal'
+                fullWidth
+                id='name'
+                label='name'
+                name='name'
+                required={true}
+                autoComplete='name'
+                autoFocus
+                style={{ width: 500 }}
+                value={titleUpdate}
+                onChange={(e) => setTitleUpdate(e.target.value)}
+              />
+              <DialogActions style={{ margin: '0 16px 16px 0' }}>
+                <Button type='submit' color='primary' variant='contained'>
+                  Update
+                </Button>
+                <Button
+                  onClick={handleCloseUpdate}
+                  color='secondary'
+                  variant='contained'
+                >
+                  Cancel
+                </Button>
+              </DialogActions>
+            </form>
           )}
         </DialogContent>
-        <DialogActions style={{ margin: '0 16px 16px 0' }}>
-          <Button onClick={updateHandler} color='primary' variant='contained'>
-            Update
-          </Button>
-          <Button
-            onClick={handleCloseUpdate}
-            color='secondary'
-            variant='contained'
-          >
-            Cancel
-          </Button>
-        </DialogActions>
       </Dialog>
 
       <Dialog
@@ -460,35 +400,36 @@ const ContentSubject = (props) => {
         disableEscapeKeyDown
         aria-labelledby='form-dialog-title-add'
       >
-        <DialogTitle id='form-dialog-title-add'>Subject</DialogTitle>
+        <DialogTitle id='form-dialog-title-add'>SUBJECT</DialogTitle>
         <DialogContent>
-          <TextField
-            variant='outlined'
-            margin='normal'
-            fullWidth
-            id='name'
-            label='name'
-            name='name'
-            autoComplete='name'
-            autoFocus
-            style={{ width: 500 }}
-            onChange={(e) => setTitleAdd({ ...titleAdd, name: e.target.value })}
-            error={titleAdd.isErr}
-            helperText={titleAdd.err}
-          />
+          <form onSubmit={addHandler}>
+            <TextField
+              variant='outlined'
+              margin='normal'
+              fullWidth
+              id='name'
+              label='name'
+              name='name'
+              autoComplete='name'
+              required
+              autoFocus
+              style={{ width: 500 }}
+              onChange={(e) => setTitleAdd(e.target.value)}
+            />
+            <DialogActions style={{ margin: '0 16px 16px 0' }}>
+              <Button type='submit' color='primary' variant='contained'>
+                Add
+              </Button>
+              <Button
+                onClick={handleCloseAdd}
+                color='secondary'
+                variant='contained'
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </form>
         </DialogContent>
-        <DialogActions style={{ margin: '0 16px 16px 0' }}>
-          <Button onClick={addHandler} color='primary' variant='contained'>
-            Add
-          </Button>
-          <Button
-            onClick={handleCloseAdd}
-            color='secondary'
-            variant='contained'
-          >
-            Cancel
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   )
