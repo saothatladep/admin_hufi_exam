@@ -1,34 +1,28 @@
-import { Button } from '@material-ui/core'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import FormControl from '@material-ui/core/FormControl'
-import InputBase from '@material-ui/core/InputBase'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import { fade, makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
-import { Pagination } from '@material-ui/lab'
-import 'date-fns'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import {
-  deleteChapter,
-  listChapterDetails,
-} from '../../../actions/chapterActions'
-import { listUser } from '../../../actions/userActions'
-import search from '../../../assets/search.png'
-import User from '../../../assets/user.png'
-import Loading from '../../../components/Loading'
-import Messages from '../../../components/Messages'
-import {
-  CHAPTER_CREATE_RESET,
-  CHAPTER_DETAILS_RESET,
-} from '../../../constants/chapterConstants'
+import { Avatar, Button } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControl from '@material-ui/core/FormControl';
+import InputBase from '@material-ui/core/InputBase';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Pagination } from '@material-ui/lab';
+import axios from 'axios';
+import 'date-fns';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { createUser, deleteUser, listUser, listUserDetails, updateUser } from '../../../actions/userActions';
+import search from '../../../assets/search.png';
+import User from '../../../assets/user.png';
+import Loading from '../../../components/Loading';
+import Messages from '../../../components/Messages';
+import { USER_CREATE_RESET, USER_DETAILS_RESET, USER_UPDATE_RESET } from '../../../constants/userConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -183,8 +177,8 @@ const usedStyles = makeStyles((theme) => ({
   },
   avatarFile: {
     position: 'relative',
-    top: -43,
-    left: 100,
+    top: -65,
+    left: -100,
     '& input': {
       display: 'none',
     },
@@ -210,15 +204,15 @@ const usedStyles = makeStyles((theme) => ({
       fontWeight: 'bold',
     },
   },
-}))
+}));
 const ContentUser = (props) => {
-  const { history } = props
-  const dispatch = useDispatch()
-  const classes = usedStyles()
-  const [keyword, setKeyWord] = useState('')
-  const [role, setRole] = useState(1)
+  const { history } = props;
+  const dispatch = useDispatch();
+  const classes = usedStyles();
+  const [keyword, setKeyWord] = useState('');
+  const [role, setRole] = useState(1);
   const [userAdd, setUserAdd] = useState({
-    role: '',
+    role: role,
     gender: true,
     fullName: '',
     email: '',
@@ -226,121 +220,172 @@ const ContentUser = (props) => {
     code: '',
     birthday: '',
     password: '',
+    avatar: User,
+  });
+  const [userUpdateInfo, setUserUpdateInfo] = useState({
+    _id: '',
+    role: '',
+    gender: '',
+    fullName: '',
+    email: '',
+    phone: '',
+    code: '',
+    birthday: '',
     avatar: '',
-  })
+  });
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+  const [page, setPage] = useState('');
 
-  const [openUpdate, setOpenUpdate] = useState(false)
-  const [titleAdd, setTitleAdd] = useState('')
-  const [openAdd, setOpenAdd] = useState(false)
-  const [titleUpdate, setTitleUpdate] = useState('')
-  const [page, setPage] = useState('')
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+  const userList = useSelector((state) => state.userList);
+  const { loading: loadingUsers, error: errorUsers, users: UsersList } = userList;
 
-  const userList = useSelector((state) => state.userList)
-  const {
-    loading: loadingUsers,
-    error: errorUsers,
-    users: UsersList,
-  } = userList
+  const userDetails = useSelector((state) => state.userDetails);
+  const { loading: loadingDetails, error: errorDetails, user: usersDetails } = userDetails;
 
-  //   const chapterDetails = useSelector((state) => state.chapterDetails)
-  //   const {
-  //     loading: loadingDetails,
-  //     error: errorDetails,
-  //     chapter: chaptersDetails,
-  //   } = chapterDetails
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = userUpdate;
 
-  //   const chapterUpdate = useSelector((state) => state.chapterUpdate)
-  //   const {
-  //     loading: loadingUpdate,
-  //     error: errorUpdate,
-  //     success: successUpdate,
-  //   } = chapterUpdate
+  const userCreate = useSelector((state) => state.userCreate);
+  const { loading: loadingCreate, error: errorCreate, success: successCreate } = userCreate;
 
-  //   const chapterCreate = useSelector((state) => state.chapterCreate)
-  //   const {
-  //     loading: loadingCreate,
-  //     error: errorCreate,
-  //     success: successCreate,
-  //   } = chapterCreate
-
-  //   const chapterDelete = useSelector((state) => state.chapterDelete)
-  //   const {
-  //     loading: loadingDelete,
-  //     error: errorDelete,
-  //     success: successDelete,
-  //   } = chapterDelete
+  const userDelete = useSelector((state) => state.userDelete);
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = userDelete;
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listUser(role, keyword, page))
+      dispatch(listUser(role, keyword, page));
     } else {
-      history.push('/')
+      history.push('/');
     }
-    window.scrollTo(0, 0)
-  }, [userInfo, history, dispatch, role])
+    if (!loadingDetails) {
+      setUserUpdateInfo({
+        _id: usersDetails.data._id,
+        role: usersDetails.data.role,
+        gender: usersDetails.data.gender,
+        fullName: usersDetails.data.fullName,
+        email: usersDetails.data.email,
+        phone: usersDetails.data.phone,
+        code: usersDetails.data.code,
+        birthday: usersDetails.data.birthday,
+        avatar: usersDetails.data.avatar,
+      });
+      console.log(userUpdateInfo);
+      if (successUpdate) {
+        dispatch({
+          type: USER_UPDATE_RESET,
+        });
+      }
+    }
+    window.scrollTo(0, 0);
+  }, [userInfo, history, dispatch, role, userDetails, successCreate, page, successDelete, successUpdate]);
 
-  const uploadFileHandler = async (e) => {}
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append(`image`, file);
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setUserAdd({ ...userAdd, avatar: data });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const uploadFileUpdateHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+
+    formData.append(`image`, file);
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setUserUpdateInfo({ ...userUpdateInfo, avatar: data });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const submitHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (keyword) {
-      dispatch(listUser(role, keyword, page))
+      dispatch(listUser(role, keyword, page));
     } else if (keyword.length === 0) {
-      window.location.reload()
+      window.location.reload();
     }
-  }
+  };
 
   const handleClickOpenUpdate = (id) => {
-    dispatch(listChapterDetails(id))
-    setOpenUpdate(true)
-  }
+    dispatch(listUserDetails(id));
+    setOpenUpdate(true);
+  };
   const handleCloseUpdate = () => {
-    dispatch({ type: CHAPTER_DETAILS_RESET })
-    setTitleUpdate('')
-    setOpenUpdate(false)
-  }
+    dispatch({ type: USER_DETAILS_RESET });
+    setOpenUpdate(false);
+  };
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
-      dispatch(deleteChapter(id))
+      dispatch(deleteUser(id));
     }
-  }
+  };
 
   const handleClickOpenAdd = () => {
-    setOpenAdd(true)
-  }
+    setOpenAdd(true);
+  };
   const handleCloseAdd = () => {
-    dispatch({ type: CHAPTER_CREATE_RESET })
-    setOpenAdd(false)
-  }
+    dispatch({ type: USER_CREATE_RESET });
+    setOpenAdd(false);
+  };
   const addHandler = (e) => {
-    e.preventDefault()
-    setOpenAdd(false)
-  }
+    e.preventDefault();
+    dispatch(createUser(userAdd));
+    dispatch({ type: USER_CREATE_RESET });
+    setOpenAdd(false);
+  };
 
   const updateHandler = (e) => {
-    e.preventDefault()
-
-    setOpenUpdate(false)
-  }
+    e.preventDefault();
+    dispatch(updateUser(userUpdateInfo));
+    dispatch({ type: USER_UPDATE_RESET });
+    setOpenUpdate(false);
+  };
 
   const pageHandler = (e, page) => {
-    setPage(page)
-  }
+    setPage(page);
+  };
 
   return (
     <div className={classes.root}>
       <>
+        {loadingUpdate && <Loading />}
+        {errorUpdate && <Messages severity={'error'} message={errorUpdate} />}
+        {loadingCreate && <Loading />}
+        {errorCreate && <Messages severity={'error'} message={errorCreate} />}
+        {loadingDelete && <Loading />}
+        {errorDelete && <Messages severity={'error'} message={errorDelete} />}
         <div>
           <form className={classes.search} onSubmit={submitHandler}>
             <div className={classes.searchIcon}>
-              <img src={search} alt='search'></img>
+              <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder='Enter Your Search...'
+              placeholder="Enter Your Search..."
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -352,20 +397,17 @@ const ContentUser = (props) => {
           </form>
         </div>
         <div className={classes.action}>
-          <FormControl variant='outlined' className={classes.formControl}>
-            <InputLabel htmlFor='outlined-roles-native-simple'>
-              Roles
-            </InputLabel>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
 
             <Select
               native
               value={role}
               onChange={(e) => {
-                setRole(e.target.value)
-                setUserAdd({ ...userAdd, role: e.target.value })
-                // setRoleUpdate(e.target.value)
+                setRole(e.target.value);
+                setUserAdd({ ...userAdd, role: e.target.value });
               }}
-              label='Roles'
+              label="Roles"
               inputProps={{
                 name: 'Roles',
                 id: 'outlined-roles-native-simple',
@@ -376,21 +418,12 @@ const ContentUser = (props) => {
               <option value={3}>Student</option>
             </Select>
           </FormControl>
-          <Button
-            size='large'
-            variant='contained'
-            color='secondary'
-            onClick={() => handleClickOpenAdd()}
-          >
+          <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
             New user
           </Button>
-          <form
-            className={classes.files}
-            id='uploadForm'
-            onChange={uploadFileHandler}
-          >
-            <input type='file' id='excelFile' />
-            <label for='excelFile'>IMPORT FILE</label>
+          <form className={classes.files} id="uploadForm" onChange={uploadFileHandler}>
+            <input type="file" id="excelFile" />
+            <label for="excelFile">IMPORT FILE</label>
           </form>
         </div>
         {loadingUsers ? (
@@ -415,7 +448,7 @@ const ContentUser = (props) => {
                 {UsersList.users.map((user) => (
                   <tr key={user._id}>
                     <td>
-                      <img src={user.avatar ? user.avatar : { User }} alt='' />
+                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : { User }} alt="avatar" />
                     </td>
                     <td>{user.code}</td>
                     <td>{user.fullName}</td>
@@ -442,10 +475,10 @@ const ContentUser = (props) => {
 
         <Pagination
           className={classes.pagination}
-          color='primary'
+          color="primary"
           count={UsersList.pages}
           page={UsersList.page}
-          size='large'
+          size="large"
           onChange={pageHandler}
         ></Pagination>
       </>
@@ -455,22 +488,18 @@ const ContentUser = (props) => {
         onClose={handleCloseAdd}
         disableBackdropClick
         disableEscapeKeyDown
-        aria-labelledby='form-dialog-title-add'
+        aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id='form-dialog-title-add'>USER</DialogTitle>
+        <DialogTitle id="form-dialog-title-add">USER</DialogTitle>
         <DialogContent>
           <form onSubmit={addHandler}>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel htmlFor='outlined-roles-native-simple'>
-                Roles
-              </InputLabel>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
               <Select
                 native
                 value={userAdd.role}
-                onChange={(e) =>
-                  setUserAdd({ ...userAdd, role: e.target.value })
-                }
-                label='Roles'
+                onChange={(e) => setUserAdd({ ...userAdd, role: e.target.value })}
+                label="Roles"
                 inputProps={{
                   name: 'Roles',
                   id: 'outlined-roles-native-simple',
@@ -481,21 +510,13 @@ const ContentUser = (props) => {
                 <option value={3}>Student</option>
               </Select>
             </FormControl>
-            <FormControl
-              style={{ marginLeft: 12 }}
-              variant='outlined'
-              className={classes.formControl}
-            >
-              <InputLabel htmlFor='outlined-roles-native-simple'>
-                Gender
-              </InputLabel>
+            <FormControl style={{ marginLeft: 12 }} variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="outlined-roles-native-simple">Gender</InputLabel>
               <Select
                 native
                 value={userAdd.gender}
-                onChange={(e) =>
-                  setUserAdd({ ...userAdd, gender: e.target.value })
-                }
-                label='Gender'
+                onChange={(e) => setUserAdd({ ...userAdd, gender: e.target.value })}
+                label="Gender"
                 inputProps={{
                   name: 'Gender',
                   id: 'outlined-genders-native-simple',
@@ -506,111 +527,90 @@ const ContentUser = (props) => {
               </Select>
             </FormControl>
             <TextField
-              id='date'
-              label='Birthday'
-              type='date'
+              id="date"
+              label="Birthday"
+              type="date"
+              required
+              autoFocus
               className={classes.birthday}
-              onChange={(e) =>
-                setUserAdd({ ...userAdd, birthday: e.target.value })
-              }
+              onChange={(e) => setUserAdd({ ...userAdd, birthday: e.target.value })}
               InputLabelProps={{
                 shrink: true,
               }}
             />
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='code'
-              label='Code'
-              name='code'
-              autoComplete='code'
+              id="code"
+              label="Code"
+              name="code"
+              autoComplete="code"
               required
-              autoFocus
               style={{ width: 500 }}
               onChange={(e) => setUserAdd({ ...userAdd, code: e.target.value })}
             />
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='name'
-              label='Full name'
-              name='name'
-              autoComplete='name'
+              id="name"
+              label="Full name"
+              name="name"
+              autoComplete="name"
               required
-              autoFocus
               style={{ width: 500 }}
-              onChange={(e) =>
-                setUserAdd({ ...userAdd, fullName: e.target.value })
-              }
+              onChange={(e) => setUserAdd({ ...userAdd, fullName: e.target.value })}
             />
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='email'
-              label='Email'
-              name='email'
-              type='email'
-              autoComplete='email'
+              id="email"
+              label="Email"
+              name="email"
+              type="email"
+              autoComplete="email"
               required
-              autoFocus
               style={{ width: 500 }}
-              onChange={(e) =>
-                setUserAdd({ ...userAdd, email: e.target.value })
-              }
+              onChange={(e) => setUserAdd({ ...userAdd, email: e.target.value })}
             />
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='phone'
-              label='Phone'
-              name='phone'
-              type='number'
-              autoComplete='phone'
+              id="phone"
+              label="Phone"
+              name="phone"
+              type="number"
+              autoComplete="phone"
               required
-              autoFocus
               style={{ width: 500 }}
-              onChange={(e) =>
-                setUserAdd({ ...userAdd, phone: e.target.value })
-              }
+              onChange={(e) => setUserAdd({ ...userAdd, phone: e.target.value })}
             />
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='password'
-              label='Password'
-              name='password'
-              type='password'
-              autoComplete='password'
+              id="password"
+              label="Password"
+              name="password"
+              type="password"
+              autoComplete="password"
               required
-              autoFocus
               style={{ width: 500 }}
-              onChange={(e) =>
-                setUserAdd({ ...userAdd, password: e.target.value })
-              }
+              onChange={(e) => setUserAdd({ ...userAdd, password: e.target.value })}
             />
-            <img style={{ width: 60 , margin: '12px 0 0 0' }} src={User} alt='user' />
-            <form
-              className={classes.avatarFile}
-              id='uploadForm1'
-              onChange={uploadFileHandler}
-            >
-              <input type='file' id='imgFile' />
-              <label for='imgFile'>IMPORT AVATAR</label>
-            </form>
+            <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userAdd.avatar} />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
-              <Button type='submit' color='primary' variant='contained'>
+              <form className={classes.avatarFile} id="uploadForm1" onChange={uploadFileHandler}>
+                <input type="file" id="imgFile" />
+                <label for="imgFile">IMPORT AVATAR</label>
+              </form>
+              <Button type="submit" color="primary" variant="contained">
                 Add
               </Button>
-              <Button
-                onClick={handleCloseAdd}
-                color='secondary'
-                variant='contained'
-              >
+              <Button onClick={handleCloseAdd} color="secondary" variant="contained">
                 Cancel
               </Button>
             </DialogActions>
@@ -618,78 +618,139 @@ const ContentUser = (props) => {
         </DialogContent>
       </Dialog>
 
-      {/* <Dialog
+      <Dialog
         open={openUpdate}
         onClose={handleCloseUpdate}
         disableBackdropClick
         disableEscapeKeyDown
-        aria-labelledby='form-dialog-title-add'
+        aria-labelledby="form-dialog-title-update"
       >
-        <DialogTitle id='form-dialog-title-add'>CHAPTER</DialogTitle>
-        <DialogContent style={{maxWidth: 550}}>
-          <form onSubmit={updateHandler}>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel
-                className={classes.title}
-                htmlFor='outlined-subjects-native-simple'
-              >
-                Subjects
-              </InputLabel>
-              {loadingSubjects ? (
-                ''
-              ) : errorSubjects ? (
-                <Messages severity={'error'} message={errorSubjects} />
-              ) : (
+        <DialogTitle id="form-dialog-title-update">USER</DialogTitle>
+        <DialogContent>
+          {loadingDetails ? (
+            <Loading />
+          ) : errorDetails ? (
+            <Messages severity={'error'} message={errorDetails} />
+          ) : (
+            <form onSubmit={updateHandler}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
                 <Select
                   native
-                  value={subjectUpdate}
-                  onChange={(e) => setSubjectUpdate(e.target.value)}
-                  label='Subjects'
+                  value={userUpdateInfo.role}
+                  onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, role: e.target.value })}
+                  label="Roles"
                   inputProps={{
-                    name: 'Subjects',
-                    id: 'outlined-subjects-native-simple',
+                    name: 'Roles',
+                    id: 'outlined-roles-native-simple',
                   }}
                 >
-                  {subjectsList.subjects.length > 0 &&
-                    subjectsList.subjects.map((subject) => (
-                      <option key={subject._id} value={subject._id}>
-                        {subject.name}
-                      </option>
-                    ))}
+                  <option value={1}>Admin</option>
+                  <option value={2}>Teacher</option>
+                  <option value={3}>Student</option>
                 </Select>
-              )}
-            </FormControl>
-            <TextField
-              variant='outlined'
-              margin='normal'
-              fullWidth
-              id='name'
-              label='Chapter'
-              name='name'
-              autoComplete='name'
-              required
-              autoFocus
-              value={titleUpdate}
-              style={{ width: 500 }}
-              onChange={(e) => setTitleUpdate(e.target.value)}
-            />
-            <DialogActions style={{ margin: '0 16px 16px 0' }}>
-              <Button type='submit' color='primary' variant='contained'>
-                Update
-              </Button>
-              <Button
-                onClick={handleCloseUpdate}
-                color='secondary'
-                variant='contained'
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </form>
+              </FormControl>
+              <FormControl style={{ marginLeft: 12 }} variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="outlined-roles-native-simple">Gender</InputLabel>
+                <Select
+                  native
+                  value={userUpdateInfo.gender}
+                  onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, gender: e.target.value })}
+                  label="Gender"
+                  inputProps={{
+                    name: 'Gender',
+                    id: 'outlined-genders-native-simple',
+                  }}
+                >
+                  <option value={true}>Male</option>
+                  <option value={false}>Female</option>
+                </Select>
+              </FormControl>
+              <TextField
+                id="date"
+                label="Birthday"
+                type="date"
+                defaultValue={userUpdateInfo.birthday}
+                required
+                className={classes.birthday}
+                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, birthday: e.target.value })}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                value={userUpdateInfo.code}
+                id="code"
+                label="Code"
+                name="code"
+                autoComplete="code"
+                required
+                style={{ width: 500 }}
+                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, code: e.target.value })}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                value={userUpdateInfo.fullName}
+                id="name"
+                label="Full name"
+                name="name"
+                autoComplete="name"
+                required
+                style={{ width: 500 }}
+                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, fullName: e.target.value })}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                value={userUpdateInfo.email}
+                id="email"
+                label="Email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                style={{ width: 500 }}
+                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, email: e.target.value })}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                value={userUpdateInfo.phone}
+                id="phone"
+                label="Phone"
+                name="phone"
+                type="number"
+                autoComplete="phone"
+                required
+                style={{ width: 500 }}
+                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, phone: e.target.value })}
+              />
+              <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userUpdateInfo.avatar} />
+              <DialogActions style={{ margin: '0 16px 16px 0' }}>
+                <form className={classes.avatarFile} id="uploadForm2" onChange={uploadFileUpdateHandler}>
+                  <input type="file" id="imgFile" />
+                  <label for="imgFile">IMPORT AVATAR</label>
+                </form>
+                <Button type="submit" color="primary" variant="contained">
+                  Update
+                </Button>
+                <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
+                  Cancel
+                </Button>
+              </DialogActions>
+            </form>
+          )}
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default ContentUser
+export default ContentUser;

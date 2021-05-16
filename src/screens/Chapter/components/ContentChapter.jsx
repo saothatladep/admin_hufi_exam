@@ -1,36 +1,32 @@
-import { Button } from '@material-ui/core'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import FormControl from '@material-ui/core/FormControl'
-import InputBase from '@material-ui/core/InputBase'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import { fade, makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
-import { Pagination } from '@material-ui/lab'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Button } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControl from '@material-ui/core/FormControl';
+import InputBase from '@material-ui/core/InputBase';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Pagination } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   createChapter,
   deleteChapter,
   listChapter,
   listChapterDetails,
   updateChapter,
-} from '../../../actions/chapterActions'
-import { listSubjects } from '../../../actions/subjectActions'
-import search from '../../../assets/search.png'
-import Loading from '../../../components/Loading'
-import Messages from '../../../components/Messages'
-import {
-  CHAPTER_CREATE_RESET,
-  CHAPTER_DETAILS_RESET,
-  CHAPTER_UPDATE_RESET,
-} from '../../../constants/chapterConstants'
+} from '../../../actions/chapterActions';
+import { listSubjects } from '../../../actions/subjectActions';
+import search from '../../../assets/search.png';
+import Loading from '../../../components/Loading';
+import Messages from '../../../components/Messages';
+import { CHAPTER_CREATE_RESET, CHAPTER_DETAILS_RESET, CHAPTER_UPDATE_RESET } from '../../../constants/chapterConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -162,139 +158,103 @@ const usedStyles = makeStyles((theme) => ({
       color: '#3f51b5',
     },
   },
-}))
+}));
 const ContentChapter = (props) => {
-  const { history } = props
-  const dispatch = useDispatch()
-  const classes = usedStyles()
-  const [keyword, setKeyWord] = useState('')
-  const [subject, setSubject] = useState('6097a37b4b832e1eec635692')
-  const [subjectAdd, setSubjectAdd] = useState('6097a37b4b832e1eec635692')
-  const [subjectUpdate, setSubjectUpdate] = useState('6097a37b4b832e1eec635692')
-  const [openUpdate, setOpenUpdate] = useState(false)
-  const [titleAdd, setTitleAdd] = useState('')
-  const [openAdd, setOpenAdd] = useState(false)
-  const [titleUpdate, setTitleUpdate] = useState('')
-  const [page, setPage] = useState('')
+  const { history } = props;
+  const dispatch = useDispatch();
+  const classes = usedStyles();
+  const [keyword, setKeyWord] = useState('');
+  const [subject, setSubject] = useState('6097a37b4b832e1eec635692');
+  const [subjectAdd, setSubjectAdd] = useState('6097a37b4b832e1eec635692');
+  const [subjectUpdate, setSubjectUpdate] = useState('6097a37b4b832e1eec635692');
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [titleAdd, setTitleAdd] = useState('');
+  const [openAdd, setOpenAdd] = useState(false);
+  const [titleUpdate, setTitleUpdate] = useState('');
+  const [page, setPage] = useState('');
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const subjectList = useSelector((state) => state.subjectList)
-  const {
-    loading: loadingSubjects,
-    error: errorSubjects,
-    subjects: subjectsList,
-  } = subjectList
+  const subjectList = useSelector((state) => state.subjectList);
+  const { loading: loadingSubjects, error: errorSubjects, subjects: subjectsList } = subjectList;
 
-  const chapterList = useSelector((state) => state.chapterList)
-  const {
-    loading: loadingChapters,
-    error: errorChapters,
-    chapters: chaptersList,
-  } = chapterList
+  const chapterList = useSelector((state) => state.chapterList);
+  const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterList;
 
-  const chapterDetails = useSelector((state) => state.chapterDetails)
-  const {
-    loading: loadingDetails,
-    error: errorDetails,
-    chapter: chaptersDetails,
-  } = chapterDetails
+  const chapterDetails = useSelector((state) => state.chapterDetails);
+  const { loading: loadingDetails, error: errorDetails, chapter: chaptersDetails } = chapterDetails;
 
-  const chapterUpdate = useSelector((state) => state.chapterUpdate)
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = chapterUpdate
+  const chapterUpdate = useSelector((state) => state.chapterUpdate);
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = chapterUpdate;
 
-  const chapterCreate = useSelector((state) => state.chapterCreate)
-  const {
-    loading: loadingCreate,
-    error: errorCreate,
-    success: successCreate,
-  } = chapterCreate
+  const chapterCreate = useSelector((state) => state.chapterCreate);
+  const { loading: loadingCreate, error: errorCreate, success: successCreate } = chapterCreate;
 
-  const chapterDelete = useSelector((state) => state.chapterDelete)
-  const {
-    loading: loadingDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = chapterDelete
+  const chapterDelete = useSelector((state) => state.chapterDelete);
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = chapterDelete;
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listSubjects())
-      dispatch(listChapter(subject, keyword, page))
+      dispatch(listSubjects());
+      dispatch(listChapter(subject, keyword, page));
     } else {
-      history.push('/')
+      history.push('/');
     }
 
     if (!loadingDetails) {
-      setTitleUpdate(chaptersDetails.data.name)
+      setTitleUpdate(chaptersDetails.data.name);
       if (successUpdate) {
         dispatch({
           type: CHAPTER_UPDATE_RESET,
-        })
+        });
       }
     }
 
-    window.scrollTo(0, 0)
-  }, [
-    userInfo,
-    history,
-    dispatch,
-    subject,
-    page,
-    chaptersDetails,
-    successCreate,
-    successUpdate,
-    successDelete,
-  ])
+    window.scrollTo(0, 0);
+  }, [userInfo, history, dispatch, subject, page, chaptersDetails, successCreate, successUpdate, successDelete]);
 
   const submitHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (keyword) {
-      dispatch(listChapter(subject, keyword))
-      console.log(keyword)
+      dispatch(listChapter(subject, keyword));
+      console.log(keyword);
     } else if (keyword.length === 0) {
-      window.location.reload()
+      window.location.reload();
     }
-  }
+  };
 
   const handleClickOpenUpdate = (id) => {
-    dispatch(listChapterDetails(id))
-    setOpenUpdate(true)
-  }
+    dispatch(listChapterDetails(id));
+    setOpenUpdate(true);
+  };
   const handleCloseUpdate = () => {
-    dispatch({ type: CHAPTER_DETAILS_RESET })
-    setTitleUpdate('')
-    setOpenUpdate(false)
-  }
+    dispatch({ type: CHAPTER_DETAILS_RESET });
+    setTitleUpdate('');
+    setOpenUpdate(false);
+  };
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
-      dispatch(deleteChapter(id))
+      dispatch(deleteChapter(id));
     }
-  }
+  };
 
   const handleClickOpenAdd = () => {
-    setOpenAdd(true)
-  }
+    setOpenAdd(true);
+  };
   const handleCloseAdd = () => {
-    dispatch({ type: CHAPTER_CREATE_RESET })
-    setOpenAdd(false)
-  }
+    dispatch({ type: CHAPTER_CREATE_RESET });
+    setOpenAdd(false);
+  };
   const addHandler = (e) => {
-    e.preventDefault()
-    dispatch(
-      createChapter({ name: titleAdd, subject: subjectAdd, user: userInfo._id })
-    )
-    setOpenAdd(false)
-  }
+    e.preventDefault();
+    dispatch(createChapter({ name: titleAdd, subject: subjectAdd, user: userInfo._id }));
+    setOpenAdd(false);
+  };
 
   const updateHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(
       updateChapter({
         _id: chaptersDetails.data._id,
@@ -302,13 +262,13 @@ const ContentChapter = (props) => {
         subject: subjectUpdate,
         user: userInfo._id,
       })
-    )
-    setOpenUpdate(false)
-  }
+    );
+    setOpenUpdate(false);
+  };
 
   const pageHandler = (e, page) => {
-    setPage(page)
-  }
+    setPage(page);
+  };
 
   return (
     <div className={classes.root}>
@@ -322,10 +282,10 @@ const ContentChapter = (props) => {
         <div>
           <form className={classes.search} onSubmit={submitHandler}>
             <div className={classes.searchIcon}>
-              <img src={search} alt='search'></img>
+              <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder='Enter Your Search...'
+              placeholder="Enter Your Search..."
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -337,10 +297,8 @@ const ContentChapter = (props) => {
           </form>
         </div>
         <div className={classes.action}>
-          <FormControl variant='outlined' className={classes.formControl}>
-            <InputLabel htmlFor='outlined-subjects-native-simple'>
-              Subjects
-            </InputLabel>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
             {loadingSubjects ? (
               <Loading />
             ) : errorSubjects ? (
@@ -350,11 +308,11 @@ const ContentChapter = (props) => {
                 native
                 value={subject}
                 onChange={(e) => {
-                  setSubject(e.target.value)
-                  setSubjectUpdate(e.target.value)
-                  setSubjectAdd(e.target.value)
+                  setSubject(e.target.value);
+                  setSubjectUpdate(e.target.value);
+                  setSubjectAdd(e.target.value);
                 }}
-                label='Subjects'
+                label="Subjects"
                 inputProps={{
                   name: 'Subjects',
                   id: 'outlined-subjects-native-simple',
@@ -369,12 +327,7 @@ const ContentChapter = (props) => {
               </Select>
             )}
           </FormControl>
-          <Button
-            size='large'
-            variant='contained'
-            color='secondary'
-            onClick={() => handleClickOpenAdd()}
-          >
+          <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
             New chapter
           </Button>
         </div>
@@ -421,10 +374,10 @@ const ContentChapter = (props) => {
 
         <Pagination
           className={classes.pagination}
-          color='primary'
+          color="primary"
           count={chaptersList.pages}
           page={chaptersList.page}
-          size='large'
+          size="large"
           onChange={pageHandler}
         ></Pagination>
       </>
@@ -434,15 +387,13 @@ const ContentChapter = (props) => {
         onClose={handleCloseAdd}
         disableBackdropClick
         disableEscapeKeyDown
-        aria-labelledby='form-dialog-title-add'
+        aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id='form-dialog-title-add'>CHAPTER</DialogTitle>
-        <DialogContent  style={{maxWidth: 550}}>
+        <DialogTitle id="form-dialog-title-add">CHAPTER</DialogTitle>
+        <DialogContent style={{ maxWidth: 550 }}>
           <form onSubmit={addHandler}>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel htmlFor='outlined-subjects-native-simple'>
-                Subjects
-              </InputLabel>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
               {loadingSubjects ? (
                 ''
               ) : errorSubjects ? (
@@ -452,7 +403,7 @@ const ContentChapter = (props) => {
                   native
                   value={subjectAdd}
                   onChange={(e) => setSubjectAdd(e.target.value)}
-                  label='Subjects'
+                  label="Subjects"
                   inputProps={{
                     name: 'Subjects',
                     id: 'outlined-subjects-native-simple',
@@ -468,27 +419,23 @@ const ContentChapter = (props) => {
               )}
             </FormControl>
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='name'
-              label='Chapter'
-              name='name'
-              autoComplete='name'
+              id="name"
+              label="Chapter"
+              name="name"
+              autoComplete="name"
               required
               autoFocus
               style={{ width: 500 }}
               onChange={(e) => setTitleAdd(e.target.value)}
             />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
-              <Button type='submit' color='primary' variant='contained'>
+              <Button type="submit" color="primary" variant="contained">
                 Add
               </Button>
-              <Button
-                onClick={handleCloseAdd}
-                color='secondary'
-                variant='contained'
-              >
+              <Button onClick={handleCloseAdd} color="secondary" variant="contained">
                 Cancel
               </Button>
             </DialogActions>
@@ -501,16 +448,13 @@ const ContentChapter = (props) => {
         onClose={handleCloseUpdate}
         disableBackdropClick
         disableEscapeKeyDown
-        aria-labelledby='form-dialog-title-add'
+        aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id='form-dialog-title-add'>CHAPTER</DialogTitle>
-        <DialogContent style={{maxWidth: 550}}>
+        <DialogTitle id="form-dialog-title-add">CHAPTER</DialogTitle>
+        <DialogContent style={{ maxWidth: 550 }}>
           <form onSubmit={updateHandler}>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel
-                className={classes.title}
-                htmlFor='outlined-subjects-native-simple'
-              >
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel className={classes.title} htmlFor="outlined-subjects-native-simple">
                 Subjects
               </InputLabel>
               {loadingSubjects ? (
@@ -522,7 +466,7 @@ const ContentChapter = (props) => {
                   native
                   value={subjectUpdate}
                   onChange={(e) => setSubjectUpdate(e.target.value)}
-                  label='Subjects'
+                  label="Subjects"
                   inputProps={{
                     name: 'Subjects',
                     id: 'outlined-subjects-native-simple',
@@ -538,13 +482,13 @@ const ContentChapter = (props) => {
               )}
             </FormControl>
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='name'
-              label='Chapter'
-              name='name'
-              autoComplete='name'
+              id="name"
+              label="Chapter"
+              name="name"
+              autoComplete="name"
               required
               autoFocus
               value={titleUpdate}
@@ -552,14 +496,10 @@ const ContentChapter = (props) => {
               onChange={(e) => setTitleUpdate(e.target.value)}
             />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
-              <Button type='submit' color='primary' variant='contained'>
+              <Button type="submit" color="primary" variant="contained">
                 Update
               </Button>
-              <Button
-                onClick={handleCloseUpdate}
-                color='secondary'
-                variant='contained'
-              >
+              <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
                 Cancel
               </Button>
             </DialogActions>
@@ -567,7 +507,7 @@ const ContentChapter = (props) => {
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default ContentChapter
+export default ContentChapter;

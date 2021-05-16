@@ -139,10 +139,19 @@ export const createUser = (user) => async (dispatch, getState) => {
   }
 }
 
-export const listUserDetails = (id) => async (dispatch) => {
+export const listUserDetails = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: USER_DETAILS_REQUEST })
-    const { data } = await axios.get(`/api/users/${id}`)
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+    const { data } = await axios.get(`/api/users/${id}`, config)
     dispatch({ type: USER_DETAILS_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
@@ -155,7 +164,7 @@ export const listUserDetails = (id) => async (dispatch) => {
   }
 }
 
-export const updateChapter = (user) => async (dispatch, getState) => {
+export const updateUser = (user) => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_UPDATE_REQUEST,
@@ -189,7 +198,7 @@ export const updateChapter = (user) => async (dispatch, getState) => {
   }
 }
 
-export const deleteChapter = (id) => async (dispatch, getState) => {
+export const deleteUser = (id) => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_DELETE_REQUEST,

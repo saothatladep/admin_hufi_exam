@@ -27,7 +27,7 @@ const LoginForm = (props) => {
 
   const redirect = location.search
     ? location.search.split('=')[1]
-    : '/subject'
+    : '/user'
 
   const userLogin = useSelector((state) => state.userLogin)
   const { loading, error, userInfo } = userLogin

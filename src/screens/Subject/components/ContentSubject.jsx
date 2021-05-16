@@ -1,32 +1,28 @@
-import { Button } from '@material-ui/core'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import InputBase from '@material-ui/core/InputBase'
-import { fade, makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
-import { Pagination } from '@material-ui/lab'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Button } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import InputBase from '@material-ui/core/InputBase';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Pagination } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   listSubjectDetails,
   listSubjects,
   updateSubject,
   createSubject,
   deleteSubject,
-} from '../../../actions/subjectActions'
-import search from '../../../assets/search.png'
-import Loading from '../../../components/Loading'
-import Messages from '../../../components/Messages'
-import {
-  SUBJECT_CREATE_RESET,
-  SUBJECT_DETAILS_RESET,
-  SUBJECT_UPDATE_RESET,
-} from '../../../constants/subjectConstants'
+} from '../../../actions/subjectActions';
+import search from '../../../assets/search.png';
+import Loading from '../../../components/Loading';
+import Messages from '../../../components/Messages';
+import { SUBJECT_CREATE_RESET, SUBJECT_DETAILS_RESET, SUBJECT_UPDATE_RESET } from '../../../constants/subjectConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -128,140 +124,115 @@ const usedStyles = makeStyles((theme) => ({
   pagination: {
     marginBottom: 24,
   },
-}))
+}));
 const ContentSubject = (props) => {
-  const { history } = props
-  const classes = usedStyles()
-  const [keyword, setKeyWord] = useState('')
-  const [openUpdate, setOpenUpdate] = useState(false)
-  const [titleAdd, setTitleAdd] = useState('')
-  const [openAdd, setOpenAdd] = useState(false)
-  const [titleUpdate, setTitleUpdate] = useState('')
+  const { history } = props;
+  const classes = usedStyles();
+  const [keyword, setKeyWord] = useState('');
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [titleAdd, setTitleAdd] = useState('');
+  const [openAdd, setOpenAdd] = useState(false);
+  const [titleUpdate, setTitleUpdate] = useState('');
 
-  const [page, setPage] = useState('')
-  const dispatch = useDispatch()
+  const [page, setPage] = useState('');
+  const dispatch = useDispatch();
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const subjectList = useSelector((state) => state.subjectList)
-  const { loading, error, subjects: subjectsList } = subjectList
+  const subjectList = useSelector((state) => state.subjectList);
+  const { loading, error, subjects: subjectsList } = subjectList;
 
-  const subjectDetails = useSelector((state) => state.subjectDetails)
-  const {
-    loading: loadingDetails,
-    error: errorDetails,
-    subject: subjectsDetails,
-  } = subjectDetails
+  const subjectDetails = useSelector((state) => state.subjectDetails);
+  const { loading: loadingDetails, error: errorDetails, subject: subjectsDetails } = subjectDetails;
 
-  const subjectUpdate = useSelector((state) => state.subjectUpdate)
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = subjectUpdate
+  const subjectUpdate = useSelector((state) => state.subjectUpdate);
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = subjectUpdate;
 
-  const subjectCreate = useSelector((state) => state.subjectCreate)
-  const {
-    loading: loadingCreate,
-    error: errorCreate,
-    success: successCreate,
-  } = subjectCreate
+  const subjectCreate = useSelector((state) => state.subjectCreate);
+  const { loading: loadingCreate, error: errorCreate, success: successCreate } = subjectCreate;
 
-  const subjectDelete = useSelector((state) => state.subjectDelete)
-  const {
-    loading: loadingDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = subjectDelete
+  const subjectDelete = useSelector((state) => state.subjectDelete);
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = subjectDelete;
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listSubjects(keyword, page))
+      dispatch(listSubjects(keyword, page));
     } else {
-      history.push('/')
+      history.push('/');
     }
 
     if (!loadingDetails) {
-      setTitleUpdate(subjectsDetails.data.name)
+      setTitleUpdate(subjectsDetails.data.name);
       if (successUpdate) {
         dispatch({
           type: SUBJECT_UPDATE_RESET,
-        })
+        });
       }
     }
-    window.scrollTo(0, 0)
-  }, [
-    userInfo,
-    history,
-    dispatch,
-    subjectsDetails,
-    successUpdate,
-    successCreate,
-    successDelete,
-    page,
-  ])
+    window.scrollTo(0, 0);
+  }, [userInfo, history, dispatch, subjectsDetails, successUpdate, successCreate, successDelete, page]);
 
   const submitHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (keyword) {
-      dispatch(listSubjects(keyword))
-      console.log(keyword)
+      dispatch(listSubjects(keyword));
+      console.log(keyword);
     } else if (keyword.length === 0) {
-      window.location.reload()
+      window.location.reload();
     }
-  }
+  };
 
   const handleClickOpenUpdate = (id) => {
-    dispatch(listSubjectDetails(id))
-    setOpenUpdate(true)
-  }
+    dispatch(listSubjectDetails(id));
+    setOpenUpdate(true);
+  };
 
   const handleCloseUpdate = () => {
-    dispatch({ type: SUBJECT_DETAILS_RESET })
-    setOpenUpdate(false)
-  }
+    dispatch({ type: SUBJECT_DETAILS_RESET });
+    setOpenUpdate(false);
+  };
 
   const handleClickOpenAdd = () => {
-    setOpenAdd(true)
-  }
+    setOpenAdd(true);
+  };
   const handleCloseAdd = () => {
-    dispatch({ type: SUBJECT_CREATE_RESET })
-    setOpenAdd(false)
-  }
+    dispatch({ type: SUBJECT_CREATE_RESET });
+    setOpenAdd(false);
+  };
 
   const addHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(
       createSubject({
         name: titleAdd,
         user: userInfo._id,
       })
-    )
-    setOpenAdd(false)
-  }
+    );
+    setOpenAdd(false);
+  };
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
-      dispatch(deleteSubject(id))
+      dispatch(deleteSubject(id));
     }
-  }
+  };
 
   const updateHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(
       updateSubject({
         _id: subjectsDetails.data._id,
         name: titleUpdate,
         user: userInfo._id,
       })
-    )
-    setOpenUpdate(false)
-  }
+    );
+    setOpenUpdate(false);
+  };
 
   const pageHandler = (e, page) => {
-    setPage(page)
-  }
+    setPage(page);
+  };
 
   return (
     <div className={classes.root}>
@@ -280,10 +251,10 @@ const ContentSubject = (props) => {
           <div>
             <form className={classes.search} onSubmit={submitHandler}>
               <div className={classes.searchIcon}>
-                <img src={search} alt='search'></img>
+                <img src={search} alt="search"></img>
               </div>
               <InputBase
-                placeholder='Enter Your Search...'
+                placeholder="Enter Your Search..."
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -294,12 +265,7 @@ const ContentSubject = (props) => {
               />
             </form>
           </div>
-          <Button
-            size='large'
-            variant='contained'
-            color='secondary'
-            onClick={() => handleClickOpenAdd()}
-          >
+          <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
             New subject
           </Button>
           <div>
@@ -338,10 +304,10 @@ const ContentSubject = (props) => {
           </div>
           <Pagination
             className={classes.pagination}
-            color='primary'
+            color="primary"
             count={subjectsList.pages}
             page={subjectsList.page}
-            size='large'
+            size="large"
             onChange={pageHandler}
           ></Pagination>
         </>
@@ -352,9 +318,9 @@ const ContentSubject = (props) => {
         onClose={handleCloseUpdate}
         disableBackdropClick
         disableEscapeKeyDown
-        aria-labelledby='form-dialog-title'
+        aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id='form-dialog-title'>SUBJECT</DialogTitle>
+        <DialogTitle id="form-dialog-title">SUBJECT</DialogTitle>
         <DialogContent>
           {loadingDetails ? (
             <Loading />
@@ -363,28 +329,24 @@ const ContentSubject = (props) => {
           ) : (
             <form onSubmit={updateHandler}>
               <TextField
-                variant='outlined'
-                margin='normal'
+                variant="outlined"
+                margin="normal"
                 fullWidth
-                id='name'
-                label='name'
-                name='name'
+                id="name"
+                label="name"
+                name="name"
                 required={true}
-                autoComplete='name'
+                autoComplete="name"
                 autoFocus
                 style={{ width: 500 }}
                 value={titleUpdate}
                 onChange={(e) => setTitleUpdate(e.target.value)}
               />
               <DialogActions style={{ margin: '0 16px 16px 0' }}>
-                <Button type='submit' color='primary' variant='contained'>
+                <Button type="submit" color="primary" variant="contained">
                   Update
                 </Button>
-                <Button
-                  onClick={handleCloseUpdate}
-                  color='secondary'
-                  variant='contained'
-                >
+                <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
                   Cancel
                 </Button>
               </DialogActions>
@@ -398,33 +360,29 @@ const ContentSubject = (props) => {
         onClose={handleCloseUpdate}
         disableBackdropClick
         disableEscapeKeyDown
-        aria-labelledby='form-dialog-title-add'
+        aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id='form-dialog-title-add'>SUBJECT</DialogTitle>
+        <DialogTitle id="form-dialog-title-add">SUBJECT</DialogTitle>
         <DialogContent>
           <form onSubmit={addHandler}>
             <TextField
-              variant='outlined'
-              margin='normal'
+              variant="outlined"
+              margin="normal"
               fullWidth
-              id='name'
-              label='name'
-              name='name'
-              autoComplete='name'
+              id="name"
+              label="name"
+              name="name"
+              autoComplete="name"
               required
               autoFocus
               style={{ width: 500 }}
               onChange={(e) => setTitleAdd(e.target.value)}
             />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
-              <Button type='submit' color='primary' variant='contained'>
+              <Button type="submit" color="primary" variant="contained">
                 Add
               </Button>
-              <Button
-                onClick={handleCloseAdd}
-                color='secondary'
-                variant='contained'
-              >
+              <Button onClick={handleCloseAdd} color="secondary" variant="contained">
                 Cancel
               </Button>
             </DialogActions>
@@ -432,7 +390,7 @@ const ContentSubject = (props) => {
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default ContentSubject
+export default ContentSubject;
