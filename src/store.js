@@ -24,6 +24,13 @@ import {
   chapterUpdateReducer,
   chapterDeleteReducer,
 } from './reducers/chapterReducers'
+import {
+  questionListReducer,
+  questionCreateReducer,
+  questionDetailsReducer,
+  questionUpdateReducer,
+  questionDeleteReducer,
+} from './reducers/questionReducers'
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -42,6 +49,11 @@ const reducer = combineReducers({
   chapterDetails: chapterDetailsReducer,
   chapterUpdate: chapterUpdateReducer,
   chapterDelete: chapterDeleteReducer,
+  questionList: questionListReducer,
+  questionCreate: questionCreateReducer,
+  questionDetails: questionDetailsReducer,
+  questionUpdate: questionUpdateReducer,
+  questionDelete: questionDeleteReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
