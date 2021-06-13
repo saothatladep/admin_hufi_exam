@@ -1,4 +1,4 @@
-import { Avatar, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,21 +12,27 @@ import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Pagination } from '@material-ui/lab';
-import axios from 'axios';
 import 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { listChapter } from '../../../actions/chapterActions';
-import { createQuestion } from '../../../actions/questionActions';
+import {
+  createQuestion,
+  deleteQuestion,
+  listQuestion,
+  listQuestionDetails,
+  updateQuestion,
+} from '../../../actions/questionActions';
 import { listSubjects } from '../../../actions/subjectActions';
-import { createUser, deleteUser, listUser, listUserDetails, updateUser } from '../../../actions/userActions';
 import search from '../../../assets/search.png';
-import User from '../../../assets/user.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
-import { QUESTION_CREATE_RESET } from '../../../constants/questionConstants';
-import { USER_CREATE_RESET, USER_DETAILS_RESET, USER_UPDATE_RESET } from '../../../constants/userConstants';
+import {
+  QUESTION_CREATE_RESET,
+  QUESTION_DETAILS_RESET,
+  QUESTION_UPDATE_RESET,
+} from '../../../constants/questionConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -186,15 +192,17 @@ const ContentQuestion = (props) => {
   const classes = usedStyles();
   const [keyword, setKeyWord] = useState('');
   const [subject, setSubject] = useState('6097a37b4b832e1eec635692');
-  const [chapter, setChapter] = useState('');
+  const [oldSubject, setOldSubject] = useState('');
+  const [chapter, setChapter] = useState('608ac29398f1fb3aec8fcc36');
   const [chapterChange, setChapterChange] = useState('');
   const [subjectChange, setSubjectChange] = useState('');
   const [level, setLevel] = useState(0);
-  const [a, setA] = useState('');
-  const [b, setB] = useState('');
-  const [c, setC] = useState('');
-  const [d, setD] = useState('');
+  const [a, setA] = useState({});
+  const [b, setB] = useState({});
+  const [c, setC] = useState({});
+  const [d, setD] = useState({});
   const [question, setQuestion] = useState({
+    id: '',
     title: '',
     answers: [],
     level: 1,
@@ -202,20 +210,9 @@ const ContentQuestion = (props) => {
     chapter: '',
     user: '',
   });
-  const [userUpdateInfo, setUserUpdateInfo] = useState({
-    _id: '',
-    role: '',
-    gender: '',
-    fullName: '',
-    email: '',
-    phone: '',
-    code: '',
-    birthday: '',
-    avatar: '',
-  });
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
-  const [page, setPage] = useState('');
+  const [page, setPage] = useState(1);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -243,49 +240,84 @@ const ContentQuestion = (props) => {
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listUser(level, keyword, page));
-      dispatch(listSubjects())
+      dispatch(listSubjects());
     } else {
       history.push('/');
     }
     if (!loadingDetails) {
-    //   setUserUpdateInfo({
-    //   });
+      setQuestion({
+        id: questionsDetails.data._id,
+        title: questionsDetails.data.title,
+        level: questionsDetails.data.level,
+        result: questionsDetails.data.result,
+      });
+      setChapterChange(questionsDetails.data.chapter);
+      setA(questionsDetails.data.answers[0]);
+      setB(questionsDetails.data.answers[1]);
+      setC(questionsDetails.data.answers[2]);
+      setD(questionsDetails.data.answers[3]);
       if (successUpdate) {
-        dispatch({
-          type: USER_UPDATE_RESET,
-        });
+        dispatch({ type: QUESTION_UPDATE_RESET });
       }
     }
     window.scrollTo(0, 0);
-  }, [userInfo, history, dispatch,subject, chapter, level, questionDetails, successCreate, page, successDelete, successUpdate]);
+  }, [userInfo, history, dispatch, questionsDetails, successUpdate]);
+
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(listChapter(subject));
+      if (!loadingChapters || chaptersList) {
+        // chaptersList.chapters && oldSubject !== subject && setChapter(chaptersList.chapters[0]._id);
+        dispatch(listQuestion(chapter, level, keyword, page));
+      }
+      // if (!loadingChapters && chaptersList.chapters) {
+      //   if (oldSubject !== subject) {
+      //     dispatch(listQuestion(chaptersList.chapters[0]._id, level, keyword, page));
+      //     console.log('df')
+      //   } else {
+      //      dispatch(listQuestion(chapter, level, keyword, page));
+      //   }
+      // }
+    } else {
+      history.push('/');
+    }
+    if (successCreate && chapter) {
+      dispatch(listQuestion(chapter, level, keyword, page));
+    }
+    if (successDelete && chapter) {
+      dispatch(listQuestion(chapter, level, keyword, page));
+    }
+
+    window.scrollTo(0, 0);
+  }, [userInfo, dispatch, subject, chapter, page, level, successDelete, successCreate, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword) {
-      dispatch(listUser(level, keyword, page));
+      dispatch(listQuestion(chapter, level, keyword, page));
     } else if (keyword.length === 0) {
-      window.location.reload();
+      dispatch(listQuestion(chapter, level, keyword, page));
     }
   };
 
   const handleClickOpenUpdate = (id) => {
-    dispatch(listUserDetails(id));
+    dispatch(listQuestionDetails(id));
     setOpenUpdate(true);
   };
   const handleCloseUpdate = () => {
-    dispatch({ type: USER_DETAILS_RESET });
+    dispatch({ type: QUESTION_DETAILS_RESET });
     setOpenUpdate(false);
   };
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
-      dispatch(deleteUser(id));
+      dispatch(deleteQuestion(id));
     }
   };
 
   const handleClickOpenAdd = () => {
     setOpenAdd(true);
+    setChapterChange(chapter);
   };
   const handleCloseAdd = () => {
     dispatch({ type: QUESTION_CREATE_RESET });
@@ -293,18 +325,16 @@ const ContentQuestion = (props) => {
   };
   const addHandler = (e) => {
     e.preventDefault();
-    dispatch(createQuestion({...question, chapter: chapterChange, user: userInfo._id, answers: [a,b,c,d]}))
+    dispatch(createQuestion({ ...question, chapter: chapterChange, user: userInfo._id, answers: [a, b, c, d] }));
     dispatch({ type: QUESTION_CREATE_RESET });
+    // setSubject('');
+    // setChapter('');
     setOpenAdd(false);
   };
-  useEffect(()=> {
-    console.log(question)
-  },[addHandler])
 
   const updateHandler = (e) => {
     e.preventDefault();
-    dispatch(updateUser(userUpdateInfo));
-    dispatch({ type: USER_UPDATE_RESET });
+    dispatch(updateQuestion({ ...question, chapter: chapterChange, user: userInfo._id, answers: [a, b, c, d] }));
     setOpenUpdate(false);
   };
 
@@ -312,8 +342,7 @@ const ContentQuestion = (props) => {
     setPage(page);
   };
 
-  const uploadFileHandler = async (e) => {
-  };
+  const uploadFileHandler = async (e) => {};
 
   return (
     <div className={classes.root}>
@@ -342,7 +371,7 @@ const ContentQuestion = (props) => {
           </form>
         </div>
         <div className={classes.action}>
-        <FormControl variant="outlined" className={classes.formControl}>
+          <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
             {loadingSubjects ? (
               <Loading />
@@ -353,8 +382,8 @@ const ContentQuestion = (props) => {
                 native
                 value={subject}
                 onChange={(e) => {
+                  setOldSubject(subject);
                   setSubject(e.target.value);
-                  dispatch(listChapter(e.target.value))
                   setSubjectChange(e.target.value);
                 }}
                 label="Subjects"
@@ -379,26 +408,28 @@ const ContentQuestion = (props) => {
             ) : errorChapters ? (
               <Messages severity={'error'} message={errorChapters} />
             ) : (
-              <Select
-                native
-                value={chapter}
-                onChange={(e) => {
-                  setChapter(e.target.value);
-                  setChapterChange(e.target.value);
-                }}
-                label="Chapters"
-                inputProps={{
-                  name: 'Chapters',
-                  id: 'outlined-chapters-native-simple',
-                }}
-              >
-                {chaptersList.chapters.length > 0 &&
-                  chaptersList.chapters.map((chapter) => (
-                    <option key={chapter._id} value={chapter._id}>
-                      {chapter.name}
-                    </option>
-                  ))}
-              </Select>
+              <>
+                <Select
+                  native
+                  value={chapter}
+                  onChange={(e) => {
+                    setChapter(e.target.value);
+                    setChapterChange(e.target.value);
+                  }}
+                  label="Chapters"
+                  inputProps={{
+                    name: 'Chapters',
+                    id: 'outlined-chapters-native-simple',
+                  }}
+                >
+                  {chaptersList.chapters.length > 0 &&
+                    chaptersList.chapters.map((chapter) => (
+                      <option key={chapter._id} value={chapter._id}>
+                        {chapter.name}
+                      </option>
+                    ))}
+                </Select>
+              </>
             )}
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
@@ -449,7 +480,7 @@ const ContentQuestion = (props) => {
                 {QuestionsList.questions.map((question) => (
                   <tr key={question._id}>
                     <td>{question.title}</td>
-                    <td>{question.result}</td>
+                    <td>{question.user.fullName}</td>
                     <td>
                       <Link onClick={() => handleClickOpenUpdate(question._id)}>
                         <Button>
@@ -473,7 +504,7 @@ const ContentQuestion = (props) => {
           className={classes.pagination}
           color="primary"
           count={QuestionsList.pages}
-          page={QuestionsList.page}
+          page={page}
           size="large"
           onChange={pageHandler}
         ></Pagination>
@@ -489,82 +520,82 @@ const ContentQuestion = (props) => {
         <DialogTitle id="form-dialog-title-add">QUESTION</DialogTitle>
         <DialogContent>
           <form onSubmit={addHandler}>
-          <FormControl variant="outlined" className={classes.formControl} style = {{marginRight: 12}}>
-            <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
-            {loadingSubjects ? (
-              <Loading />
-            ) : errorSubjects ? (
-              <Messages severity={'error'} message={errorSubjects} />
-            ) : (
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+              {loadingSubjects ? (
+                <Loading />
+              ) : errorSubjects ? (
+                <Messages severity={'error'} message={errorSubjects} />
+              ) : (
+                <Select
+                  native
+                  value={subjectChange}
+                  onChange={(e) => {
+                    dispatch(listChapter(e.target.value));
+                    setSubjectChange(e.target.value);
+                  }}
+                  label="Subjects"
+                  inputProps={{
+                    name: 'Subjects',
+                    id: 'outlined-subjects-native-simple',
+                  }}
+                >
+                  {subjectsList.subjects.length > 0 &&
+                    subjectsList.subjects.map((subject) => (
+                      <option key={subject._id} value={subject._id}>
+                        {subject.name}
+                      </option>
+                    ))}
+                </Select>
+              )}
+            </FormControl>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+              <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
+              {loadingChapters ? (
+                <Loading />
+              ) : errorChapters ? (
+                <Messages severity={'error'} message={errorChapters} />
+              ) : (
+                <Select
+                  native
+                  value={chapterChange}
+                  onChange={(e) => {
+                    setChapterChange(e.target.value);
+                  }}
+                  label="Chapters"
+                  inputProps={{
+                    name: 'Chapters',
+                    id: 'outlined-chapters-native-simple',
+                  }}
+                >
+                  {chaptersList.chapters.length > 0 &&
+                    chaptersList.chapters.map((chapter) => (
+                      <option key={chapter._id} value={chapter._id}>
+                        {chapter.name}
+                      </option>
+                    ))}
+                </Select>
+              )}
+            </FormControl>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+              <InputLabel htmlFor="outlined-levels-native-simple">Level</InputLabel>
               <Select
                 native
-                value={subjectChange}
+                value={question.level}
                 onChange={(e) => {
-                  dispatch(listChapter(e.target.value))
-                  setSubjectChange(e.target.value);
+                  setQuestion({ ...question, level: e.target.value });
                 }}
-                label="Subjects"
+                label="Levels"
                 inputProps={{
-                  name: 'Subjects',
-                  id: 'outlined-subjects-native-simple',
+                  name: 'Levels',
+                  id: 'outlined-levels-native-simple',
                 }}
               >
-                {subjectsList.subjects.length > 0 &&
-                  subjectsList.subjects.map((subject) => (
-                    <option key={subject._id} value={subject._id}>
-                      {subject.name}
-                    </option>
-                  ))}
+                <option value={1}>Easy</option>
+                <option value={2}>Normal</option>
+                <option value={3}>Hard</option>
               </Select>
-            )}
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl} style = {{marginRight: 12}}>
-            <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
-            {loadingChapters ? (
-              <Loading />
-            ) : errorChapters ? (
-              <Messages severity={'error'} message={errorChapters} />
-            ) : (
-              <Select
-                native
-                value={chapterChange}
-                onChange={(e) => {
-                  setChapterChange(e.target.value);
-                }}
-                label="Chapters"
-                inputProps={{
-                  name: 'Chapters',
-                  id: 'outlined-chapters-native-simple',
-                }}
-              >
-                {chaptersList.chapters.length > 0 &&
-                  chaptersList.chapters.map((chapter) => (
-                    <option key={chapter._id} value={chapter._id}>
-                      {chapter.name}
-                    </option>
-                  ))}
-              </Select>
-            )}
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl} style = {{marginRight: 12}}>
-            <InputLabel htmlFor="outlined-levels-native-simple">Level</InputLabel>
-            <Select
-              native
-              value={question.level}
-              onChange={(e) => {
-                setQuestion({ ...question, level: e.target.value });
-              }}
-              label="Levels"
-              inputProps={{
-                name: 'Levels',
-                id: 'outlined-levels-native-simple',
-              }}
-            >
-              <option value={1}>Easy</option>
-              <option value={2}>Normal</option>
-              <option value={3}>Hard</option>
-            </Select>
-          </FormControl>
+            </FormControl>
             <TextField
               variant="outlined"
               margin="normal"
@@ -589,7 +620,7 @@ const ContentQuestion = (props) => {
               required
               multiline
               style={{ width: 550 }}
-              onChange={(e) => setA(e.target.value)}
+              onChange={(e) => setA({ answer: e.target.value })}
             />
             <TextField
               variant="outlined"
@@ -601,7 +632,7 @@ const ContentQuestion = (props) => {
               required
               multiline
               style={{ width: 550 }}
-              onChange={(e) => setB(e.target.value)}
+              onChange={(e) => setB({ answer: e.target.value })}
             />
             <TextField
               variant="outlined"
@@ -613,7 +644,7 @@ const ContentQuestion = (props) => {
               required
               multiline
               style={{ width: 550 }}
-              onChange={(e) => setC(e.target.value)}
+              onChange={(e) => setC({ answer: e.target.value })}
             />
             <TextField
               variant="outlined"
@@ -625,28 +656,28 @@ const ContentQuestion = (props) => {
               required
               multiline
               style={{ width: 550 }}
-              onChange={(e) => setD(e.target.value)}
+              onChange={(e) => setD({ answer: e.target.value })}
             />
-            <FormControl variant="outlined" className={classes.formControl} style = {{marginTop: 16}}>
-            <InputLabel htmlFor="outlined-Answer-native-simple">Answer</InputLabel>
-            <Select
-              native
-              value={question.result}
-              onChange={(e) => {
-                setQuestion({ ...question, result: e.target.value });
-              }}
-              label="Answer"
-              inputProps={{
-                name: 'Answer',
-                id: 'outlined-Answer-native-simple',
-              }}
-            >
-              <option value={1}>A</option>
-              <option value={2}>B</option>
-              <option value={3}>C</option>
-              <option value={3}>D</option>
-            </Select>
-          </FormControl>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginTop: 16 }}>
+              <InputLabel htmlFor="outlined-Answer-native-simple">Answer</InputLabel>
+              <Select
+                native
+                value={question.result}
+                onChange={(e) => {
+                  setQuestion({ ...question, result: e.target.value });
+                }}
+                label="Answer"
+                inputProps={{
+                  name: 'Answer',
+                  id: 'outlined-Answer-native-simple',
+                }}
+              >
+                <option value={1}>A</option>
+                <option value={2}>B</option>
+                <option value={3}>C</option>
+                <option value={3}>D</option>
+              </Select>
+            </FormControl>
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
                 Add
@@ -666,124 +697,181 @@ const ContentQuestion = (props) => {
         disableEscapeKeyDown
         aria-labelledby="form-dialog-title-update"
       >
-        <DialogTitle id="form-dialog-title-update">USER</DialogTitle>
+        <DialogTitle id="form-dialog-title-update">QUESTION</DialogTitle>
         <DialogContent>
-          {loadingDetails ? (
-            <Loading />
-          ) : errorDetails ? (
-            <Messages severity={'error'} message={errorDetails} />
-          ) : (
-            <form onSubmit={updateHandler}>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
+          <form onSubmit={updateHandler}>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+              {loadingSubjects ? (
+                <Loading />
+              ) : errorSubjects ? (
+                <Messages severity={'error'} message={errorSubjects} />
+              ) : (
                 <Select
                   native
-                  value={userUpdateInfo.role}
-                  onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, role: e.target.value })}
-                  label="Roles"
+                  value={subjectChange}
+                  onChange={(e) => {
+                    dispatch(listChapter(e.target.value));
+                    setSubjectChange(e.target.value);
+                  }}
+                  label="Subjects"
                   inputProps={{
-                    name: 'Roles',
-                    id: 'outlined-roles-native-simple',
+                    name: 'Subjects',
+                    id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  <option value={1}>Admin</option>
-                  <option value={2}>Teacher</option>
-                  <option value={3}>Student</option>
+                  {subjectsList.subjects.length > 0 &&
+                    subjectsList.subjects.map((subject) => (
+                      <option key={subject._id} value={subject._id}>
+                        {subject.name}
+                      </option>
+                    ))}
                 </Select>
-              </FormControl>
-              <FormControl style={{ marginLeft: 12 }} variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="outlined-roles-native-simple">Gender</InputLabel>
+              )}
+            </FormControl>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+              <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
+              {loadingChapters ? (
+                <Loading />
+              ) : errorChapters ? (
+                <Messages severity={'error'} message={errorChapters} />
+              ) : (
                 <Select
                   native
-                  value={userUpdateInfo.gender}
-                  onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, gender: e.target.value })}
-                  label="Gender"
+                  value={chapterChange}
+                  onChange={(e) => {
+                    setChapterChange(e.target.value);
+                  }}
+                  label="Chapters"
                   inputProps={{
-                    name: 'Gender',
-                    id: 'outlined-genders-native-simple',
+                    name: 'Chapters',
+                    id: 'outlined-chapters-native-simple',
                   }}
                 >
-                  <option value={true}>Male</option>
-                  <option value={false}>Female</option>
+                  {chaptersList.chapters.length > 0 &&
+                    chaptersList.chapters.map((chapter) => (
+                      <option key={chapter._id} value={chapter._id}>
+                        {chapter.name}
+                      </option>
+                    ))}
                 </Select>
-              </FormControl>
-              <TextField
-                id="date"
-                label="Birthday"
-                type="date"
-                defaultValue={userUpdateInfo.birthday}
-                required
-                className={classes.birthday}
-                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, birthday: e.target.value })}
-                InputLabelProps={{
-                  shrink: true,
+              )}
+            </FormControl>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+              <InputLabel htmlFor="outlined-levels-native-simple">Level</InputLabel>
+              <Select
+                native
+                value={question.level}
+                onChange={(e) => {
+                  setQuestion({ ...question, level: e.target.value });
                 }}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                value={userUpdateInfo.code}
-                id="code"
-                label="Code"
-                name="code"
-                autoComplete="code"
-                required
-                style={{ width: 500 }}
-                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, code: e.target.value })}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                value={userUpdateInfo.fullName}
-                id="name"
-                label="Full name"
-                name="name"
-                autoComplete="name"
-                required
-                style={{ width: 500 }}
-                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, fullName: e.target.value })}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                value={userUpdateInfo.email}
-                id="email"
-                label="Email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                style={{ width: 500 }}
-                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, email: e.target.value })}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                value={userUpdateInfo.phone}
-                id="phone"
-                label="Phone"
-                name="phone"
-                type="number"
-                autoComplete="phone"
-                required
-                style={{ width: 500 }}
-                onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, phone: e.target.value })}
-              />
-              <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userUpdateInfo.avatar} />
-              <DialogActions style={{ margin: '0 16px 16px 0' }}>
-                <Button type="submit" color="primary" variant="contained">
-                  Update
-                </Button>
-                <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                  Cancel
-                </Button>
-              </DialogActions>
-            </form>
-          )}
+                label="Levels"
+                inputProps={{
+                  name: 'Levels',
+                  id: 'outlined-levels-native-simple',
+                }}
+              >
+                <option value={1}>Easy</option>
+                <option value={2}>Normal</option>
+                <option value={3}>Hard</option>
+              </Select>
+            </FormControl>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="title"
+              label="Title"
+              name="title"
+              autoComplete="title"
+              required
+              multiline
+              style={{ width: 550 }}
+              onChange={(e) => setQuestion({ ...question, title: e.target.value })}
+              value={question.title}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="a"
+              label="A"
+              name="a"
+              autoComplete="a"
+              required
+              multiline
+              style={{ width: 550 }}
+              onChange={(e) => setA({ answer: e.target.value })}
+              value={a.answer}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="b"
+              label="B"
+              name="b"
+              required
+              multiline
+              style={{ width: 550 }}
+              onChange={(e) => setB({ answer: e.target.value })}
+              value={b.answer}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="c"
+              label="C"
+              name="c"
+              required
+              multiline
+              style={{ width: 550 }}
+              onChange={(e) => setC({ answer: e.target.value })}
+              value={c.answer}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="d"
+              label="D"
+              name="d"
+              required
+              multiline
+              style={{ width: 550 }}
+              onChange={(e) => setD({ answer: e.target.value })}
+              value={d.answer}
+            />
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginTop: 16 }}>
+              <InputLabel htmlFor="outlined-Answer-native-simple">Answer</InputLabel>
+              <Select
+                native
+                value={question.result}
+                onChange={(e) => {
+                  setQuestion({ ...question, result: e.target.value });
+                }}
+                label="Answer"
+                inputProps={{
+                  name: 'Answer',
+                  id: 'outlined-Answer-native-simple',
+                }}
+              >
+                <option value={1}>A</option>
+                <option value={2}>B</option>
+                <option value={3}>C</option>
+                <option value={3}>D</option>
+              </Select>
+            </FormControl>
+            <DialogActions>
+              <Button type="submit" color="primary" variant="contained">
+                Update
+              </Button>
+              <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
+                Cancel
+              </Button>
+            </DialogActions>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

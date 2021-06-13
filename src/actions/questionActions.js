@@ -20,45 +20,41 @@ import {
 } from '../constants/questionConstants';
 import axios from 'axios';
 
-//   export const listChapter = (id, keyword = '', pageNumber = '') => async (
-//     dispatch,
-//     getState
-//   ) => {
-//     try {
-//       dispatch({
-//         type: QUESTION_LIST_REQUEST,
-//       })
+export const listQuestion =
+  (id, level, keyword = '', pageNumber = '') =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: QUESTION_LIST_REQUEST,
+      });
 
-//       const {
-//         userLogin: { userInfo },
-//       } = getState()
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-//       const config = {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization: `Bearer ${userInfo.token}`,
-//         },
-//       }
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-//       const { data } = await axios.get(
-//         `/api/chapters/subject/${id}?keyword=${keyword}&pageNumber=${pageNumber}`,
-//         config
-//       )
+      const { data } = await axios.get(
+        `/api/questions/chapter/${id}?keyword=${keyword}&pageNumber=${pageNumber}&level=${level}`,
+        config
+      );
 
-//       dispatch({
-//         type: QUESTION_LIST_SUCCESS,
-//         payload: data,
-//       })
-//     } catch (error) {
-//       dispatch({
-//         type: QUESTION_LIST_FAIL,
-//         payload:
-//           error.response && error.response.data.message
-//             ? error.response.data.message
-//             : error.message,
-//       })
-//     }
-//   }
+      dispatch({
+        type: QUESTION_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: QUESTION_LIST_FAIL,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+      });
+    }
+  };
 
 export const createQuestion = (question) => async (dispatch, getState) => {
   try {
@@ -90,88 +86,75 @@ export const createQuestion = (question) => async (dispatch, getState) => {
   }
 };
 
-//   export const listChapterDetails = (id) => async (dispatch) => {
-//     try {
-//       dispatch({ type: QUESTION_DETAILS_REQUEST })
-//       const { data } = await axios.get(`/api/chapters/${id}`)
-//       dispatch({ type: QUESTION_DETAILS_SUCCESS, payload: data })
-//     } catch (error) {
-//       dispatch({
-//         type: QUESTION_DETAILS_FAIL,
-//         payload:
-//           error.response && error.response.data.message
-//             ? error.response.data.message
-//             : error.message,
-//       })
-//     }
-//   }
+export const listQuestionDetails = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: QUESTION_DETAILS_REQUEST });
+    const { data } = await axios.get(`/api/questions/${id}`);
+    dispatch({ type: QUESTION_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: QUESTION_DETAILS_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
 
-//   export const updateChapter = (chapter) => async (dispatch, getState) => {
-//     try {
-//       dispatch({
-//         type: QUESTION_UPDATE_REQUEST,
-//       })
+export const updateQuestion = (question) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: QUESTION_UPDATE_REQUEST,
+    });
 
-//       const {
-//         userLogin: { userInfo },
-//       } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-//       const config = {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization: `Bearer ${userInfo.token}`,
-//         },
-//       }
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-//       const { data } = await axios.put(
-//         `/api/chapters/${chapter._id}`,
-//         chapter,
-//         config
-//       )
+    const { data } = await axios.put(`/api/questions/`, question, config);
 
-//       dispatch({
-//         type: QUESTION_UPDATE_SUCCESS,
-//         payload: data,
-//       })
-//     } catch (error) {
-//       dispatch({
-//         type: QUESTION_UPDATE_FAIL,
-//         payload:
-//           error.response && error.response.data.message
-//             ? error.response.data.message
-//             : error.message,
-//       })
-//     }
-//   }
+    dispatch({
+      type: QUESTION_UPDATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: QUESTION_UPDATE_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
 
-//   export const deleteChapter = (id) => async (dispatch, getState) => {
-//     try {
-//       dispatch({
-//         type: QUESTION_DELETE_REQUEST,
-//       })
+export const deleteQuestion = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: QUESTION_DELETE_REQUEST,
+    });
 
-//       const {
-//         userLogin: { userInfo },
-//       } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${userInfo.token}`,
-//         },
-//       }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-//       await axios.delete(`/api/chapters/${id}`, config)
+    await axios.delete(`/api/questions/${id}`, config);
 
-//       dispatch({
-//         type: QUESTION_DELETE_SUCCESS,
-//       })
-//     } catch (error) {
-//       dispatch({
-//         type: QUESTION_DELETE_FAIL,
-//         payload:
-//           error.response && error.response.data.message
-//             ? error.response.data.message
-//             : error.message,
-//       })
-//     }
-//   }
+    dispatch({
+      type: QUESTION_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: QUESTION_DELETE_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
