@@ -33,6 +33,7 @@ import {
   QUESTION_DETAILS_RESET,
   QUESTION_UPDATE_RESET,
 } from '../../../constants/questionConstants';
+import * as XLSX from 'xlsx';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -342,7 +343,20 @@ const ContentQuestion = (props) => {
     setPage(page);
   };
 
-  const uploadFileHandler = async (e) => {};
+  const uploadFileImportHandler = (e) => {
+    const file = e.target.files[0];
+    // console.log(file);
+    const fileReader = new FileReader();
+    fileReader.readAsBinaryString(file);
+    fileReader.onload = async (event) => {
+      const bufferArray = event.target.result;
+      const workbook = await XLSX.read(bufferArray, { type: 'binary' });
+      const wsname = workbook.SheetNames[0];
+      const ws = workbook.Sheets[wsname];
+      const data = XLSX.utils.sheet_to_json(ws);
+      console.log(data);
+    };
+  };
 
   return (
     <div className={classes.root}>
@@ -456,8 +470,8 @@ const ContentQuestion = (props) => {
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
             New question
           </Button>
-          <form className={classes.files} id="uploadForm" onChange={uploadFileHandler}>
-            <input type="file" id="excelFile" />
+          <form className={classes.files} id="uploadForm">
+            <input type="file" id="excelFile" onChange={(e) => uploadFileImportHandler(e)} />
             <label for="excelFile">IMPORT FILE</label>
           </form>
         </div>
@@ -507,7 +521,7 @@ const ContentQuestion = (props) => {
           page={page}
           size="large"
           onChange={pageHandler}
-        ></Pagination>
+        />
       </>
 
       <Dialog

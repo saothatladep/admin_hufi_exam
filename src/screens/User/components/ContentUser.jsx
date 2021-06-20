@@ -17,12 +17,26 @@ import 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { createUser, deleteUser, listUser, listUserDetails, updateUser } from '../../../actions/userActions';
+import {
+  createUser,
+  deleteUser,
+  importUser,
+  listUser,
+  listUserDetails,
+  updateUser,
+} from '../../../actions/userActions';
 import search from '../../../assets/search.png';
 import User from '../../../assets/user.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
-import { USER_CREATE_RESET, USER_DETAILS_RESET, USER_UPDATE_RESET } from '../../../constants/userConstants';
+import {
+  USER_CREATE_RESET,
+  USER_DETAILS_RESET,
+  USER_IMPORT_RESET,
+  USER_UPDATE_RESET,
+} from '../../../constants/userConstants';
+import * as XLSX from 'xlsx';
+import moment from 'moment';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -252,6 +266,9 @@ const ContentUser = (props) => {
   const userCreate = useSelector((state) => state.userCreate);
   const { loading: loadingCreate, error: errorCreate, success: successCreate } = userCreate;
 
+  const userImport = useSelector((state) => state.userImport);
+  const { loading: loadingImport, error: errorImport, success: successImport } = userImport;
+
   const userDelete = useSelector((state) => state.userDelete);
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = userDelete;
 
@@ -281,7 +298,18 @@ const ContentUser = (props) => {
       }
     }
     window.scrollTo(0, 0);
-  }, [userInfo, history, dispatch, role, userDetails, successCreate, page, successDelete, successUpdate]);
+  }, [
+    userInfo,
+    history,
+    dispatch,
+    role,
+    userDetails,
+    successCreate,
+    page,
+    successDelete,
+    successUpdate,
+    successImport,
+  ]);
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
@@ -366,6 +394,22 @@ const ContentUser = (props) => {
     setOpenUpdate(false);
   };
 
+  const uploadFileImportHandler = (e) => {
+    const file = e.target.files[0];
+    // console.log(file);
+    const fileReader = new FileReader();
+    fileReader.readAsBinaryString(file);
+    fileReader.onload = async (event) => {
+      const bufferArray = event.target.result;
+      const workbook = await XLSX.read(bufferArray, { type: 'binary' });
+      const wsname = workbook.SheetNames[0];
+      const ws = workbook.Sheets[wsname];
+      const data = XLSX.utils.sheet_to_json(ws);
+      // console.log(data);
+      dispatch(importUser(data));
+    };
+  };
+
   const pageHandler = (e, page) => {
     setPage(page);
   };
@@ -379,6 +423,8 @@ const ContentUser = (props) => {
         {errorCreate && <Messages severity={'error'} message={errorCreate} />}
         {loadingDelete && <Loading />}
         {errorDelete && <Messages severity={'error'} message={errorDelete} />}
+        {loadingImport && <Loading />}
+        {errorImport && <Messages severity={'error'} message={errorImport} />}
         <div>
           <form className={classes.search} onSubmit={submitHandler}>
             <div className={classes.searchIcon}>
@@ -421,8 +467,8 @@ const ContentUser = (props) => {
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
             New user
           </Button>
-          <form className={classes.files} id="uploadForm" onChange={uploadFileHandler}>
-            <input type="file" id="excelFile" />
+          <form className={classes.files} id="uploadForm">
+            <input type="file" id="excelFile" onChange={(e) => uploadFileImportHandler(e)} />
             <label for="excelFile">IMPORT FILE</label>
           </form>
         </div>
@@ -448,12 +494,12 @@ const ContentUser = (props) => {
                 {UsersList.users.map((user) => (
                   <tr key={user._id}>
                     <td>
-                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : { User }} alt="avatar" />
+                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : User} alt="avatar" />
                     </td>
                     <td>{user.code}</td>
                     <td>{user.fullName}</td>
                     <td>{user.gender ? 'Male' : 'Female'}</td>
-                    <td>{user.birthday}</td>
+                    <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>
                     <td>
                       <Link onClick={() => handleClickOpenUpdate(user._id)}>
                         <Button>
@@ -480,7 +526,7 @@ const ContentUser = (props) => {
           page={UsersList.page}
           size="large"
           onChange={pageHandler}
-        ></Pagination>
+        />
       </>
 
       <Dialog
@@ -670,7 +716,7 @@ const ContentUser = (props) => {
                 id="date"
                 label="Birthday"
                 type="date"
-                defaultValue={userUpdateInfo.birthday}
+                value={userUpdateInfo.birthday}
                 required
                 className={classes.birthday}
                 onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, birthday: e.target.value })}

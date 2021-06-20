@@ -1,6 +1,6 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import {
   userLoginReducer,
@@ -9,28 +9,29 @@ import {
   userUpdateReducer,
   userCreateReducer,
   userDeleteReducer,
-} from './reducers/userReducers'
+  userImportReducer,
+} from './reducers/userReducers';
 import {
   subjectListReducer,
   subjectDetailsReducer,
   subjectUpdateReducer,
   subjectCreateReducer,
   subjectDeleteReducer,
-} from './reducers/subjectReducers'
+} from './reducers/subjectReducers';
 import {
   chapterListReducer,
   chapterCreateReducer,
   chapterDetailsReducer,
   chapterUpdateReducer,
   chapterDeleteReducer,
-} from './reducers/chapterReducers'
+} from './reducers/chapterReducers';
 import {
   questionListReducer,
   questionCreateReducer,
   questionDetailsReducer,
   questionUpdateReducer,
   questionDeleteReducer,
-} from './reducers/questionReducers'
+} from './reducers/questionReducers';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -39,6 +40,7 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   userCreate: userCreateReducer,
   userDelete: userDeleteReducer,
+  userImport: userImportReducer,
   subjectList: subjectListReducer,
   subjectDetails: subjectDetailsReducer,
   subjectUpdate: subjectUpdateReducer,
@@ -54,22 +56,16 @@ const reducer = combineReducers({
   questionDetails: questionDetailsReducer,
   questionUpdate: questionUpdateReducer,
   questionDelete: questionDeleteReducer,
-})
+});
 
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
-  : null
+const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
 const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
-}
+};
 
-const middleware = [thunk]
+const middleware = [thunk];
 
-const store = createStore(
-  reducer,
-  initialState,
-  composeWithDevTools(applyMiddleware(...middleware))
-)
+const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(...middleware)));
 
-export default store
+export default store;
