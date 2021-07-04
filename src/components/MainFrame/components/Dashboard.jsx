@@ -12,6 +12,7 @@ import Question from '../../../assets/action/question.png';
 import Result from '../../../assets/action/result.png';
 import Schedule from '../../../assets/action/schedule.png';
 import User from '../../../assets/action/user.png';
+import Exam from '../../../assets/action/exam.png';
 
 const usedStyles = makeStyles((theme) => ({
   root: {
@@ -166,12 +167,23 @@ const Dashboard = (props) => {
 
             <ListItem>
               <Link
+                to={'/exam'}
+                className={classes.action}
+                style={path.slice(0, 4) === 'exam' ? { background: '#3f51b5' } : {}}
+              >
+                <img src={Exam} alt="Exam" />
+                <ListItemText primary="Exam" className={path.slice(0, 4) === 'exam' ? classes.click : ''} />
+              </Link>
+            </ListItem>
+
+            <ListItem>
+              <Link
                 to={'/schedule'}
                 className={classes.action}
-                style={path === 'schedule' ? { background: '#3f51b5' } : {}}
+                style={path.slice(0, 8) === 'schedule' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Schedule} alt="Schedule" />
-                <ListItemText primary="Schedule" className={path === 'schedule' ? classes.click : ''} />
+                <ListItemText primary="Schedule" className={path.slice(0, 8) === 'schedule' ? classes.click : ''} />
               </Link>
             </ListItem>
 

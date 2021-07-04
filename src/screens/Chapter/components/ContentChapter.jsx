@@ -164,9 +164,9 @@ const ContentChapter = (props) => {
   const dispatch = useDispatch();
   const classes = usedStyles();
   const [keyword, setKeyWord] = useState('');
-  const [subject, setSubject] = useState('6097a37b4b832e1eec635692');
-  const [subjectAdd, setSubjectAdd] = useState('6097a37b4b832e1eec635692');
-  const [subjectUpdate, setSubjectUpdate] = useState('6097a37b4b832e1eec635692');
+  const [subject, setSubject] = useState();
+  const [subjectAdd, setSubjectAdd] = useState();
+  const [subjectUpdate, setSubjectUpdate] = useState();
   const [openUpdate, setOpenUpdate] = useState(false);
   const [titleAdd, setTitleAdd] = useState('');
   const [openAdd, setOpenAdd] = useState(false);
@@ -195,13 +195,23 @@ const ContentChapter = (props) => {
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = chapterDelete;
 
   useEffect(() => {
+    if (subjectsList && subjectsList.subjects && !subject) {
+      setSubject(subjectsList.subjects[0]._id);
+    }
+  }, [subjectsList.subjects]);
+
+  useEffect(() => {
+    if (subject) {
+      dispatch(listChapter(subject, keyword, page));
+    }
+  }, [subject, dispatch, page, keyword]);
+
+  useEffect(() => {
     if (userInfo) {
       dispatch(listSubjects());
-      dispatch(listChapter(subject, keyword, page));
     } else {
       history.push('/');
     }
-
     if (!loadingDetails) {
       setTitleUpdate(chaptersDetails.data.name);
       if (successUpdate) {
@@ -210,7 +220,6 @@ const ContentChapter = (props) => {
         });
       }
     }
-
     window.scrollTo(0, 0);
   }, [userInfo, history, dispatch, subject, page, chaptersDetails, successCreate, successUpdate, successDelete]);
 

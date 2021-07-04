@@ -518,15 +518,16 @@ const ContentUser = (props) => {
             </table>
           </div>
         )}
-
-        <Pagination
-          className={classes.pagination}
-          color="primary"
-          count={UsersList.pages}
-          page={UsersList.page}
-          size="large"
-          onChange={pageHandler}
-        />
+        {UsersList && (
+          <Pagination
+            className={classes.pagination}
+            color="primary"
+            count={UsersList.pages}
+            page={UsersList.page}
+            size="large"
+            onChange={pageHandler}
+          />
+        )}
       </>
 
       <Dialog

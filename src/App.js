@@ -5,6 +5,10 @@ import Subject from './screens/Subject/Index'
 import Chapter from './screens/Chapter/Index'
 import User from './screens/User/Index'
 import Question from './screens/Question/Index'
+import Exam from './screens/Exam/Index'
+import DetailExam from './screens/Exam/pages/DetailExam'
+import Schedule from './screens/Schedule/Index'
+import Result from './screens/Result/Index'
 
 const app = () => {
   return (
@@ -15,6 +19,10 @@ const app = () => {
         <Route path='/chapter' component={Chapter} />
         <Route path='/user' component={User} />
         <Route path='/question' component={Question} />
+        <Route path='/exam' component={Exam} exact />
+        <Route path='/exam/detail' component={DetailExam} />
+        <Route path='/schedule' component={Schedule} exact />
+        <Route path='/result' component={Result} exact />
       </Switch>
     </>
   )

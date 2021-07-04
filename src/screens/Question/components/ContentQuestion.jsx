@@ -192,9 +192,9 @@ const ContentQuestion = (props) => {
   const dispatch = useDispatch();
   const classes = usedStyles();
   const [keyword, setKeyWord] = useState('');
-  const [subject, setSubject] = useState('6097a37b4b832e1eec635692');
+  const [subject, setSubject] = useState();
   const [oldSubject, setOldSubject] = useState('');
-  const [chapter, setChapter] = useState('608ac29398f1fb3aec8fcc36');
+  const [chapter, setChapter] = useState();
   const [chapterChange, setChapterChange] = useState('');
   const [subjectChange, setSubjectChange] = useState('');
   const [level, setLevel] = useState(0);
@@ -265,20 +265,28 @@ const ContentQuestion = (props) => {
   }, [userInfo, history, dispatch, questionsDetails, successUpdate]);
 
   useEffect(() => {
+    if (subjectsList && subjectsList.subjects && !subject) {
+      setSubject(subjectsList.subjects[0]._id);
+    }
+  }, [subjectsList.subjects]);
+
+  useEffect(() => {
+    console.log(chaptersList);
+    if (chaptersList && chaptersList.chapters && !chapter) {
+      setChapter(chaptersList.chapters[0]._id);
+    }
+  }, [chaptersList]);
+
+  useEffect(() => {
+    if (chapter) {
+      console.log(chapter);
+      dispatch(listQuestion(chapter, level, keyword, page));
+    }
+  }, [chapter, dispatch, chapter, page, level, keyword]);
+
+  useEffect(() => {
     if (userInfo) {
       dispatch(listChapter(subject));
-      if (!loadingChapters || chaptersList) {
-        // chaptersList.chapters && oldSubject !== subject && setChapter(chaptersList.chapters[0]._id);
-        dispatch(listQuestion(chapter, level, keyword, page));
-      }
-      // if (!loadingChapters && chaptersList.chapters) {
-      //   if (oldSubject !== subject) {
-      //     dispatch(listQuestion(chaptersList.chapters[0]._id, level, keyword, page));
-      //     console.log('df')
-      //   } else {
-      //      dispatch(listQuestion(chapter, level, keyword, page));
-      //   }
-      // }
     } else {
       history.push('/');
     }
@@ -290,7 +298,7 @@ const ContentQuestion = (props) => {
     }
 
     window.scrollTo(0, 0);
-  }, [userInfo, dispatch, subject, chapter, page, level, successDelete, successCreate, successUpdate]);
+  }, [userInfo, dispatch, subject, successDelete, successCreate, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
