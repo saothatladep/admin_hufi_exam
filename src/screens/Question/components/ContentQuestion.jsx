@@ -225,7 +225,7 @@ const ContentQuestion = (props) => {
   const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterList;
 
   const questionList = useSelector((state) => state.questionList);
-  const { loading: loadingQuestions, error: errorQuestions, questions: QuestionsList } = questionList;
+  const { loading: loadingQuestions, error: errorQuestions, questions: questionsList } = questionList;
 
   const questionDetails = useSelector((state) => state.questionDetails);
   const { loading: loadingDetails, error: errorDetails, question: questionsDetails } = questionDetails;
@@ -499,7 +499,7 @@ const ContentQuestion = (props) => {
               </thead>
 
               <tbody>
-                {QuestionsList.questions.map((question) => (
+                {questionsList.questions.map((question) => (
                   <tr key={question._id}>
                     <td>{question.title}</td>
                     <td>{question.user.fullName}</td>
@@ -525,7 +525,7 @@ const ContentQuestion = (props) => {
         <Pagination
           className={classes.pagination}
           color="primary"
-          count={QuestionsList.pages}
+          count={questionsList.pages}
           page={page}
           size="large"
           onChange={pageHandler}

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import MainFrame from '../../../components/MainFrame/Index';
-import ContentDetailExam from '../components/ContentDetailExam';
+import ContentEditExam from '../components/ContentEditExam';
 
-const DetailExam = (props) => {
-  const { history, location } = props;
+const EditExam = (props) => {
+  const { history, location, match } = props;
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   return (
@@ -14,11 +14,11 @@ const DetailExam = (props) => {
       ) : (
         <>
           <MainFrame location={location} />
-          <ContentDetailExam history={history} />
+          <ContentEditExam history={history} match={match} />
         </>
       )}
     </div>
   );
 };
 
-export default DetailExam;
+export default EditExam;

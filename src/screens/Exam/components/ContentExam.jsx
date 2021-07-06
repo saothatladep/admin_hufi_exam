@@ -11,6 +11,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import search from '../../../assets/search.png';
 import moment from 'moment';
+import { deleteExam, listExam } from '../../../actions/examActions';
+import Loading from '../../../components/Loading';
+import Messages from '../../../components/Messages';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '80px 0 0 265px',
@@ -120,18 +123,29 @@ const ContentExam = (props) => {
   const dispatch = useDispatch();
   const classes = usedStyles();
   const [keyword, setKeyWord] = useState('');
-  const [page, setPage] = useState('');
+  const [page, setPage] = useState(1);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const examList = useSelector((state) => state.examList);
+  const { loading: loadingExams, error: errorExams, exams: examsList } = examList;
+
+  const examDelete = useSelector((state) => state.examDelete);
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = examDelete;
+
   useEffect(() => {
     if (userInfo) {
+      dispatch(listExam(keyword, page));
     } else {
       history.push('/');
     }
+
+    if (successDelete) {
+      dispatch(listExam(keyword, page));
+    }
     window.scrollTo(0, 0);
-  }, [userInfo, history, dispatch]);
+  }, [userInfo, history, dispatch, history, keyword, page, successDelete]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -145,11 +159,15 @@ const ContentExam = (props) => {
     history.push('/exam/detail');
   };
 
-  //   const deleteHandler = (id) => {
-  //     if (window.confirm('Are you sure?')) {
+  const deleteHandler = (id) => {
+    if (window.confirm('Are you sure?')) {
+      dispatch(deleteExam(id));
+    }
+  };
 
-  //     }
-  //   };
+  const editExam = (id) => {
+    history.push(`/exam/edit/${id}`);
+  };
 
   const pageHandler = (e, page) => {
     setPage(page);
@@ -180,48 +198,60 @@ const ContentExam = (props) => {
             New schedule
           </Button>
         </div>
-        <div>
-          <table className={classes.table}>
-            <thead>
-              <tr>
-                <th>TEST NAME</th>
-                <th>CREATED BY</th>
-                <th>CREATED DATE</th>
-                <th>STATUS</th>
-                <th></th>
-              </tr>
-            </thead>
+        {loadingExams ? (
+          <Loading />
+        ) : errorExams ? (
+          <Messages severity={'error'} message={errorExams} />
+        ) : (
+          <>
+            <div>
+              <table className={classes.table}>
+                <thead>
+                  <tr>
+                    <th>EXAM NAME</th>
+                    <th>CREATED BY</th>
+                    <th>CREATED DATE</th>
+                    <th>STATUS</th>
+                    <th></th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              <tr key={''}>
-                <td>{''}</td>
-                <td>{''}</td>
-                <td>{''}</td>
-                <td>{''}</td>
-                <td>
-                  <Link>
-                    <Button>
-                      <EditIcon />
-                    </Button>
-                  </Link>
-                  <Link>
-                    <Button>
-                      <DeleteIcon />
-                    </Button>
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <Pagination
-          className={classes.pagination}
-          color="primary"
-          // count={UsersList.pages}
-          // page={UsersList.page}
-          size="large"
-          onChange={pageHandler}
-        />
+                <tbody>
+                  {examsList &&
+                    examsList.exams.map((exam) => (
+                      <tr key={exam._id}>
+                        <td>{exam.name}</td>
+                        <td>{exam.user.fullName}</td>
+                        <td>{moment(exam.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
+                        <td>{exam.status ? 'Active' : 'Nonactive'}</td>
+                        <td>
+                          <Link onClick={() => editExam(exam._id)}>
+                            <Button>
+                              <EditIcon />
+                            </Button>
+                          </Link>
+                          <Link onClick={() => deleteHandler(exam._id)}>
+                            <Button>
+                              <DeleteIcon />
+                            </Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+
+            <Pagination
+              className={classes.pagination}
+              color="primary"
+              count={examsList.pages}
+              page={page}
+              size="large"
+              onChange={pageHandler}
+            />
+          </>
+        )}
       </>
     </div>
   );

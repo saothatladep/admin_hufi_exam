@@ -32,6 +32,13 @@ import {
   questionUpdateReducer,
   questionDeleteReducer,
 } from './reducers/questionReducers';
+import {
+  examListReducer,
+  examCreateReducer,
+  examDetailsReducer,
+  examUpdateReducer,
+  examDeleteReducer,
+} from './reducers/examReducers';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -56,6 +63,11 @@ const reducer = combineReducers({
   questionDetails: questionDetailsReducer,
   questionUpdate: questionUpdateReducer,
   questionDelete: questionDeleteReducer,
+  examList: examListReducer,
+  examCreate: examCreateReducer,
+  examDetails: examDetailsReducer,
+  examUpdate: examUpdateReducer,
+  examDelete: examDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

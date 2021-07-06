@@ -18,8 +18,8 @@ import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
 import RemoveIcon from '@material-ui/icons/Remove';
-import { createExam } from '../../../actions/examActions';
-import { EXAM_CREATE_RESET } from '../../../constants/examConstants';
+import { createExam, listExamDetails, updateExam } from '../../../actions/examActions';
+import { EXAM_CREATE_RESET, EXAM_DETAILS_RESET, EXAM_UPDATE_RESET } from '../../../constants/examConstants';
 
 const usedStyles = makeStyles((theme) => ({
   root: {
@@ -165,8 +165,8 @@ const usedStyles = makeStyles((theme) => ({
   },
   question: {},
 }));
-const ContentDetailExam = (props) => {
-  const { history } = props;
+const ContentEditExam = (props) => {
+  const { history, match } = props;
   const classes = usedStyles();
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
@@ -175,11 +175,14 @@ const ContentDetailExam = (props) => {
   const [chapter, setChapter] = useState();
   const [questionsAdd, setQuestionsAdd] = useState([]);
   const [exam, setExam] = useState({
+    _id: '',
     name: '',
     questions: [],
     status: true,
     user: '',
   });
+
+  const examId = match.params.id;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -193,8 +196,11 @@ const ContentDetailExam = (props) => {
   const questionList = useSelector((state) => state.questionList);
   const { loading: loadingQuestions, error: errorQuestions, questions: QuestionsList } = questionList;
 
-  const examCreate = useSelector((state) => state.examCreate);
-  const { loading: loadingCreate, error: errorCreate, success: successCreate } = examCreate;
+  const examUpdate = useSelector((state) => state.examUpdate);
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = examUpdate;
+
+  const examDetails = useSelector((state) => state.examDetails);
+  const { loading: loadingDetails, error: errorDetails, exam: examsDetails } = examDetails;
 
   const dispatch = useDispatch();
 
@@ -233,36 +239,35 @@ const ContentDetailExam = (props) => {
     } else {
       history.push('/');
     }
-    console.log(history);
-    if (successCreate) {
-      history.push('/exam');
-    }
-
     window.scrollTo(0, 0);
-  }, [userInfo, dispatch, subject, successCreate]);
+  }, [userInfo, dispatch, subject]);
 
-  // const submitHandler = (e) => {
-  //   e.preventDefault();
-  //   if (keyword) {
-  //     dispatch(listQuestion(chapter, level, keyword, page));
-  //   } else if (keyword.length === 0) {
-  //     dispatch(listQuestion(chapter, level, keyword, page));
-  //   }
-  // };
+  useEffect(() => {
+    if (successUpdate) {
+      dispatch({ type: EXAM_UPDATE_RESET });
+      dispatch({ type: EXAM_DETAILS_RESET });
+      history.push('/exam');
+    } else {
+      if (!examsDetails.data) {
+        dispatch(listExamDetails(examId));
+      } else if (!loadingDetails) {
+        setExam({
+          name: examsDetails.data.name,
+          questions: examsDetails.data.questions,
+          status: examsDetails.data.status,
+        });
+        setQuestionsAdd(examsDetails.data.questions);
+      }
+    }
+    window.scrollTo(0, 0);
+  }, [dispatch, history, examId, examsDetails.data, successUpdate]);
 
-  const addExamHandler = (e) => {
+  const updateExamHandler = (e) => {
     e.preventDefault();
     const data = [];
     questionsAdd.map((question) => data.push(question._id));
-    dispatch(createExam({ ...exam, questions: data, user: userInfo._id }));
-    dispatch({ type: EXAM_CREATE_RESET });
+    dispatch(updateExam({ ...exam, id: examId, questions: data, user: userInfo._id }));
   };
-
-  // useEffect(() => {
-  //   if (successCreate) {
-  //     history.push('/');
-  //   }
-  // }, [successCreate]);
 
   const handleClickAdd = (question) => {
     const data = [...questionsAdd];
@@ -289,7 +294,7 @@ const ContentDetailExam = (props) => {
   };
 
   return (
-    <form onSubmit={addExamHandler} className={classes.root}>
+    <form onSubmit={updateExamHandler} className={classes.root}>
       <div className={classes.name}>
         <TextField
           variant="outlined"
@@ -301,6 +306,7 @@ const ContentDetailExam = (props) => {
           autoComplete="exam"
           required
           multiline
+          value={exam.name}
           onChange={(e) => setExam({ ...exam, name: e.target.value })}
           style={{ width: 550 }}
         />
@@ -308,7 +314,7 @@ const ContentDetailExam = (props) => {
           <FormControlLabel
             control={
               <Switch
-                checked={true}
+                checked={exam.status}
                 onChange={(e) => setExam({ ...exam, status: e.target.checked })}
                 name="status"
                 color="primary"
@@ -493,10 +499,10 @@ const ContentDetailExam = (props) => {
       </div>
 
       <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
-        Add exam
+        Update exam
       </Button>
     </form>
   );
 };
 
-export default ContentDetailExam;
+export default ContentEditExam;
