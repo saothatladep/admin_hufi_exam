@@ -195,7 +195,7 @@ const ContentExam = (props) => {
         </div>
         <div className={classes.action}>
           <Button size="large" variant="contained" color="secondary" onClick={handleNewSchedule}>
-            New schedule
+            New exam
           </Button>
         </div>
         {loadingExams ? (

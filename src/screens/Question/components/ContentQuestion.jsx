@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { listChapter } from '../../../actions/chapterActions';
+import _ from 'lodash';
 import {
   createQuestion,
   deleteQuestion,
@@ -266,7 +267,7 @@ const ContentQuestion = (props) => {
 
   useEffect(() => {
     if (subjectsList && subjectsList.subjects && !subject) {
-      setSubject(subjectsList.subjects[0]._id);
+      setSubject(_.get(subjectsList.subjects[0], '_id'));
     }
   }, [subjectsList.subjects]);
 

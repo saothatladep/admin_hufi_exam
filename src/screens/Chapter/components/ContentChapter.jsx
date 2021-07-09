@@ -15,6 +15,8 @@ import { Pagination } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import moment from 'moment';
 import {
   createChapter,
   deleteChapter,
@@ -165,8 +167,8 @@ const ContentChapter = (props) => {
   const classes = usedStyles();
   const [keyword, setKeyWord] = useState('');
   const [subject, setSubject] = useState();
-  const [subjectAdd, setSubjectAdd] = useState();
-  const [subjectUpdate, setSubjectUpdate] = useState();
+  const [subjectAdd, setSubjectAdd] = useState('');
+  const [subjectUpdate, setSubjectUpdate] = useState('');
   const [openUpdate, setOpenUpdate] = useState(false);
   const [titleAdd, setTitleAdd] = useState('');
   const [openAdd, setOpenAdd] = useState(false);
@@ -196,9 +198,15 @@ const ContentChapter = (props) => {
 
   useEffect(() => {
     if (subjectsList && subjectsList.subjects && !subject) {
-      setSubject(subjectsList.subjects[0]._id);
+      setSubject(_.get(subjectsList.subjects[0], '_id'));
+      setSubjectAdd(_.get(subjectsList.subjects[0], '_id'));
+      setSubjectUpdate(_.get(subjectsList.subjects[0], '_id'));
     }
   }, [subjectsList.subjects]);
+
+  useEffect(() => {
+    console.log(subjectAdd);
+  }, [subjectAdd]);
 
   useEffect(() => {
     if (subject) {
@@ -218,20 +226,38 @@ const ContentChapter = (props) => {
         dispatch({
           type: CHAPTER_UPDATE_RESET,
         });
+        dispatch(listChapter(subject, keyword, page));
       }
     }
-    window.scrollTo(0, 0);
-  }, [userInfo, history, dispatch, subject, page, chaptersDetails, successCreate, successUpdate, successDelete]);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (keyword) {
-      dispatch(listChapter(subject, keyword));
-      console.log(keyword);
-    } else if (keyword.length === 0) {
-      window.location.reload();
+    if (successCreate) {
+      dispatch(listChapter(subject, keyword, page));
     }
-  };
+    if (deleteChapter) {
+      dispatch(listChapter(subject, keyword, page));
+    }
+    window.scrollTo(0, 0);
+  }, [
+    userInfo,
+    history,
+    dispatch,
+    keyword,
+    subject,
+    page,
+    chaptersDetails,
+    successUpdate,
+    successCreate,
+    successDelete,
+  ]);
+
+  // const submitHandler = (e) => {
+  //   e.preventDefault();
+  //   if (keyword) {
+  //     dispatch(listChapter(subject, keyword));
+  //     console.log(keyword);
+  //   } else if (keyword.length === 0) {
+  //     window.location.reload();
+  //   }
+  // };
 
   const handleClickOpenUpdate = (id) => {
     dispatch(listChapterDetails(id));
@@ -289,7 +315,7 @@ const ContentChapter = (props) => {
         {loadingDelete && <Loading />}
         {errorDelete && <Messages severity={'error'} message={errorDelete} />}
         <div>
-          <form className={classes.search} onSubmit={submitHandler}>
+          <form className={classes.search}>
             <div className={classes.searchIcon}>
               <img src={search} alt="search"></img>
             </div>
@@ -349,9 +375,9 @@ const ContentChapter = (props) => {
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>NAME</th>
                   <th>CREATED BY</th>
+                  <th>CREATED DATE</th>
                   <th></th>
                 </tr>
               </thead>
@@ -359,9 +385,9 @@ const ContentChapter = (props) => {
               <tbody>
                 {chaptersList.chapters.map((chapter) => (
                   <tr key={chapter._id}>
-                    <td>{chapter._id}</td>
                     <td>{chapter.name}</td>
                     <td>{chapter.user.fullName}</td>
+                    <td>{moment(chapter.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
                     <td>
                       <Link onClick={() => handleClickOpenUpdate(chapter._id)}>
                         <Button>
@@ -381,14 +407,16 @@ const ContentChapter = (props) => {
           </div>
         )}
 
-        <Pagination
-          className={classes.pagination}
-          color="primary"
-          count={chaptersList.pages}
-          page={chaptersList.page}
-          size="large"
-          onChange={pageHandler}
-        ></Pagination>
+        {chaptersList && (
+          <Pagination
+            className={classes.pagination}
+            color="primary"
+            count={chaptersList.pages}
+            page={chaptersList.page}
+            size="large"
+            onChange={pageHandler}
+          />
+        )}
       </>
 
       <Dialog

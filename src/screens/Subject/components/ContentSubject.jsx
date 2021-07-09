@@ -12,6 +12,7 @@ import { Pagination } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import {
   listSubjectDetails,
   listSubjects,
@@ -272,9 +273,9 @@ const ContentSubject = (props) => {
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>NAME</th>
+                  <th>SUBJECT</th>
                   <th>CREATED BY</th>
+                  <th>CREATED DATE</th>
                   <th></th>
                 </tr>
               </thead>
@@ -282,9 +283,9 @@ const ContentSubject = (props) => {
               <tbody>
                 {subjectsList.subjects.map((subject, index) => (
                   <tr key={index}>
-                    <td>{subject._id}</td>
                     <td>{subject.name}</td>
                     <td>{subject.user.fullName}</td>
+                    <td>{moment(subject.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
                     <td>
                       <Link onClick={() => handleClickOpenUpdate(subject._id)}>
                         <Button>
