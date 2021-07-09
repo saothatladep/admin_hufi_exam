@@ -43,7 +43,7 @@ export const chapterCreateReducer = (state = {}, action) => {
     case CHAPTER_CREATE_REQUEST:
       return { loading: true }
     case CHAPTER_CREATE_SUCCESS:
-      return { loading: false, success: true, product: action.payload }
+      return { loading: false, success: true, chapter: action.payload }
     case CHAPTER_CREATE_FAIL:
       return { loading: false, error: action.payload }
     case CHAPTER_CREATE_RESET:

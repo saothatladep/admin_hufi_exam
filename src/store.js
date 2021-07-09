@@ -40,6 +40,14 @@ import {
   examDeleteReducer,
 } from './reducers/examReducers';
 
+import {
+  scheduleListReducer,
+  scheduleCreateReducer,
+  scheduleDetailsReducer,
+  scheduleUpdateReducer,
+  scheduleDeleteReducer,
+} from './reducers/scheduleReducers';
+
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userList: userListReducer,
@@ -68,6 +76,11 @@ const reducer = combineReducers({
   examDetails: examDetailsReducer,
   examUpdate: examUpdateReducer,
   examDelete: examDeleteReducer,
+  scheduleList: scheduleListReducer,
+  scheduleCreate: scheduleCreateReducer,
+  scheduleDetails: scheduleDetailsReducer,
+  scheduleUpdate: scheduleUpdateReducer,
+  scheduleDelete: scheduleDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

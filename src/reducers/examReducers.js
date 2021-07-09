@@ -40,7 +40,7 @@ export const examCreateReducer = (state = {}, action) => {
     case EXAM_CREATE_REQUEST:
       return { loading: true };
     case EXAM_CREATE_SUCCESS:
-      return { loading: false, success: true, product: action.payload };
+      return { loading: false, success: true, exam: action.payload };
     case EXAM_CREATE_FAIL:
       return { loading: false, error: action.payload };
     case EXAM_CREATE_RESET:
