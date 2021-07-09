@@ -18,7 +18,7 @@ import {
   SCHEDULE_UPDATE_RESET,
   SCHEDULE_UPDATE_SUCCESS,
 } from '../constants/scheduleConstants';
-import axios from 'axios';
+import axiosClient from './../api/axiosClient'
 
 export const listSchedule =
   (keyword = '', pageNumber = '') =>
@@ -39,7 +39,7 @@ export const listSchedule =
         },
       };
 
-      const { data } = await axios.get(`/api/schedules/?keyword=${keyword}&pageNumber=${pageNumber}`, config);
+      const { data } = await axiosClient.get(`/api/schedules/?keyword=${keyword}&pageNumber=${pageNumber}`, config);
 
       dispatch({
         type: SCHEDULE_LIST_SUCCESS,
@@ -69,7 +69,7 @@ export const createSchedule = (schedule) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/schedules`, schedule, config);
+    const { data } = await axiosClient.post(`/api/schedules`, schedule, config);
 
     dispatch({
       type: SCHEDULE_CREATE_SUCCESS,
@@ -86,7 +86,7 @@ export const createSchedule = (schedule) => async (dispatch, getState) => {
 export const listScheduleDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: SCHEDULE_DETAILS_REQUEST });
-    const { data } = await axios.get(`/api/schedules/${id}`);
+    const { data } = await axiosClient.get(`/api/schedules/${id}`);
     dispatch({ type: SCHEDULE_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -113,7 +113,7 @@ export const updateSchedule = (schedule) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`/api/schedules/`, schedule, config);
+    const { data } = await axiosClient.put(`/api/schedules/`, schedule, config);
 
     dispatch({
       type: SCHEDULE_UPDATE_SUCCESS,
@@ -143,7 +143,7 @@ export const deleteSchedule = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.delete(`/api/schedules/${id}`, config);
+    await axiosClient.delete(`/api/schedules/${id}`, config);
 
     dispatch({
       type: SCHEDULE_DELETE_SUCCESS,

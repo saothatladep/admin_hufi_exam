@@ -15,7 +15,7 @@ import {
   SUBJECT_UPDATE_REQUEST,
   SUBJECT_UPDATE_SUCCESS,
 } from '../constants/subjectConstants'
-import axios from 'axios'
+import axiosClient from './../api/axiosClient'
 
 export const listSubjects = (keyword = '', pageNumber = '') => async (dispatch) => {
   try {
@@ -23,7 +23,7 @@ export const listSubjects = (keyword = '', pageNumber = '') => async (dispatch) 
       type: SUBJECT_LIST_REQUEST,
     })
 
-    const { data } = await axios.get(`/api/subjects?keyword=${keyword}&pageNumber=${pageNumber}`)
+    const { data } = await axiosClient.get(`/api/subjects?keyword=${keyword}&pageNumber=${pageNumber}`)
 
     dispatch({
       type: SUBJECT_LIST_SUCCESS,
@@ -43,7 +43,7 @@ export const listSubjects = (keyword = '', pageNumber = '') => async (dispatch) 
 export const listSubjectDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: SUBJECT_DETAILS_REQUEST })
-    const { data } = await axios.get(`/api/subjects/${id}`)
+    const { data } = await axiosClient.get(`/api/subjects/${id}`)
     dispatch({ type: SUBJECT_DETAILS_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
@@ -73,7 +73,7 @@ export const updateSubject = (subject) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.put(
+    const { data } = await axiosClient.put(
       `/api/subjects/${subject._id}`,
       subject,
       config
@@ -92,6 +92,7 @@ export const updateSubject = (subject) => async (dispatch, getState) => {
           : error.message,
     })
   }
+  
 }
 
 export const createSubject = (subject) => async (dispatch, getState) => {
@@ -110,7 +111,7 @@ export const createSubject = (subject) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.post(`/api/subjects`, subject, config)
+    const { data } = await axiosClient.post(`/api/subjects`, subject, config)
 
     dispatch({
       type: SUBJECT_CREATE_SUCCESS,
@@ -143,7 +144,7 @@ export const deleteSubject = (id) => async (dispatch, getState) => {
       },
     }
 
-    await axios.delete(`/api/subjects/${id}`, config)
+    await axiosClient.delete(`/api/subjects/${id}`, config)
 
     dispatch({
       type: SUBJECT_DELETE_SUCCESS,

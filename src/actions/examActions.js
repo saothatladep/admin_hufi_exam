@@ -18,7 +18,7 @@ import {
   EXAM_UPDATE_RESET,
   EXAM_UPDATE_SUCCESS,
 } from '../constants/examConstants';
-import axios from 'axios';
+import axiosClient from './../api/axiosClient'
 
 export const listExam =
   (keyword = '', pageNumber = '') =>
@@ -39,7 +39,7 @@ export const listExam =
         },
       };
 
-      const { data } = await axios.get(`/api/exams/?keyword=${keyword}&pageNumber=${pageNumber}`, config);
+      const { data } = await axiosClient.get(`/api/exams/?keyword=${keyword}&pageNumber=${pageNumber}`, config);
 
       dispatch({
         type: EXAM_LIST_SUCCESS,
@@ -69,7 +69,7 @@ export const createExam = (exam) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/exams`, exam, config);
+    const { data } = await axiosClient.post(`/api/exams`, exam, config);
 
     dispatch({
       type: EXAM_CREATE_SUCCESS,
@@ -86,7 +86,7 @@ export const createExam = (exam) => async (dispatch, getState) => {
 export const listExamDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: EXAM_DETAILS_REQUEST });
-    const { data } = await axios.get(`/api/exams/${id}`);
+    const { data } = await axiosClient.get(`/api/exams/${id}`);
     dispatch({ type: EXAM_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -113,7 +113,7 @@ export const updateExam = (exam) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`/api/exams/`, exam, config);
+    const { data } = await axiosClient.put(`/api/exams/`, exam, config);
 
     dispatch({
       type: EXAM_UPDATE_SUCCESS,
@@ -143,7 +143,7 @@ export const deleteExam = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.delete(`/api/exams/${id}`, config);
+    await axiosClient.delete(`/api/exams/${id}`, config);
 
     dispatch({
       type: EXAM_DELETE_SUCCESS,

@@ -18,7 +18,7 @@ import {
   QUESTION_UPDATE_RESET,
   QUESTION_UPDATE_SUCCESS,
 } from '../constants/questionConstants';
-import axios from 'axios';
+import axiosClient from './../api/axiosClient'
 
 export const listQuestion =
   (id, level, keyword = '', pageNumber = '') =>
@@ -39,7 +39,7 @@ export const listQuestion =
         },
       };
 
-      const { data } = await axios.get(
+      const { data } = await axiosClient.get(
         `/api/questions/chapter/${id}?keyword=${keyword}&pageNumber=${pageNumber}&level=${level}`,
         config
       );
@@ -72,7 +72,7 @@ export const createQuestion = (question) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/questions`, question, config);
+    const { data } = await axiosClient.post(`/api/questions`, question, config);
 
     dispatch({
       type: QUESTION_CREATE_SUCCESS,
@@ -89,7 +89,7 @@ export const createQuestion = (question) => async (dispatch, getState) => {
 export const listQuestionDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: QUESTION_DETAILS_REQUEST });
-    const { data } = await axios.get(`/api/questions/${id}`);
+    const { data } = await axiosClient.get(`/api/questions/${id}`);
     dispatch({ type: QUESTION_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -116,7 +116,7 @@ export const updateQuestion = (question) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`/api/questions/`, question, config);
+    const { data } = await axiosClient.put(`/api/questions/`, question, config);
 
     dispatch({
       type: QUESTION_UPDATE_SUCCESS,
@@ -146,7 +146,7 @@ export const deleteQuestion = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.delete(`/api/questions/${id}`, config);
+    await axiosClient.delete(`/api/questions/${id}`, config);
 
     dispatch({
       type: QUESTION_DELETE_SUCCESS,

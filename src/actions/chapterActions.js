@@ -18,7 +18,7 @@ import {
   CHAPTER_UPDATE_RESET,
   CHAPTER_UPDATE_SUCCESS,
 } from '../constants/chapterConstants'
-import axios from 'axios'
+import axiosClient from './../api/axiosClient'
 
 export const listChapter = (id, keyword = '', pageNumber = '') => async (
   dispatch,
@@ -40,7 +40,7 @@ export const listChapter = (id, keyword = '', pageNumber = '') => async (
       },
     }
 
-    const { data } = await axios.get(
+    const { data } = await axiosClient.get(
       `/api/chapters/subject/${id}?keyword=${keyword}&pageNumber=${pageNumber}`,
       config
     )
@@ -76,7 +76,7 @@ export const createChapter = (chapter) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.post(`/api/chapters`, chapter, config)
+    const { data } = await axiosClient.post(`/api/chapters`, chapter, config)
 
     dispatch({
       type: CHAPTER_CREATE_SUCCESS,
@@ -96,7 +96,7 @@ export const createChapter = (chapter) => async (dispatch, getState) => {
 export const listChapterDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: CHAPTER_DETAILS_REQUEST })
-    const { data } = await axios.get(`/api/chapters/${id}`)
+    const { data } = await axiosClient.get(`/api/chapters/${id}`)
     dispatch({ type: CHAPTER_DETAILS_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
@@ -126,7 +126,7 @@ export const updateChapter = (chapter) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.put(
+    const { data } = await axiosClient.put(
       `/api/chapters/${chapter._id}`,
       chapter,
       config
@@ -163,7 +163,7 @@ export const deleteChapter = (id) => async (dispatch, getState) => {
       },
     }
 
-    await axios.delete(`/api/chapters/${id}`, config)
+    await axiosClient.delete(`/api/chapters/${id}`, config)
 
     dispatch({
       type: CHAPTER_DELETE_SUCCESS,
