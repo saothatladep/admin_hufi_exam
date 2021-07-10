@@ -205,10 +205,6 @@ const ContentChapter = (props) => {
   }, [subjectsList.subjects]);
 
   useEffect(() => {
-    console.log(subjectAdd);
-  }, [subjectAdd]);
-
-  useEffect(() => {
     if (subject) {
       dispatch(listChapter(subject, keyword, page));
     }
@@ -369,7 +365,7 @@ const ContentChapter = (props) => {
         {loadingChapters ? (
           <Loading />
         ) : errorChapters ? (
-          <Messages severity={'error'} message={errorChapters} />
+          ''
         ) : (
           <div>
             <table className={classes.table}>

@@ -280,14 +280,15 @@ const ContentQuestion = (props) => {
 
   useEffect(() => {
     if (chapter) {
-      console.log(chapter);
       dispatch(listQuestion(chapter, level, keyword, page));
     }
   }, [chapter, dispatch, chapter, page, level, keyword]);
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listChapter(subject));
+      if (subject) {
+        dispatch(listChapter(subject));
+      }
     } else {
       history.push('/');
     }

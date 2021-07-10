@@ -5,7 +5,7 @@ import React from 'react';
 
 const usedStyles = makeStyles((theme) => ({
     root: {
-      backgroundColor: '#fff',
+      backgroundColor: 'transparent',
       padding: '100px 0',
       textAlign: 'center',
       '& svg': {

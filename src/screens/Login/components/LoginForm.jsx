@@ -98,7 +98,7 @@ const LoginForm = (props) => {
   return (
     <>
       {error && <Messages severity={'error'} message={error} />}
-      {/* {loading && <Loading />} */}
+      {loading && <Loading />}
       <form className={classes.form} onSubmit={submitHandler}>
         <TextField
           variant='outlined'
