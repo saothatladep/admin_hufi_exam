@@ -155,7 +155,7 @@ const ContentExam = (props) => {
     }
   };
 
-  const handleNewSchedule = () => {
+  const handleNewExam = () => {
     history.push('/exam/detail');
   };
 
@@ -194,7 +194,7 @@ const ContentExam = (props) => {
           </form>
         </div>
         <div className={classes.action}>
-          <Button size="large" variant="contained" color="secondary" onClick={handleNewSchedule}>
+          <Button size="large" variant="contained" color="secondary" onClick={handleNewExam}>
             New exam
           </Button>
         </div>
