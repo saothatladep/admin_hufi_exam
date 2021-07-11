@@ -26,7 +26,7 @@ import Messages from '../../../components/Messages';
 import { SUBJECT_CREATE_RESET, SUBJECT_DETAILS_RESET, SUBJECT_UPDATE_RESET } from '../../../constants/subjectConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '80px 0 0 265px',
+    margin: '74px 0 0 265px',
     backgroundColor: '#fff',
     width: 1271,
     display: 'flex',

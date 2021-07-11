@@ -10,19 +10,20 @@ import AlarmIcon from '@material-ui/icons/AddAlarm';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { Pagination } from '@material-ui/lab';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { listExam } from '../../../actions/examActions';
-import { createSchedule } from '../../../actions/scheduleActions';
+import { listScheduleDetails, updateSchedule } from '../../../actions/scheduleActions';
 import { listUser } from '../../../actions/userActions';
 import search from '../../../assets/search.png';
 import User from '../../../assets/user.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
-import { SCHEDULE_CREATE_RESET } from '../../../constants/scheduleConstants';
-// import LuxonUtils from '@date-io/luxon';
+import { SCHEDULE_DETAILS_RESET, SCHEDULE_UPDATE_RESET } from '../../../constants/scheduleConstants';
+
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -171,22 +172,27 @@ const usedStyles = makeStyles((theme) => ({
   },
   question: {},
 }));
-const ContentDetailSchedule = (props) => {
-  const { history } = props;
+const ContentEditSchedule = (props) => {
+  const { history, match } = props;
   const classes = usedStyles();
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
   const [studentsAdd, setStudentsAdd] = useState([]);
   const [schedule, setSchedule] = useState({
+    id: '',
     name: '',
     timeStart: new Date(),
     timeEnd: new Date(),
-    time: 0,
+    time: '',
     exam: '',
     attendants: [],
     status: true,
     user: '',
   });
+
+  const [changeTime, setChangeTime] = useState(true);
+
+  const scheduleId = match.params.id;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -197,8 +203,11 @@ const ContentDetailSchedule = (props) => {
   const examList = useSelector((state) => state.examList);
   const { loading: loadingExams, error: errorExams, exams: examsList } = examList;
 
-  const scheduleCreate = useSelector((state) => state.scheduleCreate);
-  const { loading: loadingCreate, error: errorCreate, success: successCreate } = scheduleCreate;
+  const scheduleUpdate = useSelector((state) => state.scheduleUpdate);
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = scheduleUpdate;
+
+  const scheduleDetails = useSelector((state) => state.scheduleDetails);
+  const { loading: loadingDetails, error: errorDetails, schedule: schedulesDetails } = scheduleDetails;
 
   const dispatch = useDispatch();
 
@@ -216,27 +225,45 @@ const ContentDetailSchedule = (props) => {
   }, [dispatch, keyword, page]);
 
   useEffect(() => {
-    if (successCreate) {
+    if (successUpdate) {
+      dispatch({ type: SCHEDULE_UPDATE_RESET });
+      dispatch({ type: SCHEDULE_DETAILS_RESET });
       history.push('/schedule');
+    } else {
+      if (!_.get(schedulesDetails, 'data')) {
+        dispatch(listScheduleDetails(scheduleId));
+      } else if (!loadingDetails) {
+        setSchedule({
+          timeStart: schedulesDetails.data.timeStart,
+          timeEnd: schedulesDetails.data.timeEnd,
+          time: schedulesDetails.data.time,
+          exam: schedulesDetails.data.exam,
+          name: schedulesDetails.data.name,
+          attendants: schedulesDetails.data.attendants,
+          status: schedulesDetails.data.status,
+        });
+        setStudentsAdd(schedulesDetails.data.attendants);
+      }
     }
     window.scrollTo(0, 0);
-  }, [dispatch, successCreate, history]);
+  }, [dispatch, history, scheduleId, _.get(schedulesDetails, 'data'), successUpdate]);
 
-  // const submitHandler = (e) => {
-  //   e.preventDefault();
-  //   if (keyword) {
-  //     dispatch(listQuestion(chapter, level, keyword, page));
-  //   } else if (keyword.length === 0) {
-  //     dispatch(listQuestion(chapter, level, keyword, page));
-  //   }
-  // };
+  useEffect(() => {
+    console.log(schedule.timeEnd);
+    console.log(schedule.timeStart);
+    if (schedule.timeEnd >= schedule.timeStart) {
+      const diff = schedule.timeEnd - schedule.timeStart;
+      setSchedule({ ...schedule, time: Math.floor(diff / 60000) });
+    } else {
+      setSchedule({ ...schedule, time: 0 });
+    }
+  }, [changeTime]);
 
-  const addScheduleHandler = (e) => {
+  const updateScheduleHandler = (e) => {
     e.preventDefault();
     const data = [];
-    studentsAdd.map((student) => data.push(student._id));
-    dispatch(createSchedule({ ...schedule, attendants: data, user: userInfo._id }));
-    dispatch({ type: SCHEDULE_CREATE_RESET });
+    studentsAdd.map((question) => data.push(question._id));
+    dispatch(updateSchedule({ ...schedule, id: scheduleId, attendants: data, user: userInfo._id }));
   };
 
   const handleClickAdd = (student) => {
@@ -263,17 +290,8 @@ const ContentDetailSchedule = (props) => {
     setPage(page);
   };
 
-  useEffect(() => {
-    if (schedule.timeEnd >= schedule.timeStart) {
-      const diff = schedule.timeEnd - schedule.timeStart;
-      setSchedule({ ...schedule, time: Math.floor(diff / 60000) });
-    } else {
-      setSchedule({ ...schedule, time: 0 });
-    }
-  }, [schedule.timeEnd, schedule.timeStart]);
-
   return (
-    <form onSubmit={addScheduleHandler} className={classes.root}>
+    <form onSubmit={updateScheduleHandler} className={classes.root}>
       <div className={classes.name}>
         <TextField
           variant="outlined"
@@ -283,6 +301,7 @@ const ContentDetailSchedule = (props) => {
           label="Schedule"
           name="schedule"
           autoComplete="schedule"
+          value={schedule.name}
           required
           multiline
           onChange={(e) => setSchedule({ ...schedule, name: e.target.value })}
@@ -292,7 +311,7 @@ const ContentDetailSchedule = (props) => {
           <FormControlLabel
             control={
               <Switch
-                checked={true}
+                checked={schedule.status}
                 onChange={(e) => setSchedule({ ...schedule, status: e.target.checked })}
                 name="status"
                 color="primary"
@@ -322,7 +341,6 @@ const ContentDetailSchedule = (props) => {
                 id: 'outlined-Exams-native-simple',
               }}
             >
-              <option aria-label="None" value="" />
               {examsList.exams.length > 0 &&
                 examsList.exams.map((exam) => (
                   <option key={exam._id} value={exam._id}>
@@ -346,6 +364,8 @@ const ContentDetailSchedule = (props) => {
             format="dd/MM/yyyy - HH:mm"
             onChange={(e) => {
               setSchedule({ ...schedule, timeStart: e });
+              const toggle = changeTime;
+              setChangeTime(!toggle);
             }}
             InputProps={{
               endAdornment: (
@@ -367,6 +387,8 @@ const ContentDetailSchedule = (props) => {
             format="dd/MM/yyyy - HH:mm"
             onChange={(e) => {
               setSchedule({ ...schedule, timeEnd: e });
+              const toggle = changeTime;
+              setChangeTime(!toggle);
             }}
             InputProps={{
               endAdornment: (
@@ -381,8 +403,8 @@ const ContentDetailSchedule = (props) => {
         </MuiPickersUtilsProvider>
         <TextField
           disabled
-          value={`${schedule.time} min`}
-          style={{ width: 90 }}
+          value={schedule.time}
+          style={{ width: 100 }}
           id="outlined-basic"
           label="Time"
           variant="outlined"
@@ -501,10 +523,10 @@ const ContentDetailSchedule = (props) => {
       </div>
 
       <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
-        Add schedule
+        Update schedule
       </Button>
     </form>
   );
 };
 
-export default ContentDetailSchedule;
+export default ContentEditSchedule;

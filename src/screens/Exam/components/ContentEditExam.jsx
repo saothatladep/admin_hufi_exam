@@ -23,7 +23,7 @@ import { EXAM_CREATE_RESET, EXAM_DETAILS_RESET, EXAM_UPDATE_RESET } from '../../
 
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '80px 0 0 265px',
+    margin: '74px 0 0 265px',
     backgroundColor: '#fff',
     width: 1254,
     display: 'flex',
@@ -220,10 +220,12 @@ const ContentEditExam = (props) => {
   }, [subjectsList.subjects]);
 
   useEffect(() => {
-    if (chaptersList.chapters && !chapter) {
+    if (chaptersList && chaptersList.chapters && !chapter) {
+      setChapter(chaptersList.chapters[0]._id);
+    } else if (chaptersList && chaptersList.chapters) {
       setChapter(chaptersList.chapters[0]._id);
     }
-  }, [chaptersList]);
+  }, [chaptersList, subject]);
 
   useEffect(() => {
     if (chapter) {

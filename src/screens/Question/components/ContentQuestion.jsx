@@ -37,7 +37,7 @@ import {
 import * as XLSX from 'xlsx';
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '80px 0 0 265px',
+    margin: '74px 0 0 265px',
     backgroundColor: '#fff',
     width: 1271,
     display: 'flex',
@@ -272,17 +272,18 @@ const ContentQuestion = (props) => {
   }, [subjectsList.subjects]);
 
   useEffect(() => {
-    console.log(chaptersList);
     if (chaptersList && chaptersList.chapters && !chapter) {
       setChapter(chaptersList.chapters[0]._id);
+    } else if (chaptersList && chaptersList.chapters) {
+      setChapter(chaptersList.chapters[0]._id);
     }
-  }, [chaptersList]);
+  }, [chaptersList, subject]);
 
   useEffect(() => {
     if (chapter) {
       dispatch(listQuestion(chapter, level, keyword, page));
     }
-  }, [chapter, dispatch, chapter, page, level, keyword]);
+  }, [chapter, dispatch, page, level, keyword]);
 
   useEffect(() => {
     if (userInfo) {

@@ -31,7 +31,7 @@ import Messages from '../../../components/Messages';
 import { CHAPTER_CREATE_RESET, CHAPTER_DETAILS_RESET, CHAPTER_UPDATE_RESET } from '../../../constants/chapterConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '80px 0 0 265px',
+    margin: '74px 0 0 265px',
     backgroundColor: '#fff',
     width: 1271,
     display: 'flex',

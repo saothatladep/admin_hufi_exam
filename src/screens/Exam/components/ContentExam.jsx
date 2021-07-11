@@ -16,7 +16,7 @@ import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '80px 0 0 265px',
+    margin: '74px 0 0 265px',
     backgroundColor: '#fff',
     width: 1271,
     display: 'flex',

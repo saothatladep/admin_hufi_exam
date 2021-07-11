@@ -15,7 +15,7 @@ import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '80px 0 0 265px',
+    margin: '74px 0 0 265px',
     backgroundColor: '#fff',
     width: 1271,
     display: 'flex',
@@ -208,6 +208,8 @@ const ContentSchedule = (props) => {
                 <thead>
                   <tr>
                     <th>SCHEDULE NAME</th>
+                    <th>TIME START</th>
+                    <th>TIME END</th>
                     <th>CREATED BY</th>
                     <th>CREATED DATE</th>
                     <th>STATUS</th>
@@ -220,6 +222,8 @@ const ContentSchedule = (props) => {
                     schedulesList.schedules.map((schedule) => (
                       <tr key={schedule._id}>
                         <td>{schedule.name}</td>
+                        <td>{moment(schedule.timeStart).format('DD/MM/YYYY, HH:mm')}</td>
+                        <td>{moment(schedule.timeEnd).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.user.fullName}</td>
                         <td>{moment(schedule.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.status ? 'Active' : 'Nonactive'}</td>
