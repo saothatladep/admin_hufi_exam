@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Pagination } from '@material-ui/lab';
-import axios from 'axios';
+import axiosClient from '../../../api/axiosClient.js';
 import 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -321,7 +321,7 @@ const ContentUser = (props) => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      const { data } = await axios.post('/api/upload', formData, config);
+      const { data } = await axiosClient.post('/api/upload', formData, config);
 
       setUserAdd({ ...userAdd, avatar: data });
     } catch (error) {
@@ -341,7 +341,7 @@ const ContentUser = (props) => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      const { data } = await axios.post('/api/upload', formData, config);
+      const { data } = await axiosClient.post('/api/upload', formData, config);
 
       setUserUpdateInfo({ ...userUpdateInfo, avatar: data });
     } catch (error) {
