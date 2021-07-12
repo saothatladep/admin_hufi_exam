@@ -494,7 +494,7 @@ const ContentUser = (props) => {
                 {UsersList.users.map((user) => (
                   <tr key={user._id}>
                     <td>
-                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : User} alt="avatar" />
+                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? `https://examol.herokuapp.com${user.avatar}` : User} alt="avatar" />
                     </td>
                     <td>{user.code}</td>
                     <td>{user.fullName}</td>
