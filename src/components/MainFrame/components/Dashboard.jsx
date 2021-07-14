@@ -80,8 +80,9 @@ const usedStyles = makeStyles((theme) => ({
       fontSize: 24,
       fontWeight: '600',
       color: '#111',
-      margin: '0 0 0 24px',
+      margin: '4px 0 0 22px',
       textTransform: 'uppercase',
+      fontSize: 22,
     },
     '& img': {
       width: 30,
@@ -113,6 +114,7 @@ const Dashboard = (props) => {
   let path = location.pathname.slice(1);
 
   const userLogin = useSelector((state) => state.userLogin);
+  const l = useSelector((state) => state.languageChange);
   const { userInfo } = userLogin;
 
   return (
@@ -121,14 +123,14 @@ const Dashboard = (props) => {
         <div className={classes.user}>
           <Avatar className={classes.avatar} src={userInfo.avatar} alt="avatar" />
           <h3>{userInfo.fullName}</h3>
-          <h2>{userInfo.role === 1 ? 'Admin' : 'Teacher'}</h2>
+          <h2>{userInfo.role === 1 ? l.admin : l.teacher}</h2>
         </div>
         <div className={classes.dashboard}>
           <List component="nav">
             <ListItem>
               <Link to={'/user'} className={classes.action} style={path === 'user' ? { background: '#3f51b5' } : {}}>
                 <img src={User} alt="User" />
-                <ListItemText primary="User" className={path === 'user' ? classes.click : ''} />
+                <ListItemText primary={l.user} className={path === 'user' ? classes.click : ''} />
               </Link>
             </ListItem>
 
@@ -139,7 +141,7 @@ const Dashboard = (props) => {
                 style={path === 'subject' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Subject} alt="Subject" />
-                <ListItemText className={path === 'subject' ? classes.click : ''} primary="Subject" />
+                <ListItemText className={path === 'subject' ? classes.click : ''} primary={l.subject} />
               </Link>
             </ListItem>
 
@@ -150,7 +152,7 @@ const Dashboard = (props) => {
                 style={path === 'chapter' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Chapter} alt="Chapter" />
-                <ListItemText primary="Chapter" className={path === 'chapter' ? classes.click : ''} />
+                <ListItemText primary={l.chapter} className={path === 'chapter' ? classes.click : ''} />
               </Link>
             </ListItem>
 
@@ -161,7 +163,7 @@ const Dashboard = (props) => {
                 style={path === 'question' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Question} alt="Question" />
-                <ListItemText primary="Question" className={path === 'question' ? classes.click : ''} />
+                <ListItemText primary={l.question} className={path === 'question' ? classes.click : ''} />
               </Link>
             </ListItem>
 
@@ -172,7 +174,7 @@ const Dashboard = (props) => {
                 style={path.slice(0, 4) === 'exam' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Exam} alt="Exam" />
-                <ListItemText primary="Exam" className={path.slice(0, 4) === 'exam' ? classes.click : ''} />
+                <ListItemText primary={l.exam} className={path.slice(0, 4) === 'exam' ? classes.click : ''} />
               </Link>
             </ListItem>
 
@@ -183,7 +185,7 @@ const Dashboard = (props) => {
                 style={path.slice(0, 8) === 'schedule' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Schedule} alt="Schedule" />
-                <ListItemText primary="Schedule" className={path.slice(0, 8) === 'schedule' ? classes.click : ''} />
+                <ListItemText primary={l.schedule} className={path.slice(0, 8) === 'schedule' ? classes.click : ''} />
               </Link>
             </ListItem>
 
@@ -194,7 +196,7 @@ const Dashboard = (props) => {
                 style={path === 'result' ? { background: '#3f51b5' } : {}}
               >
                 <img src={Result} alt="Result" />
-                <ListItemText primary="Result" className={path === 'result' ? classes.click : ''} />
+                <ListItemText primary={l.result} className={path === 'result' ? classes.click : ''} />
               </Link>
             </ListItem>
           </List>

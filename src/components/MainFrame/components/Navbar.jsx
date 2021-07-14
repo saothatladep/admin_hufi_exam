@@ -1,14 +1,16 @@
-import AppBar from '@material-ui/core/AppBar'
-import { makeStyles } from '@material-ui/core/styles'
-import Toolbar from '@material-ui/core/Toolbar'
-import AccountCircle from '@material-ui/icons/AccountCircle'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
-import NotificationsIcon from '@material-ui/icons/Notifications'
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { logout } from '../../../actions/userActions'
-import logo from '../../../assets/logo1.png'
-import { useDispatch, useSelector } from 'react-redux'
+import AppBar from '@material-ui/core/AppBar';
+import { makeStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { logout } from '../../../actions/userActions';
+import logo from '../../../assets/logo1.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { Switch } from '@material-ui/core';
+import { ENGLISH, VIETNAMESE } from '../../../constants/languageConstants';
 
 const usedStyles = makeStyles((theme) => ({
   root: {
@@ -34,27 +36,59 @@ const usedStyles = makeStyles((theme) => ({
       fontSize: 32,
     },
   },
+  language: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   action: {
     width: 125,
     display: 'flex',
     justifyContent: 'space-between',
   },
-}))
+}));
 const Navbar = () => {
-  const classes = usedStyles()
+  const classes = usedStyles();
 
-  const dispatch = useDispatch()
+  const l = useSelector((state) => state.languageChange);
+
+  const dispatch = useDispatch();
+  const [languages, setLanguages] = useState(false);
+
+  const handleChange = (event) => {
+    setLanguages(event.target.checked);
+    console.log(event.target.checked);
+    if (event.target.checked) {
+      dispatch({
+        type: ENGLISH,
+      });
+    } else {
+      dispatch({
+        type: VIETNAMESE,
+      });
+    }
+  };
 
   const logOutHandler = () => {
-    dispatch(logout())
-  }
+    dispatch(logout());
+  };
   return (
     <div className={classes.root}>
-      <AppBar position='static'>
+      <AppBar position="static">
         <Toolbar className={classes.nav}>
-          <Link to={'/subject'}>
-            <img src={logo} alt='logo' />
+          <Link to={'/user'}>
+            <img src={logo} alt="logo" />
           </Link>
+          <div className={classes.language}>
+            <p>{l.vietnamese}</p>
+            <Switch
+              onChange={handleChange}
+              checked={languages}
+              color="red"
+              inputProps={{ 'aria-label': 'checkbox with default color' }}
+            />
+            <p>{l.english}</p>
+          </div>
           <div className={classes.action}>
             <Link to={''}>
               <AccountCircle />
@@ -69,7 +103,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

@@ -254,6 +254,8 @@ const ContentUser = (props) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const l = useSelector((state) => state.languageChange);
+
   const userList = useSelector((state) => state.userList);
   const { loading: loadingUsers, error: errorUsers, users: UsersList } = userList;
 
@@ -431,7 +433,7 @@ const ContentUser = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -444,7 +446,7 @@ const ContentUser = (props) => {
         </div>
         <div className={classes.action}>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
+            <InputLabel htmlFor="outlined-roles-native-simple">{l.roles}</InputLabel>
 
             <Select
               native
@@ -459,17 +461,17 @@ const ContentUser = (props) => {
                 id: 'outlined-roles-native-simple',
               }}
             >
-              <option value={1}>Admin</option>
-              <option value={2}>Teacher</option>
-              <option value={3}>Student</option>
+              <option value={1}>{l.admin}</option>
+              <option value={2}>{l.teacher}</option>
+              <option value={3}>{l.student}</option>
             </Select>
           </FormControl>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
-            New user
+            {l.newUser}
           </Button>
           <form className={classes.files} id="uploadForm">
             <input type="file" id="excelFile" onChange={(e) => uploadFileImportHandler(e)} />
-            <label for="excelFile">IMPORT FILE</label>
+            <label for="excelFile">{l.importFile}</label>
           </form>
         </div>
         {loadingUsers ? (
@@ -481,11 +483,11 @@ const ContentUser = (props) => {
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>AVATAR</th>
-                  <th>CODE</th>
-                  <th>NAME</th>
-                  <th>GENDER</th>
-                  <th>BIRTHDAY</th>
+                  <th>{l.avatar}</th>
+                  <th>{l.code}</th>
+                  <th>{l.fullName}</th>
+                  <th>{l.gender}</th>
+                  <th>{l.birthday}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -494,11 +496,15 @@ const ContentUser = (props) => {
                 {UsersList.users.map((user) => (
                   <tr key={user._id}>
                     <td>
-                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? `https://examol.herokuapp.com${user.avatar}` : User} alt="avatar" />
+                      <Avatar
+                        style={{ margin: '0 auto' }}
+                        src={user.avatar ? `https://examol.herokuapp.com${user.avatar}` : User}
+                        alt="avatar"
+                      />
                     </td>
                     <td>{user.code}</td>
                     <td>{user.fullName}</td>
-                    <td>{user.gender ? 'Male' : 'Female'}</td>
+                    <td>{user.gender ? l.male : l.female}</td>
                     <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>
                     <td>
                       <Link onClick={() => handleClickOpenUpdate(user._id)}>
@@ -537,11 +543,11 @@ const ContentUser = (props) => {
         disableEscapeKeyDown
         aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id="form-dialog-title-add">USER</DialogTitle>
+        <DialogTitle id="form-dialog-title-add">{l.user}</DialogTitle>
         <DialogContent>
           <form onSubmit={addHandler}>
             <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
+              <InputLabel htmlFor="outlined-roles-native-simple">{l.roles}</InputLabel>
               <Select
                 native
                 value={userAdd.role}
@@ -552,13 +558,13 @@ const ContentUser = (props) => {
                   id: 'outlined-roles-native-simple',
                 }}
               >
-                <option value={1}>Admin</option>
-                <option value={2}>Teacher</option>
-                <option value={3}>Student</option>
+                <option value={1}>{l.admin}</option>
+                <option value={2}>{l.teacher}</option>
+                <option value={3}>{l.student}</option>
               </Select>
             </FormControl>
             <FormControl style={{ marginLeft: 12 }} variant="outlined" className={classes.formControl}>
-              <InputLabel htmlFor="outlined-roles-native-simple">Gender</InputLabel>
+              <InputLabel htmlFor="outlined-roles-native-simple">{l.gender}</InputLabel>
               <Select
                 native
                 value={userAdd.gender}
@@ -569,13 +575,13 @@ const ContentUser = (props) => {
                   id: 'outlined-genders-native-simple',
                 }}
               >
-                <option value={true}>Male</option>
-                <option value={false}>Female</option>
+                <option value={true}>{l.male}</option>
+                <option value={false}>{l.female}</option>
               </Select>
             </FormControl>
             <TextField
               id="date"
-              label="Birthday"
+              label={l.birthday}
               type="date"
               required
               autoFocus
@@ -590,7 +596,7 @@ const ContentUser = (props) => {
               margin="normal"
               fullWidth
               id="code"
-              label="Code"
+              label={l.code}
               name="code"
               autoComplete="code"
               required
@@ -602,7 +608,7 @@ const ContentUser = (props) => {
               margin="normal"
               fullWidth
               id="name"
-              label="Full name"
+              label={l.fullName}
               name="name"
               autoComplete="name"
               required
@@ -627,7 +633,7 @@ const ContentUser = (props) => {
               margin="normal"
               fullWidth
               id="phone"
-              label="Phone"
+              label={l.phone}
               name="phone"
               type="number"
               autoComplete="phone"
@@ -640,7 +646,7 @@ const ContentUser = (props) => {
               margin="normal"
               fullWidth
               id="password"
-              label="Password"
+              label={l.password}
               name="password"
               type="password"
               autoComplete="password"
@@ -652,13 +658,13 @@ const ContentUser = (props) => {
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
               <form className={classes.avatarFile} id="uploadForm1" onChange={uploadFileHandler}>
                 <input type="file" id="imgFile" />
-                <label for="imgFile">IMPORT AVATAR</label>
+                <label for="imgFile">{l.importAvatar}</label>
               </form>
               <Button type="submit" color="primary" variant="contained">
-                Add
+                {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
-                Cancel
+                {l.cancel}
               </Button>
             </DialogActions>
           </form>
@@ -672,7 +678,7 @@ const ContentUser = (props) => {
         disableEscapeKeyDown
         aria-labelledby="form-dialog-title-update"
       >
-        <DialogTitle id="form-dialog-title-update">USER</DialogTitle>
+        <DialogTitle id="form-dialog-title-update">{l.user}</DialogTitle>
         <DialogContent>
           {loadingDetails ? (
             <Loading />
@@ -681,7 +687,7 @@ const ContentUser = (props) => {
           ) : (
             <form onSubmit={updateHandler}>
               <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="outlined-roles-native-simple">Roles</InputLabel>
+                <InputLabel htmlFor="outlined-roles-native-simple">{l.roles}</InputLabel>
                 <Select
                   native
                   value={userUpdateInfo.role}
@@ -692,9 +698,9 @@ const ContentUser = (props) => {
                     id: 'outlined-roles-native-simple',
                   }}
                 >
-                  <option value={1}>Admin</option>
-                  <option value={2}>Teacher</option>
-                  <option value={3}>Student</option>
+                  <option value={1}>{l.admin}</option>
+                  <option value={2}>{l.teacher}</option>
+                  <option value={3}>{l.student}</option>
                 </Select>
               </FormControl>
               <FormControl style={{ marginLeft: 12 }} variant="outlined" className={classes.formControl}>
@@ -709,13 +715,13 @@ const ContentUser = (props) => {
                     id: 'outlined-genders-native-simple',
                   }}
                 >
-                  <option value={true}>Male</option>
-                  <option value={false}>Female</option>
+                  <option value={true}>{l.male}</option>
+                  <option value={false}>{l.female}</option>
                 </Select>
               </FormControl>
               <TextField
                 id="date"
-                label="Birthday"
+                label={l.birthday}
                 type="date"
                 value={userUpdateInfo.birthday}
                 required
@@ -731,7 +737,7 @@ const ContentUser = (props) => {
                 fullWidth
                 value={userUpdateInfo.code}
                 id="code"
-                label="Code"
+                label={l.code}
                 name="code"
                 autoComplete="code"
                 required
@@ -744,7 +750,7 @@ const ContentUser = (props) => {
                 fullWidth
                 value={userUpdateInfo.fullName}
                 id="name"
-                label="Full name"
+                label={l.fullName}
                 name="name"
                 autoComplete="name"
                 required
@@ -771,7 +777,7 @@ const ContentUser = (props) => {
                 fullWidth
                 value={userUpdateInfo.phone}
                 id="phone"
-                label="Phone"
+                label={l.phone}
                 name="phone"
                 type="number"
                 autoComplete="phone"
@@ -783,13 +789,13 @@ const ContentUser = (props) => {
               <DialogActions style={{ margin: '0 16px 16px 0' }}>
                 <form className={classes.avatarFile} id="uploadForm2" onChange={uploadFileUpdateHandler}>
                   <input type="file" id="imgFile" />
-                  <label for="imgFile">IMPORT AVATAR</label>
+                  <label for="imgFile">{l.importAvatar}</label>
                 </form>
                 <Button type="submit" color="primary" variant="contained">
-                  Update
+                  {l.update}
                 </Button>
                 <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                  Cancel
+                  {l.cancel}
                 </Button>
               </DialogActions>
             </form>

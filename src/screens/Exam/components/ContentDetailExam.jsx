@@ -74,7 +74,7 @@ const usedStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '50%',
+    width: '70%',
   },
   formControl: {
     height: 40,
@@ -339,7 +339,7 @@ const ContentDetailExam = (props) => {
             />
           </form>
           <div className={classes.action}>
-            <FormControl variant="outlined" className={classes.formControl}>
+            <FormControl variant="outlined" style={{ maxWidth: 320 }} className={classes.formControl}>
               <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
               {loadingSubjects ? (
                 <Loading />
@@ -367,7 +367,7 @@ const ContentDetailExam = (props) => {
                 </Select>
               )}
             </FormControl>
-            <FormControl variant="outlined" className={classes.formControl}>
+            <FormControl variant="outlined" style={{ maxWidth: 320 }} className={classes.formControl}>
               <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
               {loadingChapters ? (
                 <Loading />

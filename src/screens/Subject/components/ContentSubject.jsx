@@ -135,6 +135,8 @@ const ContentSubject = (props) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [titleUpdate, setTitleUpdate] = useState('');
 
+  const l = useSelector((state) => state.languageChange);
+
   const [page, setPage] = useState('');
   const dispatch = useDispatch();
 
@@ -255,7 +257,7 @@ const ContentSubject = (props) => {
                 <img src={search} alt="search"></img>
               </div>
               <InputBase
-                placeholder="Enter Your Search..."
+                placeholder={l.search}
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -267,15 +269,15 @@ const ContentSubject = (props) => {
             </form>
           </div>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
-            New subject
+            {l.newSubject}
           </Button>
           <div>
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>SUBJECT</th>
-                  <th>CREATED BY</th>
-                  <th>CREATED DATE</th>
+                  <th>{l.subjectName}</th>
+                  <th>{l.createdBy}</th>
+                  <th>{l.createdDate}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -334,7 +336,7 @@ const ContentSubject = (props) => {
                 margin="normal"
                 fullWidth
                 id="name"
-                label="name"
+                label={l.subjectName}
                 name="name"
                 required={true}
                 autoComplete="name"
@@ -345,10 +347,10 @@ const ContentSubject = (props) => {
               />
               <DialogActions style={{ margin: '0 16px 16px 0' }}>
                 <Button type="submit" color="primary" variant="contained">
-                  Update
+                  {l.update}
                 </Button>
                 <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                  Cancel
+                  {l.cancel}
                 </Button>
               </DialogActions>
             </form>
@@ -371,7 +373,7 @@ const ContentSubject = (props) => {
               margin="normal"
               fullWidth
               id="name"
-              label="name"
+              label={l.subjectName}
               name="name"
               autoComplete="name"
               required
@@ -381,10 +383,10 @@ const ContentSubject = (props) => {
             />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
               <Button type="submit" color="primary" variant="contained">
-                Add
+                {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
-                Cancel
+                {l.cancel}
               </Button>
             </DialogActions>
           </form>

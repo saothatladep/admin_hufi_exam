@@ -47,6 +47,7 @@ import {
   scheduleUpdateReducer,
   scheduleDeleteReducer,
 } from './reducers/scheduleReducers';
+import { changeLanguageReducer } from './reducers/languageReducer';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -81,6 +82,7 @@ const reducer = combineReducers({
   scheduleDetails: scheduleDetailsReducer,
   scheduleUpdate: scheduleUpdateReducer,
   scheduleDelete: scheduleDeleteReducer,
+  languageChange: changeLanguageReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

@@ -123,6 +123,9 @@ const usedStyles = makeStyles((theme) => ({
         fontSize: 16,
         fontWeight: '500',
         color: '#666',
+        '&:first-child': {
+          textAlign: 'left',
+        },
         '& svg': {
           fontSize: 30,
           fontWeight: '600',
@@ -195,6 +198,8 @@ const ContentChapter = (props) => {
 
   const chapterDelete = useSelector((state) => state.chapterDelete);
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = chapterDelete;
+
+  const l = useSelector((state) => state.languageChange);
 
   useEffect(() => {
     if (subjectsList && subjectsList.subjects && !subject) {
@@ -316,7 +321,7 @@ const ContentChapter = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -329,7 +334,7 @@ const ContentChapter = (props) => {
         </div>
         <div className={classes.action}>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+            <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
             {loadingSubjects ? (
               <Loading />
             ) : errorSubjects ? (
@@ -359,7 +364,7 @@ const ContentChapter = (props) => {
             )}
           </FormControl>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
-            New chapter
+            {l.newChapter}
           </Button>
         </div>
         {loadingChapters ? (
@@ -371,9 +376,9 @@ const ContentChapter = (props) => {
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>NAME</th>
-                  <th>CREATED BY</th>
-                  <th>CREATED DATE</th>
+                  <th>{l.chapterName}</th>
+                  <th>{l.createdBy}</th>
+                  <th>{l.createdDate}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -422,11 +427,11 @@ const ContentChapter = (props) => {
         disableEscapeKeyDown
         aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id="form-dialog-title-add">CHAPTER</DialogTitle>
+        <DialogTitle id="form-dialog-title-add">{l.chapter}</DialogTitle>
         <DialogContent style={{ maxWidth: 550 }}>
           <form onSubmit={addHandler}>
             <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+              <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
               {loadingSubjects ? (
                 ''
               ) : errorSubjects ? (
@@ -456,7 +461,8 @@ const ContentChapter = (props) => {
               margin="normal"
               fullWidth
               id="name"
-              label="Chapter"
+              label={l.chapterName}
+              multiline
               name="name"
               autoComplete="name"
               required
@@ -466,10 +472,10 @@ const ContentChapter = (props) => {
             />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
               <Button type="submit" color="primary" variant="contained">
-                Add
+                {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
-                Cancel
+                {l.cancel}
               </Button>
             </DialogActions>
           </form>
@@ -483,12 +489,12 @@ const ContentChapter = (props) => {
         disableEscapeKeyDown
         aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id="form-dialog-title-add">CHAPTER</DialogTitle>
+        <DialogTitle id="form-dialog-title-add">{l.chapter}</DialogTitle>
         <DialogContent style={{ maxWidth: 550 }}>
           <form onSubmit={updateHandler}>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel className={classes.title} htmlFor="outlined-subjects-native-simple">
-                Subjects
+                {l.subject}
               </InputLabel>
               {loadingSubjects ? (
                 ''
@@ -519,7 +525,8 @@ const ContentChapter = (props) => {
               margin="normal"
               fullWidth
               id="name"
-              label="Chapter"
+              label={l.chapterName}
+              multiline
               name="name"
               autoComplete="name"
               required

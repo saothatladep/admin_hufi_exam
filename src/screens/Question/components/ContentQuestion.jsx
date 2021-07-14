@@ -88,7 +88,15 @@ const usedStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '70%',
+    width: '90%',
+  },
+  subject: {
+    maxWidth: 320,
+    textOverflow: 'ellipsis',
+  },
+  chapter: {
+    maxWidth: 320,
+    textOverflow: 'ellipsis',
   },
   formControl: {
     height: 40,
@@ -406,6 +414,7 @@ const ContentQuestion = (props) => {
               <Select
                 native
                 value={subject}
+                className={classes.subject}
                 onChange={(e) => {
                   setOldSubject(subject);
                   setSubject(e.target.value);
@@ -437,6 +446,7 @@ const ContentQuestion = (props) => {
                 <Select
                   native
                   value={chapter}
+                  className={classes.chapter}
                   onChange={(e) => {
                     setChapter(e.target.value);
                     setChapterChange(e.target.value);
@@ -545,7 +555,7 @@ const ContentQuestion = (props) => {
         <DialogTitle id="form-dialog-title-add">QUESTION</DialogTitle>
         <DialogContent>
           <form onSubmit={addHandler}>
-            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginBottom: 36 }}>
               <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
               {loadingSubjects ? (
                 <Loading />
@@ -574,7 +584,7 @@ const ContentQuestion = (props) => {
                 </Select>
               )}
             </FormControl>
-            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginBottom: 36 }}>
               <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
               {loadingChapters ? (
                 <Loading />
