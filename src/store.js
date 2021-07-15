@@ -24,6 +24,7 @@ import {
   chapterDetailsReducer,
   chapterUpdateReducer,
   chapterDeleteReducer,
+  chapterListAllReducer,
 } from './reducers/chapterReducers';
 import {
   questionListReducer,
@@ -31,7 +32,7 @@ import {
   questionDetailsReducer,
   questionUpdateReducer,
   questionDeleteReducer,
-  questionImportReducer
+  questionImportReducer,
 } from './reducers/questionReducers';
 import {
   examListReducer,
@@ -64,6 +65,7 @@ const reducer = combineReducers({
   subjectCreate: subjectCreateReducer,
   subjectDelete: subjectDeleteReducer,
   chapterList: chapterListReducer,
+  chapterListAll: chapterListAllReducer,
   chapterCreate: chapterCreateReducer,
   chapterDetails: chapterDetailsReducer,
   chapterUpdate: chapterUpdateReducer,

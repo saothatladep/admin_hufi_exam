@@ -10,6 +10,9 @@ import {
   CHAPTER_DETAILS_REQUEST,
   CHAPTER_DETAILS_RESET,
   CHAPTER_DETAILS_SUCCESS,
+  CHAPTER_LIST_ALL_FAIL,
+  CHAPTER_LIST_ALL_REQUEST,
+  CHAPTER_LIST_ALL_SUCCESS,
   CHAPTER_LIST_FAIL,
   CHAPTER_LIST_REQUEST,
   CHAPTER_LIST_SUCCESS,
@@ -32,6 +35,25 @@ export const chapterListReducer = (
         chapters: action.payload.data,
       }
     case CHAPTER_LIST_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const chapterListAllReducer = (
+  state = { chapters: [], loading: true },
+  action
+) => {
+  switch (action.type) {
+    case CHAPTER_LIST_ALL_REQUEST:
+      return { loading: true, chapters: [] }
+    case CHAPTER_LIST_ALL_SUCCESS:
+      return {
+        loading: false,
+        chapters: action.payload.data,
+      }
+    case CHAPTER_LIST_ALL_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

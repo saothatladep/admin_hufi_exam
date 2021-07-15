@@ -10,6 +10,9 @@ import {
   CHAPTER_DETAILS_REQUEST,
   CHAPTER_DETAILS_RESET,
   CHAPTER_DETAILS_SUCCESS,
+  CHAPTER_LIST_ALL_FAIL,
+  CHAPTER_LIST_ALL_REQUEST,
+  CHAPTER_LIST_ALL_SUCCESS,
   CHAPTER_LIST_FAIL,
   CHAPTER_LIST_REQUEST,
   CHAPTER_LIST_SUCCESS,
@@ -52,6 +55,46 @@ export const listChapter = (id, keyword = '', pageNumber = '') => async (
   } catch (error) {
     dispatch({
       type: CHAPTER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const listAllChapter = (id) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({
+      type: CHAPTER_LIST_ALL_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axiosClient.get(
+      `/api/chapters/subject/all/${id}`,
+      config
+    )
+
+    dispatch({
+      type: CHAPTER_LIST_ALL_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: CHAPTER_LIST_ALL_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

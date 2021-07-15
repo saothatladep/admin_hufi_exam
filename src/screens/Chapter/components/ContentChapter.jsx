@@ -20,10 +20,12 @@ import moment from 'moment';
 import {
   createChapter,
   deleteChapter,
+  listAllChapter,
   listChapter,
   listChapterDetails,
   updateChapter,
 } from '../../../actions/chapterActions';
+import ReactExport from 'react-data-export';
 import { listSubjects } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
@@ -163,6 +165,19 @@ const usedStyles = makeStyles((theme) => ({
       color: '#3f51b5',
     },
   },
+  export: {
+    margin: '0 20px',
+    padding: '12px',
+    borderRadius: 3,
+    color:'#fff',
+    background: '#3f51b5',
+    textTransform: 'uppercase',
+    border: 'none',
+    cursor: 'pointer',
+    '&:hover': {
+      background: '#293a96',
+    },
+  }
 }));
 const ContentChapter = (props) => {
   const { history } = props;
@@ -183,6 +198,9 @@ const ContentChapter = (props) => {
 
   const subjectList = useSelector((state) => state.subjectList);
   const { loading: loadingSubjects, error: errorSubjects, subjects: subjectsList } = subjectList;
+
+  const chapterListAll = useSelector((state) => state.chapterListAll);
+  const { chapters: chaptersListAll } = chapterListAll;
 
   const chapterList = useSelector((state) => state.chapterList);
   const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterList;
@@ -212,6 +230,7 @@ const ContentChapter = (props) => {
   useEffect(() => {
     if (subject) {
       dispatch(listChapter(subject, keyword, page));
+      dispatch(listAllChapter(subject));
     }
   }, [subject, dispatch, page, keyword]);
 
@@ -306,6 +325,10 @@ const ContentChapter = (props) => {
     setPage(page);
   };
 
+  const ExcelFile = ReactExport.ExcelFile;
+  const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+  const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
   return (
     <div className={classes.root}>
       <>
@@ -366,6 +389,12 @@ const ContentChapter = (props) => {
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
             {l.newChapter}
           </Button>
+          <ExcelFile element={<button className={classes.export}>{l.exportChapter}</button>}>
+            <ExcelSheet data={chaptersListAll} name="chapter-list">
+              <ExcelColumn label="ID chapter" value="_id" />
+              <ExcelColumn label="Chapter name" value="name" />
+            </ExcelSheet>
+          </ExcelFile>
         </div>
         {loadingChapters ? (
           <Loading />
