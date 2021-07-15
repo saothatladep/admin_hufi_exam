@@ -124,6 +124,8 @@ const ContentSchedule = (props) => {
   const [keyword, setKeyWord] = useState('');
   const [page, setPage] = useState(1);
 
+  const l = useSelector((state) => state.languageChange);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -181,7 +183,7 @@ const ContentSchedule = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -194,7 +196,7 @@ const ContentSchedule = (props) => {
         </div>
         <div className={classes.action}>
           <Button size="large" variant="contained" color="secondary" onClick={handleNewSchedule}>
-            New schedule
+            {l.newSchedule}
           </Button>
         </div>
         {loadingSchedules ? (
@@ -207,12 +209,12 @@ const ContentSchedule = (props) => {
               <table className={classes.table}>
                 <thead>
                   <tr>
-                    <th>SCHEDULE NAME</th>
-                    <th>TIME START</th>
-                    <th>TIME END</th>
-                    <th>CREATED BY</th>
-                    <th>CREATED DATE</th>
-                    <th>STATUS</th>
+                    <th>{l.scheduleName}</th>
+                    <th>{l.timeStart}</th>
+                    <th>{l.timeEnd}</th>
+                    <th>{l.createdBy}</th>
+                    <th>{l.createdDate}</th>
+                    <th>{l.status}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -226,15 +228,15 @@ const ContentSchedule = (props) => {
                         <td>{moment(schedule.timeEnd).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.user.fullName}</td>
                         <td>{moment(schedule.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
-                        <td>{schedule.status ? 'Active' : 'Nonactive'}</td>
+                        <td>{schedule.status ? l.active : l.nonactive}</td>
                         <td>
                           <Link onClick={() => editSchedule(schedule._id)}>
-                            <Button>
+                            <Button style ={{margin: '4px 0'}}>
                               <EditIcon />
                             </Button>
                           </Link>
                           <Link onClick={() => deleteHandler(schedule._id)}>
-                            <Button>
+                            <Button style ={{margin: '4px 0'}}>
                               <DeleteIcon />
                             </Button>
                           </Link>

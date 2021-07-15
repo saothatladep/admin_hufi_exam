@@ -182,6 +182,8 @@ const ContentEditExam = (props) => {
     user: '',
   });
 
+  const l = useSelector((state) => state.languageChange);
+
   const examId = match.params.id;
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -303,7 +305,7 @@ const ContentEditExam = (props) => {
           margin="normal"
           fullWidth
           id="exam"
-          label="Exam"
+          label={l.examName}
           name="exam"
           autoComplete="exam"
           required
@@ -322,7 +324,7 @@ const ContentEditExam = (props) => {
                 color="primary"
               />
             }
-            label="Status"
+            label={l.status}
           />
         </FormControl>
       </div>
@@ -334,7 +336,7 @@ const ContentEditExam = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -346,7 +348,7 @@ const ContentEditExam = (props) => {
           </form>
           <div className={classes.action}>
             <FormControl variant="outlined" className={classes.formControl} style = {{maxWidth: 320}}>
-              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+              <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
               {loadingSubjects ? (
                 <Loading />
               ) : errorSubjects ? (
@@ -374,7 +376,7 @@ const ContentEditExam = (props) => {
               )}
             </FormControl>
             <FormControl variant="outlined" className={classes.formControl} style = {{maxWidth: 320}}>
-              <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
+              <InputLabel htmlFor="outlined-chapters-native-simple">{l.chapter}</InputLabel>
               {loadingChapters ? (
                 <Loading />
               ) : errorChapters ? (
@@ -404,7 +406,7 @@ const ContentEditExam = (props) => {
               )}
             </FormControl>
             <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel htmlFor="outlined-levels-native-simple">Level</InputLabel>
+              <InputLabel htmlFor="outlined-levels-native-simple">{l.level}</InputLabel>
               <Select
                 native
                 value={level}
@@ -417,10 +419,10 @@ const ContentEditExam = (props) => {
                   id: 'outlined-levels-native-simple',
                 }}
               >
-                <option value={0}>All level</option>
-                <option value={1}>Easy</option>
-                <option value={2}>Normal</option>
-                <option value={3}>Hard</option>
+                <option value={0}>{l.allLevel}</option>
+                <option value={1}>{l.easy}</option>
+                <option value={2}>{l.normal}</option>
+                <option value={3}>{l.hard}</option>
               </Select>
             </FormControl>
           </div>
@@ -433,8 +435,8 @@ const ContentEditExam = (props) => {
               <table className={classes.table}>
                 <thead>
                   <tr>
-                    <th>TITLE</th>
-                    <th>CREATED BY</th>
+                    <th>{l.questionName}</th>
+                    <th>{l.createdBy}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -473,8 +475,8 @@ const ContentEditExam = (props) => {
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>No</th>
-                  <th>TITLE</th>
+                  <th>{l.no}</th>
+                  <th>{l.questionName}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -501,7 +503,7 @@ const ContentEditExam = (props) => {
       </div>
 
       <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
-        Update exam
+        {l.update}
       </Button>
     </form>
   );

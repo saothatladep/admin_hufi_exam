@@ -125,6 +125,8 @@ const ContentExam = (props) => {
   const [keyword, setKeyWord] = useState('');
   const [page, setPage] = useState(1);
 
+  const l = useSelector((state) => state.languageChange);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -182,7 +184,7 @@ const ContentExam = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -195,7 +197,7 @@ const ContentExam = (props) => {
         </div>
         <div className={classes.action}>
           <Button size="large" variant="contained" color="secondary" onClick={handleNewExam}>
-            New exam
+            {l.newExam}
           </Button>
         </div>
         {loadingExams ? (
@@ -208,10 +210,10 @@ const ContentExam = (props) => {
               <table className={classes.table}>
                 <thead>
                   <tr>
-                    <th>EXAM NAME</th>
-                    <th>CREATED BY</th>
-                    <th>CREATED DATE</th>
-                    <th>STATUS</th>
+                    <th>{l.examName}</th>
+                    <th>{l.createdBy}</th>
+                    <th>{l.createdDate}</th>
+                    <th>{l.status}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -223,7 +225,7 @@ const ContentExam = (props) => {
                         <td>{exam.name}</td>
                         <td>{exam.user.fullName}</td>
                         <td>{moment(exam.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
-                        <td>{exam.status ? 'Active' : 'Nonactive'}</td>
+                        <td>{exam.status ? l.active : l.nonactive}</td>
                         <td>
                           <Link onClick={() => editExam(exam._id)}>
                             <Button>

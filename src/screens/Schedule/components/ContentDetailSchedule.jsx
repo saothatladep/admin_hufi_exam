@@ -188,6 +188,8 @@ const ContentDetailSchedule = (props) => {
     user: '',
   });
 
+  const l = useSelector((state) => state.languageChange);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -280,7 +282,7 @@ const ContentDetailSchedule = (props) => {
           margin="normal"
           fullWidth
           id="schedule"
-          label="Schedule"
+          label={l.scheduleName}
           name="schedule"
           autoComplete="schedule"
           required
@@ -298,13 +300,13 @@ const ContentDetailSchedule = (props) => {
                 color="primary"
               />
             }
-            label="Status"
+            label={l.status}
           />
         </FormControl>
       </div>
       <div className={classes.chooseOption}>
         <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel htmlFor="outlined-exams-native-simple">Exams</InputLabel>
+          <InputLabel htmlFor="outlined-exams-native-simple">{l.exam}</InputLabel>
           {loadingExams ? (
             <Loading />
           ) : errorExams ? (
@@ -337,7 +339,7 @@ const ContentDetailSchedule = (props) => {
       <form className={classes.time}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DateTimePicker
-            label="Time start"
+            label={l.timeStart}
             inputVariant="outlined"
             value={schedule.timeStart}
             disablePast
@@ -358,7 +360,7 @@ const ContentDetailSchedule = (props) => {
             }}
           />
           <DateTimePicker
-            label="Time start"
+            label={l.timeEnd}
             inputVariant="outlined"
             value={schedule.timeEnd}
             disablePast
@@ -384,7 +386,7 @@ const ContentDetailSchedule = (props) => {
           value={`${schedule.time} min`}
           style={{ width: 90 }}
           id="outlined-basic"
-          label="Time"
+          label={l.time}
           variant="outlined"
         />
       </form>
@@ -396,7 +398,7 @@ const ContentDetailSchedule = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -415,11 +417,11 @@ const ContentDetailSchedule = (props) => {
               <table className={classes.table}>
                 <thead>
                   <tr>
-                    <th>AVATAR</th>
-                    <th>CODE</th>
-                    <th>NAME</th>
-                    <th>GENDER</th>
-                    <th>BIRTHDAY</th>
+                    <th>{l.avatar}</th>
+                    <th>{l.code}</th>
+                    <th>{l.fullName}</th>
+                    <th>{l.gender}</th>
+                    <th>{l.birthday}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -432,7 +434,7 @@ const ContentDetailSchedule = (props) => {
                       </td>
                       <td>{user.code}</td>
                       <td>{user.fullName}</td>
-                      <td>{user.gender ? 'Male' : 'Female'}</td>
+                      <td>{user.gender ? l.male : l.female}</td>
                       <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>
                       <td>
                         <Link onClick={() => handleClickAdd(user)}>
@@ -464,11 +466,11 @@ const ContentDetailSchedule = (props) => {
               <thead>
                 <tr>
                   <th>NO</th>
-                  <th>AVATAR</th>
-                  <th>CODE</th>
-                  <th>NAME</th>
-                  <th>GENDER</th>
-                  <th>BIRTHDAY</th>
+                  <th>{l.avatar}</th>
+                  <th>{l.code}</th>
+                  <th>{l.fullName}</th>
+                  <th>{l.gender}</th>
+                  <th>{l.birthday}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -482,7 +484,7 @@ const ContentDetailSchedule = (props) => {
                       </td>
                       <td>{user.code}</td>
                       <td>{user.fullName}</td>
-                      <td>{user.gender ? 'Male' : 'Female'}</td>
+                      <td>{user.gender ? l.male : l.female}</td>
                       <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>{' '}
                       <td>
                         <Link onClick={() => handleClickRemove(user)}>
@@ -501,7 +503,7 @@ const ContentDetailSchedule = (props) => {
       </div>
 
       <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
-        Add schedule
+        {l.add}
       </Button>
     </form>
   );

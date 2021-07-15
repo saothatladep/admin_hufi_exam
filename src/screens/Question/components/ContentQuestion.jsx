@@ -224,6 +224,8 @@ const ContentQuestion = (props) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [page, setPage] = useState(1);
 
+  const l = useSelector((state) => state.languageChange);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -392,7 +394,7 @@ const ContentQuestion = (props) => {
               <img src={search} alt="search"></img>
             </div>
             <InputBase
-              placeholder="Enter Your Search..."
+              placeholder={l.search}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -405,7 +407,7 @@ const ContentQuestion = (props) => {
         </div>
         <div className={classes.action}>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+            <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
             {loadingSubjects ? (
               <Loading />
             ) : errorSubjects ? (
@@ -436,7 +438,7 @@ const ContentQuestion = (props) => {
             )}
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
+            <InputLabel htmlFor="outlined-chapters-native-simple">{l.chapter}</InputLabel>
             {loadingChapters ? (
               <Loading />
             ) : errorChapters ? (
@@ -482,18 +484,18 @@ const ContentQuestion = (props) => {
                 id: 'outlined-levels-native-simple',
               }}
             >
-              <option value={0}>All level</option>
-              <option value={1}>Easy</option>
-              <option value={2}>Normal</option>
-              <option value={3}>Hard</option>
+              <option value={0}>{l.allLevel}</option>
+              <option value={1}>{l.easy}</option>
+              <option value={2}>{l.normal}</option>
+              <option value={3}>{l.hard}</option>
             </Select>
           </FormControl>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
-            New question
+            {l.newQuestion}
           </Button>
           <form className={classes.files} id="uploadForm">
             <input type="file" id="excelFile" onChange={(e) => uploadFileImportHandler(e)} />
-            <label for="excelFile">IMPORT FILE</label>
+            <label for="excelFile">{l.importFile}</label>
           </form>
         </div>
         {loadingQuestions ? (
@@ -505,8 +507,8 @@ const ContentQuestion = (props) => {
             <table className={classes.table}>
               <thead>
                 <tr>
-                  <th>TITLE</th>
-                  <th>CREATED BY</th>
+                  <th>{l.questionName}</th>
+                  <th>{l.createdBy}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -552,11 +554,11 @@ const ContentQuestion = (props) => {
         disableEscapeKeyDown
         aria-labelledby="form-dialog-title-add"
       >
-        <DialogTitle id="form-dialog-title-add">QUESTION</DialogTitle>
+        <DialogTitle id="form-dialog-title-add">{l.question}</DialogTitle>
         <DialogContent>
           <form onSubmit={addHandler}>
             <FormControl variant="outlined" className={classes.formControl} style={{ marginBottom: 36 }}>
-              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+              <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
               {loadingSubjects ? (
                 <Loading />
               ) : errorSubjects ? (
@@ -585,7 +587,7 @@ const ContentQuestion = (props) => {
               )}
             </FormControl>
             <FormControl variant="outlined" className={classes.formControl} style={{ marginBottom: 36 }}>
-              <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
+              <InputLabel htmlFor="outlined-chapters-native-simple">{l.chapter}</InputLabel>
               {loadingChapters ? (
                 <Loading />
               ) : errorChapters ? (
@@ -626,9 +628,9 @@ const ContentQuestion = (props) => {
                   id: 'outlined-levels-native-simple',
                 }}
               >
-                <option value={1}>Easy</option>
-                <option value={2}>Normal</option>
-                <option value={3}>Hard</option>
+                <option value={1}>{l.easy}</option>
+                <option value={2}>{l.normal}</option>
+                <option value={3}>{l.hard}</option>
               </Select>
             </FormControl>
             <TextField
@@ -636,7 +638,7 @@ const ContentQuestion = (props) => {
               margin="normal"
               fullWidth
               id="title"
-              label="Title"
+              label={l.questionName}
               name="title"
               autoComplete="title"
               required
@@ -701,7 +703,7 @@ const ContentQuestion = (props) => {
                 onChange={(e) => {
                   setQuestion({ ...question, result: e.target.value });
                 }}
-                label="Answer"
+                label={l.answer}
                 inputProps={{
                   name: 'Answer',
                   id: 'outlined-Answer-native-simple',
@@ -715,10 +717,10 @@ const ContentQuestion = (props) => {
             </FormControl>
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
-                Add
+                {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
-                Cancel
+                {l.cancel}
               </Button>
             </DialogActions>
           </form>
@@ -735,8 +737,8 @@ const ContentQuestion = (props) => {
         <DialogTitle id="form-dialog-title-update">QUESTION</DialogTitle>
         <DialogContent>
           <form onSubmit={updateHandler}>
-            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
-              <InputLabel htmlFor="outlined-subjects-native-simple">Subjects</InputLabel>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginBottom: 36 }}>
+              <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
               {loadingSubjects ? (
                 <Loading />
               ) : errorSubjects ? (
@@ -764,8 +766,8 @@ const ContentQuestion = (props) => {
                 </Select>
               )}
             </FormControl>
-            <FormControl variant="outlined" className={classes.formControl} style={{ marginRight: 12 }}>
-              <InputLabel htmlFor="outlined-chapters-native-simple">Chapters</InputLabel>
+            <FormControl variant="outlined" className={classes.formControl} style={{ marginBottom: 36 }}>
+              <InputLabel htmlFor="outlined-chapters-native-simple">{l.chapter}</InputLabel>
               {loadingChapters ? (
                 <Loading />
               ) : errorChapters ? (
@@ -806,9 +808,9 @@ const ContentQuestion = (props) => {
                   id: 'outlined-levels-native-simple',
                 }}
               >
-                <option value={1}>Easy</option>
-                <option value={2}>Normal</option>
-                <option value={3}>Hard</option>
+                <option value={1}>{l.easy}</option>
+                <option value={2}>{l.normal}</option>
+                <option value={3}>{l.hard}</option>
               </Select>
             </FormControl>
             <TextField
@@ -816,7 +818,7 @@ const ContentQuestion = (props) => {
               margin="normal"
               fullWidth
               id="title"
-              label="Title"
+              label={l.questionName}
               name="title"
               autoComplete="title"
               required
@@ -886,7 +888,7 @@ const ContentQuestion = (props) => {
                 onChange={(e) => {
                   setQuestion({ ...question, result: e.target.value });
                 }}
-                label="Answer"
+                label={l.answer}
                 inputProps={{
                   name: 'Answer',
                   id: 'outlined-Answer-native-simple',
@@ -900,10 +902,10 @@ const ContentQuestion = (props) => {
             </FormControl>
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
-                Update
+                {l.update}
               </Button>
               <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                Cancel
+                {l.cancel}
               </Button>
             </DialogActions>
           </form>
