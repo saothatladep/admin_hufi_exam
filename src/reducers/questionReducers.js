@@ -10,6 +10,10 @@ import {
   QUESTION_DETAILS_REQUEST,
   QUESTION_DETAILS_RESET,
   QUESTION_DETAILS_SUCCESS,
+  QUESTION_IMPORT_FAIL,
+  QUESTION_IMPORT_REQUEST,
+  QUESTION_IMPORT_RESET,
+  QUESTION_IMPORT_SUCCESS,
   QUESTION_LIST_FAIL,
   QUESTION_LIST_REQUEST,
   QUESTION_LIST_SUCCESS,
@@ -91,6 +95,21 @@ export const questionDeleteReducer = (state = {}, action) => {
       return { loading: false, success: true };
     case QUESTION_DELETE_FAIL:
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const questionImportReducer = (state = {}, action) => {
+  switch (action.type) {
+    case QUESTION_IMPORT_REQUEST:
+      return { loading: true };
+    case QUESTION_IMPORT_SUCCESS:
+      return { loading: false, success: true };
+    case QUESTION_IMPORT_FAIL:
+      return { loading: false, error: action.payload };
+    case QUESTION_IMPORT_RESET:
+      return {};
     default:
       return state;
   }

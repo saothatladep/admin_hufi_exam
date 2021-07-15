@@ -31,6 +31,7 @@ import {
   questionDetailsReducer,
   questionUpdateReducer,
   questionDeleteReducer,
+  questionImportReducer
 } from './reducers/questionReducers';
 import {
   examListReducer,
@@ -72,6 +73,7 @@ const reducer = combineReducers({
   questionDetails: questionDetailsReducer,
   questionUpdate: questionUpdateReducer,
   questionDelete: questionDeleteReducer,
+  questionImport: questionImportReducer,
   examList: examListReducer,
   examCreate: examCreateReducer,
   examDetails: examDetailsReducer,

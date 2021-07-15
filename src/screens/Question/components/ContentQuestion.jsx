@@ -21,6 +21,7 @@ import _ from 'lodash';
 import {
   createQuestion,
   deleteQuestion,
+  importQuestion,
   listQuestion,
   listQuestionDetails,
   updateQuestion,
@@ -250,6 +251,9 @@ const ContentQuestion = (props) => {
   const questionDelete = useSelector((state) => state.questionDelete);
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = questionDelete;
 
+  const questionImport = useSelector((state) => state.questionImport);
+  const { loading: loadingImport, error: errorImport, success: successImport } = questionImport;
+
   useEffect(() => {
     if (userInfo) {
       dispatch(listSubjects());
@@ -270,6 +274,7 @@ const ContentQuestion = (props) => {
       setD(questionsDetails.data.answers[3]);
       if (successUpdate) {
         dispatch({ type: QUESTION_UPDATE_RESET });
+        dispatch(listQuestion(chapter, level, keyword, page));
       }
     }
     window.scrollTo(0, 0);
@@ -310,8 +315,12 @@ const ContentQuestion = (props) => {
       dispatch(listQuestion(chapter, level, keyword, page));
     }
 
+    if (successImport && chapter) {
+      dispatch(listQuestion(chapter, level, keyword, page));
+    }
+
     window.scrollTo(0, 0);
-  }, [userInfo, dispatch, subject, successDelete, successCreate, successUpdate]);
+  }, [userInfo, dispatch, subject, successDelete, successCreate, successUpdate, successImport]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -376,6 +385,19 @@ const ContentQuestion = (props) => {
       const ws = workbook.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws);
       console.log(data);
+      const questions = [];
+      data.map((item) => {
+        questions.push({
+          title: item.question,
+          answers: [{ answer: item.a }, { answer: item.b }, { answer: item.c }, { answer: item.d }],
+          level: item.level,
+          result: item.result,
+          chapter: item.chapter,
+          user: userInfo._id,
+        });
+      });
+      console.log(questions);
+      dispatch(importQuestion(questions));
     };
   };
 
@@ -388,6 +410,8 @@ const ContentQuestion = (props) => {
         {errorCreate && <Messages severity={'error'} message={errorCreate} />}
         {loadingDelete && <Loading />}
         {errorDelete && <Messages severity={'error'} message={errorDelete} />}
+        {loadingImport && <Loading />}
+        {errorImport && <Messages severity={'error'} message={errorImport} />}
         <div>
           <form className={classes.search} onSubmit={submitHandler}>
             <div className={classes.searchIcon}>

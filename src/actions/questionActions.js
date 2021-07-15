@@ -10,6 +10,10 @@ import {
   QUESTION_DETAILS_REQUEST,
   QUESTION_DETAILS_RESET,
   QUESTION_DETAILS_SUCCESS,
+  QUESTION_IMPORT_FAIL,
+  QUESTION_IMPORT_REQUEST,
+  QUESTION_IMPORT_RESET,
+  QUESTION_IMPORT_SUCCESS,
   QUESTION_LIST_FAIL,
   QUESTION_LIST_REQUEST,
   QUESTION_LIST_SUCCESS,
@@ -154,6 +158,36 @@ export const deleteQuestion = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: QUESTION_DELETE_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const importQuestion = (question) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: QUESTION_IMPORT_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axiosClient.post(`/api/questions/import`, question, config);
+
+    dispatch({
+      type: QUESTION_IMPORT_SUCCESS,
+    });
+    dispatch({ type: QUESTION_IMPORT_RESET });
+  } catch (error) {
+    dispatch({
+      type: QUESTION_IMPORT_FAIL,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
