@@ -720,7 +720,7 @@ const ContentQuestion = (props) => {
               onChange={(e) => setD({ answer: e.target.value })}
             />
             <FormControl variant="outlined" className={classes.formControl} style={{ marginTop: 16 }}>
-              <InputLabel htmlFor="outlined-Answer-native-simple">Answer</InputLabel>
+              <InputLabel htmlFor="outlined-Answer-native-simple">{l.answer}</InputLabel>
               <Select
                 native
                 value={question.result}
@@ -905,7 +905,7 @@ const ContentQuestion = (props) => {
               value={d.answer}
             />
             <FormControl variant="outlined" className={classes.formControl} style={{ marginTop: 16 }}>
-              <InputLabel htmlFor="outlined-Answer-native-simple">Answer</InputLabel>
+              <InputLabel htmlFor="outlined-Answer-native-simple">{l.answer}</InputLabel>
               <Select
                 native
                 value={question.result}

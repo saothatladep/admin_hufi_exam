@@ -125,9 +125,9 @@ const usedStyles = makeStyles((theme) => ({
         fontSize: 16,
         fontWeight: '500',
         color: '#666',
-        '&:first-child': {
-          textAlign: 'left',
-        },
+        // '&:first-child': {
+        //   textAlign: 'left',
+        // },
         '& svg': {
           fontSize: 30,
           fontWeight: '600',
