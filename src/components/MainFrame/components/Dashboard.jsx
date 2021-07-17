@@ -78,11 +78,12 @@ const usedStyles = makeStyles((theme) => ({
     width: '100%',
     '& span': {
       fontSize: 24,
-      fontWeight: '600',
+      fontWeight: '700',
       color: '#111',
       margin: '4px 0 0 22px',
       textTransform: 'uppercase',
       fontSize: 22,
+      fontFamily: 'Quicksand, sans-serif',
     },
     '& img': {
       width: 30,
