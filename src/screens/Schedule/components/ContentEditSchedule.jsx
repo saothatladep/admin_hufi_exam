@@ -231,24 +231,23 @@ const ContentEditSchedule = (props) => {
       dispatch({ type: SCHEDULE_UPDATE_RESET });
       dispatch({ type: SCHEDULE_DETAILS_RESET });
       history.push('/schedule');
-    } else {
-      if (!_.get(schedulesDetails, 'data')) {
-        dispatch(listScheduleDetails(scheduleId));
-      } else if (!loadingDetails) {
-        setSchedule({
-          timeStart: schedulesDetails.data.timeStart,
-          timeEnd: schedulesDetails.data.timeEnd,
-          time: schedulesDetails.data.time,
-          exam: schedulesDetails.data.exam,
-          name: schedulesDetails.data.name,
-          attendants: schedulesDetails.data.attendants,
-          status: schedulesDetails.data.status,
-        });
-        setStudentsAdd(schedulesDetails.data.attendants);
-      }
     }
+    
+    if (!loadingDetails) {
+      setSchedule({
+        timeStart: schedulesDetails.data.timeStart,
+        timeEnd: schedulesDetails.data.timeEnd,
+        time: schedulesDetails.data.time,
+        exam: schedulesDetails.data.exam._id,
+        name: schedulesDetails.data.name,
+        attendants: schedulesDetails.data.attendants,
+        status: schedulesDetails.data.status,
+      });
+      setStudentsAdd(schedulesDetails.data.attendants);
+    }
+
     window.scrollTo(0, 0);
-  }, [dispatch, history, scheduleId, _.get(schedulesDetails, 'data'), successUpdate]);
+  }, [dispatch, history, schedulesDetails.data, successUpdate]);
 
   useEffect(() => {
     console.log(schedule.timeEnd);
@@ -292,242 +291,249 @@ const ContentEditSchedule = (props) => {
     setPage(page);
   };
 
+  useEffect(() => {
+    dispatch(listScheduleDetails(scheduleId));
+  }, [scheduleId]);
+
   return (
-    <form onSubmit={updateScheduleHandler} className={classes.root}>
-      <div className={classes.name}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="schedule"
-          label={l.scheduleName}
-          name="schedule"
-          autoComplete="schedule"
-          value={schedule.name}
-          required
-          multiline
-          onChange={(e) => setSchedule({ ...schedule, name: e.target.value })}
-          style={{ width: 550 }}
-        />
-        <FormControl component="fieldset">
-          <FormControlLabel
-            control={
-              <Switch
-                checked={schedule.status}
-                onChange={(e) => setSchedule({ ...schedule, status: e.target.checked })}
-                name="status"
-                color="primary"
+    <>
+      {loadingExams ? (
+        <Loading />
+      ) : errorExams ? (
+        <Messages severity={'error'} message={errorExams} />
+      ) : (
+        <form onSubmit={updateScheduleHandler} className={classes.root}>
+          <div className={classes.name}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="schedule"
+              label={l.scheduleName}
+              name="schedule"
+              autoComplete="schedule"
+              value={schedule.name}
+              required
+              multiline
+              onChange={(e) => setSchedule({ ...schedule, name: e.target.value })}
+              style={{ width: 550 }}
+            />
+            <FormControl component="fieldset">
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={schedule.status}
+                    onChange={(e) => setSchedule({ ...schedule, status: e.target.checked })}
+                    name="status"
+                    color="primary"
+                  />
+                }
+                label={l.status}
               />
-            }
-            label={l.status}
-          />
-        </FormControl>
-      </div>
-      <div className={classes.chooseOption}>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel htmlFor="outlined-exams-native-simple">{l.examName}</InputLabel>
-          {loadingExams ? (
-            <Loading />
-          ) : errorExams ? (
-            <Messages severity={'error'} message={errorExams} />
-          ) : (
-            <Select
-              native
-              value={schedule.exam}
-              onChange={(e) => {
-                setSchedule({ ...schedule, exam: e.target.value });
-              }}
-              label="Exams"
-              inputProps={{
-                name: 'Exams',
-                id: 'outlined-Exams-native-simple',
-              }}
-            >
-              {examsList.exams.length > 0 &&
-                examsList.exams.map((exam) => (
-                  <option key={exam._id} value={exam._id}>
-                    {exam.name}
-                  </option>
-                ))}
-            </Select>
-          )}
-        </FormControl>
-      </div>
+            </FormControl>
+          </div>
+          <div className={classes.chooseOption}>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="outlined-exams-native-simple">{l.examName}</InputLabel>
 
-      <form className={classes.time}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <DateTimePicker
-            label={l.timeStart}
-            inputVariant="outlined"
-            value={schedule.timeStart}
-            disablePast
-            ampm={false}
-            style={{ width: 225 }}
-            format="dd/MM/yyyy - HH:mm"
-            onChange={(e) => {
-              setSchedule({ ...schedule, timeStart: e });
-              const toggle = changeTime;
-              setChangeTime(!toggle);
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton>
-                    <AlarmIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <DateTimePicker
-            label={l.timeEnd}
-            inputVariant="outlined"
-            value={schedule.timeEnd}
-            disablePast
-            ampm={false}
-            style={{ width: 225 }}
-            format="dd/MM/yyyy - HH:mm"
-            onChange={(e) => {
-              setSchedule({ ...schedule, timeEnd: e });
-              const toggle = changeTime;
-              setChangeTime(!toggle);
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton>
-                    <AlarmIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </MuiPickersUtilsProvider>
-        <TextField
-          disabled
-          value={schedule.time}
-          style={{ width: 100 }}
-          id="outlined-basic"
-          label={l.time}
-          variant="outlined"
-        />
-      </form>
+              <Select
+                native
+                value={schedule.exam}
+                onChange={(e) => {
+                  setSchedule({ ...schedule, exam: e.target.value });
+                }}
+                label="Exams"
+                inputProps={{
+                  name: 'Exams',
+                  id: 'outlined-Exams-native-simple',
+                }}
+              >
+                {examsList.exams.length > 0 &&
+                  examsList.exams.map((exam) => (
+                    <option key={exam._id} value={exam._id}>
+                      {exam.name}
+                    </option>
+                  ))}
+              </Select>
+            </FormControl>
+          </div>
 
-      <div className={classes.question}>
-        <div className={classes.studentSource}>
-          <form className={classes.search}>
-            <div className={classes.searchIcon}>
-              <img src={search} alt="search"></img>
-            </div>
-            <InputBase
-              placeholder={l.search}
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              autoFocus
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+          <form className={classes.time}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DateTimePicker
+                label={l.timeStart}
+                inputVariant="outlined"
+                value={schedule.timeStart}
+                disablePast
+                ampm={false}
+                style={{ width: 225 }}
+                format="dd/MM/yyyy - HH:mm"
+                onChange={(e) => {
+                  setSchedule({ ...schedule, timeStart: e });
+                  const toggle = changeTime;
+                  setChangeTime(!toggle);
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton>
+                        <AlarmIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <DateTimePicker
+                label={l.timeEnd}
+                inputVariant="outlined"
+                value={schedule.timeEnd}
+                disablePast
+                ampm={false}
+                style={{ width: 225 }}
+                format="dd/MM/yyyy - HH:mm"
+                onChange={(e) => {
+                  setSchedule({ ...schedule, timeEnd: e });
+                  const toggle = changeTime;
+                  setChangeTime(!toggle);
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton>
+                        <AlarmIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </MuiPickersUtilsProvider>
+            <TextField
+              disabled
+              value={schedule.time}
+              style={{ width: 100 }}
+              id="outlined-basic"
+              label={l.time}
+              variant="outlined"
             />
           </form>
-          {loadingUsers ? (
-            <Loading />
-          ) : errorUsers ? (
-            <Messages severity={'error'} message={errorUsers} />
-          ) : (
-            <div>
-              <table className={classes.table}>
-                <thead>
-                  <tr>
-                    <th>{l.avatar}</th>
-                    <th>{l.code}</th>
-                    <th>{l.fullName}</th>
-                    <th>{l.gender}</th>
-                    <th>{l.birthday}</th>
-                    <th></th>
-                  </tr>
-                </thead>
 
-                <tbody>
-                  {UsersList.users.map((user) => (
-                    <tr key={user._id}>
-                      <td>
-                        <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : User} alt="avatar" />
-                      </td>
-                      <td>{user.code}</td>
-                      <td>{user.fullName}</td>
-                      <td>{user.gender ? l.male : l.female}</td>
-                      <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>
-                      <td>
-                        <Link onClick={() => handleClickAdd(user)}>
-                          <Button>
-                            <AddIcon />
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className={classes.question}>
+            <div className={classes.studentSource}>
+              <form className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <img src={search} alt="search"></img>
+                </div>
+                <InputBase
+                  placeholder={l.search}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  autoFocus
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                />
+              </form>
+              {loadingUsers ? (
+                <Loading />
+              ) : errorUsers ? (
+                <Messages severity={'error'} message={errorUsers} />
+              ) : (
+                <div>
+                  <table className={classes.table}>
+                    <thead>
+                      <tr>
+                        <th>{l.avatar}</th>
+                        <th>{l.code}</th>
+                        <th>{l.fullName}</th>
+                        <th>{l.gender}</th>
+                        <th>{l.birthday}</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {UsersList.users.map((user) => (
+                        <tr key={user._id}>
+                          <td>
+                            <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : User} alt="avatar" />
+                          </td>
+                          <td>{user.code}</td>
+                          <td>{user.fullName}</td>
+                          <td>{user.gender ? l.male : l.female}</td>
+                          <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>
+                          <td>
+                            <Link onClick={() => handleClickAdd(user)}>
+                              <Button>
+                                <AddIcon />
+                              </Button>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <Pagination
+                className={classes.pagination}
+                color="primary"
+                count={UsersList.pages}
+                page={page}
+                size="large"
+                onChange={pageHandler}
+              />
             </div>
-          )}
 
-          <Pagination
-            className={classes.pagination}
-            color="primary"
-            count={UsersList.pages}
-            page={page}
-            size="large"
-            onChange={pageHandler}
-          />
-        </div>
-
-        <div className={classes.questionAdd}>
-          <div>
-            <table className={classes.table}>
-              <thead>
-                <tr>
-                  <th>{l.no}</th>
-                  <th>{l.avatar}</th>
-                  <th>{l.code}</th>
-                  <th>{l.fullName}</th>
-                  <th>{l.gender}</th>
-                  <th>{l.birthday}</th>
-                  <th></th>
-                </tr>
-              </thead>
-              {studentsAdd.map((user, index) => {
-                return (
-                  <tbody>
-                    <tr key={user._id}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : User} alt="avatar" />
-                      </td>
-                      <td>{user.code}</td>
-                      <td>{user.fullName}</td>
-                      <td>{user.gender ? l.male : l.female}</td>
-                      <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>{' '}
-                      <td>
-                        <Link onClick={() => handleClickRemove(user)}>
-                          <Button>
-                            <RemoveIcon />
-                          </Button>
-                        </Link>
-                      </td>
+            <div className={classes.questionAdd}>
+              <div>
+                <table className={classes.table}>
+                  <thead>
+                    <tr>
+                      <th>{l.no}</th>
+                      <th>{l.avatar}</th>
+                      <th>{l.code}</th>
+                      <th>{l.fullName}</th>
+                      <th>{l.gender}</th>
+                      <th>{l.birthday}</th>
+                      <th></th>
                     </tr>
-                  </tbody>
-                );
-              })}
-            </table>
+                  </thead>
+                  {studentsAdd.map((user, index) => {
+                    return (
+                      <tbody>
+                        <tr key={user._id}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <Avatar style={{ margin: '0 auto' }} src={user.avatar ? user.avatar : User} alt="avatar" />
+                          </td>
+                          <td>{user.code}</td>
+                          <td>{user.fullName}</td>
+                          <td>{user.gender ? l.male : l.female}</td>
+                          <td>{moment(user.birthday).format('DD/MM/YYYY')}</td>{' '}
+                          <td>
+                            <Link onClick={() => handleClickRemove(user)}>
+                              <Button>
+                                <RemoveIcon />
+                              </Button>
+                            </Link>
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
+                </table>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
-        {l.update}
-      </Button>
-    </form>
+          <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
+            {l.update}
+          </Button>
+        </form>
+      )}
+    </>
   );
 };
 

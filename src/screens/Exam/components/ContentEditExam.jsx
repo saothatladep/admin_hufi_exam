@@ -251,20 +251,23 @@ const ContentEditExam = (props) => {
       dispatch({ type: EXAM_UPDATE_RESET });
       dispatch({ type: EXAM_DETAILS_RESET });
       history.push('/exam');
-    } else {
-      if (!examsDetails.data) {
-        dispatch(listExamDetails(examId));
-      } else if (!loadingDetails) {
-        setExam({
-          name: examsDetails.data.name,
-          questions: examsDetails.data.questions,
-          status: examsDetails.data.status,
-        });
-        setQuestionsAdd(examsDetails.data.questions);
-      }
     }
+    if (!loadingDetails) {
+      setExam({
+        name: examsDetails.data.name,
+        questions: examsDetails.data.questions,
+        status: examsDetails.data.status,
+      });
+      setQuestionsAdd(examsDetails.data.questions);
+    }
+
     window.scrollTo(0, 0);
-  }, [dispatch, history, examId, examsDetails.data, successUpdate]);
+  }, [dispatch, history, examsDetails.data, successUpdate]);
+
+  useEffect(() => {
+    console.log(examId);
+    dispatch(listExamDetails(examId));
+  }, [examId]);
 
   const updateExamHandler = (e) => {
     e.preventDefault();
@@ -347,7 +350,7 @@ const ContentEditExam = (props) => {
             />
           </form>
           <div className={classes.action}>
-            <FormControl variant="outlined" className={classes.formControl} style = {{maxWidth: 320}}>
+            <FormControl variant="outlined" className={classes.formControl} style={{ maxWidth: 320 }}>
               <InputLabel htmlFor="outlined-subjects-native-simple">{l.subject}</InputLabel>
               {loadingSubjects ? (
                 <Loading />
@@ -375,7 +378,7 @@ const ContentEditExam = (props) => {
                 </Select>
               )}
             </FormControl>
-            <FormControl variant="outlined" className={classes.formControl} style = {{maxWidth: 320}}>
+            <FormControl variant="outlined" className={classes.formControl} style={{ maxWidth: 320 }}>
               <InputLabel htmlFor="outlined-chapters-native-simple">{l.chapter}</InputLabel>
               {loadingChapters ? (
                 <Loading />

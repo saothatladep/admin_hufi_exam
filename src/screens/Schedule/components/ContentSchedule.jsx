@@ -227,16 +227,16 @@ const ContentSchedule = (props) => {
                         <td>{moment(schedule.timeStart).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{moment(schedule.timeEnd).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.user.fullName}</td>
-                        <td>{moment(schedule.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
+                        <td>{moment(schedule.createdAt).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.status ? l.active : l.nonActive}</td>
                         <td>
                           <Link onClick={() => editSchedule(schedule._id)}>
-                            <Button style ={{margin: '4px 4px'}}>
+                            <Button style={{ margin: '4px 4px' }}>
                               <EditIcon />
                             </Button>
                           </Link>
                           <Link onClick={() => deleteHandler(schedule._id)}>
-                            <Button style ={{margin: '4px 4px'}}>
+                            <Button style={{ margin: '4px 4px' }}>
                               <DeleteIcon />
                             </Button>
                           </Link>
