@@ -403,11 +403,11 @@ const ContentUser = (props) => {
     fileReader.readAsBinaryString(file);
     fileReader.onload = async (event) => {
       const bufferArray = event.target.result;
-      const workbook = await XLSX.read(bufferArray, { type: 'binary' });
+      const workbook = await XLSX.read(bufferArray, { type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd' });
       const wsname = workbook.SheetNames[0];
       const ws = workbook.Sheets[wsname];
       const data = XLSX.utils.sheet_to_json(ws);
-      // console.log(data);
+      console.log(data);
       dispatch(importUser(data));
     };
   };
@@ -496,11 +496,8 @@ const ContentUser = (props) => {
                 {UsersList.users.map((user) => (
                   <tr key={user._id}>
                     <td>
-                      <Avatar
-                        style={{ margin: '0 auto' }}
-                        src={user.avatar ? `https://examol.herokuapp.com${user.avatar}` : User}
-                        alt="avatar"
-                      />
+                      {/* {user.avatar} */}
+                      <Avatar style={{ margin: '0 auto' }} src={user.avatar ? `${user.avatar}` : User} alt="avatar" />
                     </td>
                     <td>{user.code}</td>
                     <td>{user.fullName}</td>
