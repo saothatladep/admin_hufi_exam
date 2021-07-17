@@ -225,7 +225,7 @@ const ContentExam = (props) => {
                         <td>{exam.name}</td>
                         <td>{exam.user.fullName}</td>
                         <td>{moment(exam.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
-                        <td>{exam.status ? l.active : l.nonactive}</td>
+                        <td>{exam.status ? l.active : l.nonActive}</td>
                         <td>
                           <Link onClick={() => editExam(exam._id)}>
                             <Button>

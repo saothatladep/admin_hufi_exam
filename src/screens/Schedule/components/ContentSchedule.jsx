@@ -228,7 +228,7 @@ const ContentSchedule = (props) => {
                         <td>{moment(schedule.timeEnd).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.user.fullName}</td>
                         <td>{moment(schedule.updatedAt).format('DD/MM/YYYY, HH:mm')}</td>
-                        <td>{schedule.status ? l.active : l.nonactive}</td>
+                        <td>{schedule.status ? l.active : l.nonActive}</td>
                         <td>
                           <Link onClick={() => editSchedule(schedule._id)}>
                             <Button style ={{margin: '4px 4px'}}>
