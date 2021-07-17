@@ -26,7 +26,7 @@ import {
   listQuestionDetails,
   updateQuestion,
 } from '../../../actions/questionActions';
-import { listSubjects } from '../../../actions/subjectActions';
+import { listAllSubjects, listSubjects } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
@@ -232,8 +232,8 @@ const ContentQuestion = (props) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const subjectList = useSelector((state) => state.subjectList);
-  const { loading: loadingSubjects, error: errorSubjects, subjects: subjectsList } = subjectList;
+  const subjectListAll = useSelector((state) => state.subjectListAll);
+  const { loading: loadingSubjects, error: errorSubjects, subjects: subjectsList } = subjectListAll;
 
   const chapterList = useSelector((state) => state.chapterList);
   const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterList;
@@ -258,7 +258,7 @@ const ContentQuestion = (props) => {
 
   useEffect(() => {
     if (userInfo) {
-      dispatch(listSubjects());
+      dispatch(listAllSubjects());
     } else {
       history.push('/');
     }
@@ -283,10 +283,10 @@ const ContentQuestion = (props) => {
   }, [userInfo, history, dispatch, questionsDetails, successUpdate]);
 
   useEffect(() => {
-    if (subjectsList && subjectsList.subjects && !subject) {
-      setSubject(_.get(subjectsList.subjects[0], '_id'));
+    if (subjectsList && !subject) {
+      setSubject(_.get(subjectsList[0], '_id'));
     }
-  }, [subjectsList.subjects]);
+  }, [subjectsList]);
 
   useEffect(() => {
     if (chaptersList && chaptersList.chapters && !chapter) {
@@ -454,8 +454,8 @@ const ContentQuestion = (props) => {
                   id: 'outlined-subjects-native-simple',
                 }}
               >
-                {subjectsList.subjects.length > 0 &&
-                  subjectsList.subjects.map((subject) => (
+                {subjectsList && subjectsList.length > 0 &&
+                  subjectsList.map((subject) => (
                     <option key={subject._id} value={subject._id}>
                       {subject.name}
                     </option>
@@ -603,8 +603,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList.subjects.length > 0 &&
-                    subjectsList.subjects.map((subject) => (
+                  {subjectsList && subjectsList.length > 0 &&
+                    subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
                       </option>
@@ -783,8 +783,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList.subjects.length > 0 &&
-                    subjectsList.subjects.map((subject) => (
+                  {subjectsList && subjectsList.length > 0 &&
+                    subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
                       </option>

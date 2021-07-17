@@ -10,6 +10,9 @@ import {
     SCHEDULE_DETAILS_REQUEST,
     SCHEDULE_DETAILS_RESET,
     SCHEDULE_DETAILS_SUCCESS,
+    SCHEDULE_LIST_ALL_FAIL,
+    SCHEDULE_LIST_ALL_REQUEST,
+    SCHEDULE_LIST_ALL_SUCCESS,
     SCHEDULE_LIST_FAIL,
     SCHEDULE_LIST_REQUEST,
     SCHEDULE_LIST_SUCCESS,
@@ -35,6 +38,22 @@ import {
     }
   };
   
+  export const scheduleListAllReducer = (state = { schedules: [], loading: true }, action) => {
+    switch (action.type) {
+      case SCHEDULE_LIST_ALL_REQUEST:
+        return { loading: true, schedules: [] };
+      case SCHEDULE_LIST_ALL_SUCCESS:
+        return {
+          loading: false,
+          schedules: action.payload.data,
+        };
+      case SCHEDULE_LIST_ALL_FAIL:
+        return { loading: false, error: action.payload };
+      default:
+        return state;
+    }
+  };
+
   export const scheduleCreateReducer = (state = {}, action) => {
     switch (action.type) {
       case SCHEDULE_CREATE_REQUEST:

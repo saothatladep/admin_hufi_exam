@@ -10,6 +10,9 @@ import {
   SUBJECT_DETAILS_REQUEST,
   SUBJECT_DETAILS_RESET,
   SUBJECT_DETAILS_SUCCESS,
+  SUBJECT_LIST_ALL_FAIL,
+  SUBJECT_LIST_ALL_REQUEST,
+  SUBJECT_LIST_ALL_SUCCESS,
   SUBJECT_LIST_FAIL,
   SUBJECT_LIST_REQUEST,
   SUBJECT_LIST_SUCCESS,
@@ -32,6 +35,25 @@ export const subjectListReducer = (
         subjects: action.payload.data,
       }
     case SUBJECT_LIST_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const subjectListAllReducer = (
+  state = { subjects: [], loading: true },
+  action
+) => {
+  switch (action.type) {
+    case SUBJECT_LIST_ALL_REQUEST:
+      return { loading: true, subjects: [] }
+    case SUBJECT_LIST_ALL_SUCCESS:
+      return {
+        loading: false,
+        subjects: action.payload.data,
+      }
+    case SUBJECT_LIST_ALL_FAIL:
       return { loading: false, error: action.payload }
     default:
       return state

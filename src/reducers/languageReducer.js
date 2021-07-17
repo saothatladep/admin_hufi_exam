@@ -56,6 +56,7 @@ const vietnamese = {
   timeStart: 'thời gian bắt đầu',
   timeEnd: 'thời gian kết thúc',
   exportChapter: 'Xuất danh sách chương',
+  exportResult: 'Xuất danh kết quả thi',
 };
 
 export const changeLanguageReducer = (state = {}, action) => {
@@ -119,6 +120,7 @@ export const changeLanguageReducer = (state = {}, action) => {
         timeStart: 'Time start',
         timeEnd: 'Time end',
         exportChapter: 'Export list chapters',
+        exportResult: 'Export results',
       };
     default:
       return vietnamese;

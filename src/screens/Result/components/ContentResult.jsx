@@ -1,9 +1,10 @@
-import { Button } from '@material-ui/core';
+import { Button, FormControl, InputLabel, Select } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Pagination } from '@material-ui/lab';
+import ReactExport from 'react-data-export';
 import axios from 'axios';
 import 'date-fns';
 import React, { useEffect, useState } from 'react';
@@ -11,6 +12,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import search from '../../../assets/search.png';
 import moment from 'moment';
+import { listAllSchedule } from '../../../actions/scheduleActions';
+import { listAllResult, listResult } from '../../../actions/resultActions';
+import Loading from '../../../components/Loading';
+import Messages from '../../../components/Messages';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -111,6 +116,19 @@ const usedStyles = makeStyles((theme) => ({
       },
     },
   },
+  export: {
+    margin: '24px',
+    padding: '12px',
+    borderRadius: 3,
+    color: '#fff',
+    background: '#3f51b5',
+    textTransform: 'uppercase',
+    border: 'none',
+    cursor: 'pointer',
+    '&:hover': {
+      background: '#293a96',
+    },
+  },
   pagination: {
     marginBottom: 24,
   },
@@ -119,67 +137,87 @@ const ContentResult = (props) => {
   const { history } = props;
   const dispatch = useDispatch();
   const classes = usedStyles();
-  const [keyword, setKeyWord] = useState('');
-  const [page, setPage] = useState('');
+  const [page, setPage] = useState(1);
+  const [schedule, setSchedule] = useState('');
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const scheduleListAll = useSelector((state) => state.scheduleListAll);
+  const { loading: loadingSchedulesAll, error: errorSchedulesAll, schedules: schedulesListAll } = scheduleListAll;
+
+  const l = useSelector((state) => state.languageChange);
+
   useEffect(() => {
     if (userInfo) {
+      dispatch(listAllSchedule());
     } else {
       history.push('/');
     }
     window.scrollTo(0, 0);
   }, [userInfo, history, dispatch]);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (keyword) {
-    } else if (keyword.length === 0) {
-      window.location.reload();
+  useEffect(() => {
+    if (schedulesListAll && schedulesListAll.length > 0) {
+      setSchedule(schedulesListAll[0]._id);
     }
-  };
+  }, [schedulesListAll]);
 
-  const handleNewSchedule = () => {
-    history.push('/exam/detail');
-  };
-
-  //   const deleteHandler = (id) => {
-  //     if (window.confirm('Are you sure?')) {
-
-  //     }
-  //   };
+  useEffect(() => {
+    if (schedule) {
+      dispatch(listResult(schedule, page));
+      dispatch(listAllResult(schedule));
+    }
+  }, [dispatch, schedule, page]);
 
   const pageHandler = (e, page) => {
     setPage(page);
   };
 
+  const ExcelFile = ReactExport.ExcelFile;
+  const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+  const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
   return (
     <div className={classes.root}>
       <>
-        <div>
-          <form className={classes.search} onSubmit={submitHandler}>
-            <div className={classes.searchIcon}>
-              <img src={search} alt="search"></img>
-            </div>
-            <InputBase
-              placeholder="Enter Your Search..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              autoFocus
-              value={keyword}
-              onChange={(e) => setKeyWord(e.target.value)}
-            />
-          </form>
-        </div>
         <div className={classes.action}>
-          <Button size="large" variant="contained" color="secondary" onClick={handleNewSchedule}>
-            New schedule
-          </Button>
+          <ExcelFile element={<button className={classes.export}>{l.exportResult}</button>}>
+            {/* <ExcelSheet data={chaptersListAll} name="chapter-list">
+              <ExcelColumn label="ID chapter" value="_id" />
+              <ExcelColumn label="Chapter name" value="name" />
+            </ExcelSheet> */}
+          </ExcelFile>
         </div>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel htmlFor="outlined-subjects-native-simple">{l.schedule}</InputLabel>
+          {loadingSchedulesAll ? (
+            <Loading />
+          ) : errorSchedulesAll ? (
+            <Messages severity={'error'} message={errorSchedulesAll} />
+          ) : (
+            <Select
+              native
+              value={schedule}
+              className={classes.subject}
+              onChange={(e) => {
+                setSchedule(e.target.value);
+              }}
+              label="Schedules"
+              inputProps={{
+                name: 'Schedules',
+                id: 'outlined-schedules-native-simple',
+              }}
+            >
+              {schedulesListAll &&
+                schedulesListAll.length > 0 &&
+                schedulesListAll.map((schedule) => (
+                  <option key={schedule._id} value={schedule._id}>
+                    {schedule.name}
+                  </option>
+                ))}
+            </Select>
+          )}
+        </FormControl>
         <div>
           <table className={classes.table}>
             <thead>
@@ -187,8 +225,6 @@ const ContentResult = (props) => {
                 <th>TEST NAME</th>
                 <th>CREATED BY</th>
                 <th>CREATED DATE</th>
-                <th>STATUS</th>
-                <th></th>
               </tr>
             </thead>
 
@@ -197,19 +233,6 @@ const ContentResult = (props) => {
                 <td>{''}</td>
                 <td>{''}</td>
                 <td>{''}</td>
-                <td>{''}</td>
-                <td>
-                  <Link>
-                    <Button>
-                      <EditIcon />
-                    </Button>
-                  </Link>
-                  <Link>
-                    <Button>
-                      <DeleteIcon />
-                    </Button>
-                  </Link>
-                </td>
               </tr>
             </tbody>
           </table>

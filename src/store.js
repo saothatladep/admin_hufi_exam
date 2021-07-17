@@ -13,6 +13,7 @@ import {
 } from './reducers/userReducers';
 import {
   subjectListReducer,
+  subjectListAllReducer,
   subjectDetailsReducer,
   subjectUpdateReducer,
   subjectCreateReducer,
@@ -44,12 +45,14 @@ import {
 
 import {
   scheduleListReducer,
+  scheduleListAllReducer,
   scheduleCreateReducer,
   scheduleDetailsReducer,
   scheduleUpdateReducer,
   scheduleDeleteReducer,
 } from './reducers/scheduleReducers';
 import { changeLanguageReducer } from './reducers/languageReducer';
+import { resultListReducer, resultListAllReducer } from './reducers/resultReducers';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -60,6 +63,7 @@ const reducer = combineReducers({
   userDelete: userDeleteReducer,
   userImport: userImportReducer,
   subjectList: subjectListReducer,
+  subjectListAll: subjectListAllReducer,
   subjectDetails: subjectDetailsReducer,
   subjectUpdate: subjectUpdateReducer,
   subjectCreate: subjectCreateReducer,
@@ -82,11 +86,14 @@ const reducer = combineReducers({
   examUpdate: examUpdateReducer,
   examDelete: examDeleteReducer,
   scheduleList: scheduleListReducer,
+  scheduleListAll: scheduleListAllReducer,
   scheduleCreate: scheduleCreateReducer,
   scheduleDetails: scheduleDetailsReducer,
   scheduleUpdate: scheduleUpdateReducer,
   scheduleDelete: scheduleDeleteReducer,
   languageChange: changeLanguageReducer,
+  resultList: resultListReducer,
+  resultListAll: resultListAllReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

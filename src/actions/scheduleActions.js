@@ -10,6 +10,9 @@ import {
   SCHEDULE_DETAILS_REQUEST,
   SCHEDULE_DETAILS_RESET,
   SCHEDULE_DETAILS_SUCCESS,
+  SCHEDULE_LIST_ALL_FAIL,
+  SCHEDULE_LIST_ALL_REQUEST,
+  SCHEDULE_LIST_ALL_SUCCESS,
   SCHEDULE_LIST_FAIL,
   SCHEDULE_LIST_REQUEST,
   SCHEDULE_LIST_SUCCESS,
@@ -18,7 +21,7 @@ import {
   SCHEDULE_UPDATE_RESET,
   SCHEDULE_UPDATE_SUCCESS,
 } from '../constants/scheduleConstants';
-import axiosClient from './../api/axiosClient'
+import axiosClient from './../api/axiosClient';
 
 export const listSchedule =
   (keyword = '', pageNumber = '') =>
@@ -52,6 +55,37 @@ export const listSchedule =
       });
     }
   };
+
+export const listAllSchedule = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SCHEDULE_LIST_ALL_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axiosClient.get(`/api/schedules/all`, config);
+
+    dispatch({
+      type: SCHEDULE_LIST_ALL_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SCHEDULE_LIST_ALL_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
 
 export const createSchedule = (schedule) => async (dispatch, getState) => {
   try {
