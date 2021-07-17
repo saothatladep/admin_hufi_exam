@@ -183,7 +183,8 @@ const usedStyles = makeStyles((theme) => ({
       borderRadius: 3,
       cursor: 'pointer',
       color: '#fff',
-      fontSize: 16,
+      fontSize: '0.9375rem',
+      textTransform: 'uppercase',
       '&:hover': {
         backgroundColor: '#1e3092',
       },

@@ -100,7 +100,7 @@ const usedStyles = makeStyles((theme) => ({
             fontSize: 12,
             color: '#fff',
             border: '1px solid #3f51b5',
-            marginLeft: 4,
+            // margin: '0 4px',
             '& svg': {
               fontSize: 24,
             },
@@ -231,12 +231,12 @@ const ContentSchedule = (props) => {
                         <td>{schedule.status ? l.active : l.nonactive}</td>
                         <td>
                           <Link onClick={() => editSchedule(schedule._id)}>
-                            <Button style ={{margin: '4px 0'}}>
+                            <Button style ={{margin: '4px 4px'}}>
                               <EditIcon />
                             </Button>
                           </Link>
                           <Link onClick={() => deleteHandler(schedule._id)}>
-                            <Button style ={{margin: '4px 0'}}>
+                            <Button style ={{margin: '4px 4px'}}>
                               <DeleteIcon />
                             </Button>
                           </Link>

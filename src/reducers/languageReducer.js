@@ -97,7 +97,7 @@ export const changeLanguageReducer = (state = {}, action) => {
         createdBy: 'Created by',
         createdDate: 'Created date',
         subjectName: 'Subject name',
-        chapterName: 'chapter name',
+        chapterName: 'Chapter name',
         newChapter: 'New chapter',
         newQuestion: 'Thêm câu hỏi mới',
         level: 'Level',

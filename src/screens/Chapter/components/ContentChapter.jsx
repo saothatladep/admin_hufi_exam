@@ -158,7 +158,7 @@ const usedStyles = makeStyles((theme) => ({
   },
   title: {
     textAlign: 'center',
-    padding: '16px 24px 0 24px',
+    padding: '0',
     '& h2': {
       fontSize: 24,
       fontWeight: 'bold',
@@ -169,7 +169,7 @@ const usedStyles = makeStyles((theme) => ({
     margin: '0 20px',
     padding: '12px',
     borderRadius: 3,
-    color:'#fff',
+    color: '#fff',
     background: '#3f51b5',
     textTransform: 'uppercase',
     border: 'none',
@@ -177,7 +177,7 @@ const usedStyles = makeStyles((theme) => ({
     '&:hover': {
       background: '#293a96',
     },
-  }
+  },
 }));
 const ContentChapter = (props) => {
   const { history } = props;
@@ -566,10 +566,10 @@ const ContentChapter = (props) => {
             />
             <DialogActions style={{ margin: '0 16px 16px 0' }}>
               <Button type="submit" color="primary" variant="contained">
-                Update
+                {l.update}
               </Button>
               <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                Cancel
+                {l.cancel}
               </Button>
             </DialogActions>
           </form>
