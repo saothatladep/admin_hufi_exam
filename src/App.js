@@ -12,6 +12,7 @@ import EditExam from './screens/Exam/pages/EditExam';
 import EditSchedule from './screens/Schedule/pages/EditSchedule';
 import Schedule from './screens/Schedule/Index';
 import Result from './screens/Result/Index';
+import Information from './screens/Information/Index';
 
 const app = () => {
   return (
@@ -21,6 +22,7 @@ const app = () => {
         <Route path="/subject" component={Subject} />
         <Route path="/chapter" component={Chapter} />
         <Route path="/user" component={User} />
+        <Route path="/information" component={Information} />
         <Route path="/question" component={Question} />
         <Route path="/exam" component={Exam} exact />
         <Route path="/exam/detail" component={DetailExam} />

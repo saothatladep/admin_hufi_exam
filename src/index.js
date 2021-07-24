@@ -6,13 +6,25 @@ import App from './App'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import store from './store'
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      'Quicksand',
+      'sans-serif'
+    ].join(','),
+  }
+});
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>,
+  <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </ThemeProvider>,
   document.getElementById('root')
 )
 

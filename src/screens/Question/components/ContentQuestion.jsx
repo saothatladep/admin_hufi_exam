@@ -16,7 +16,7 @@ import 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { listChapter } from '../../../actions/chapterActions';
+import { listAllChapter, listChapter } from '../../../actions/chapterActions';
 import _ from 'lodash';
 import {
   createQuestion,
@@ -101,7 +101,7 @@ const usedStyles = makeStyles((theme) => ({
   },
   formControl: {
     height: 40,
-    margin: '0 0 16px 0',
+    margin: '0 16px 16px 0',
     '& select': {
       height: 20,
       backgroundColor: '#f5f5f5',
@@ -235,8 +235,8 @@ const ContentQuestion = (props) => {
   const subjectListAll = useSelector((state) => state.subjectListAll);
   const { loading: loadingSubjects, error: errorSubjects, subjects: subjectsList } = subjectListAll;
 
-  const chapterList = useSelector((state) => state.chapterList);
-  const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterList;
+  const chapterListAll = useSelector((state) => state.chapterListAll);
+  const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterListAll;
 
   const questionList = useSelector((state) => state.questionList);
   const { loading: loadingQuestions, error: errorQuestions, questions: questionsList } = questionList;
@@ -289,10 +289,10 @@ const ContentQuestion = (props) => {
   }, [subjectsList]);
 
   useEffect(() => {
-    if (chaptersList && chaptersList.chapters && !chapter) {
-      setChapter(chaptersList.chapters[0]._id);
-    } else if (chaptersList && chaptersList.chapters) {
-      setChapter(chaptersList.chapters[0]._id);
+    if (chaptersList && chaptersList.length > 0 && !chapter) {
+      setChapter(chaptersList[0]._id);
+    } else if (chaptersList && chaptersList.length > 0) {
+      setChapter(chaptersList[0]._id);
     }
   }, [chaptersList, subject]);
 
@@ -305,7 +305,7 @@ const ContentQuestion = (props) => {
   useEffect(() => {
     if (userInfo) {
       if (subject) {
-        dispatch(listChapter(subject));
+        dispatch(listAllChapter(subject));
       }
     } else {
       history.push('/');
@@ -485,8 +485,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-chapters-native-simple',
                   }}
                 >
-                  {chaptersList.chapters.length > 0 &&
-                    chaptersList.chapters.map((chapter) => (
+                  {chaptersList.length > 0 &&
+                    chaptersList.map((chapter) => (
                       <option key={chapter._id} value={chapter._id}>
                         {chapter.name}
                       </option>
@@ -594,7 +594,7 @@ const ContentQuestion = (props) => {
                   native
                   value={subjectChange}
                   onChange={(e) => {
-                    dispatch(listChapter(e.target.value));
+                    dispatch(listAllChapter(e.target.value));
                     setSubjectChange(e.target.value);
                   }}
                   label="Subjects"
@@ -631,8 +631,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-chapters-native-simple',
                   }}
                 >
-                  {chaptersList.chapters.length > 0 &&
-                    chaptersList.chapters.map((chapter) => (
+                  {chaptersList.length > 0 &&
+                    chaptersList.map((chapter) => (
                       <option key={chapter._id} value={chapter._id}>
                         {chapter.name}
                       </option>
@@ -774,7 +774,7 @@ const ContentQuestion = (props) => {
                   native
                   value={subjectChange}
                   onChange={(e) => {
-                    dispatch(listChapter(e.target.value));
+                    dispatch(listAllChapter(e.target.value));
                     setSubjectChange(e.target.value);
                   }}
                   label="Subjects"
@@ -811,8 +811,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-chapters-native-simple',
                   }}
                 >
-                  {chaptersList.chapters.length > 0 &&
-                    chaptersList.chapters.map((chapter) => (
+                  {chaptersList.length > 0 &&
+                    chaptersList.map((chapter) => (
                       <option key={chapter._id} value={chapter._id}>
                         {chapter.name}
                       </option>

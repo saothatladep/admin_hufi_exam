@@ -193,7 +193,7 @@ const usedStyles = makeStyles((theme) => ({
   avatarFile: {
     position: 'relative',
     top: -65,
-    left: -100,
+    left: -50,
     '& input': {
       display: 'none',
     },
@@ -542,7 +542,7 @@ const ContentUser = (props) => {
         aria-labelledby="form-dialog-title-add"
       >
         <DialogTitle id="form-dialog-title-add">{l.user}</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ maxWidth: 548 }}>
           <form onSubmit={addHandler}>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel htmlFor="outlined-roles-native-simple">{l.roles}</InputLabel>
@@ -653,7 +653,7 @@ const ContentUser = (props) => {
               onChange={(e) => setUserAdd({ ...userAdd, password: e.target.value })}
             />
             <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userAdd.avatar} />
-            <DialogActions style={{ margin: '0 16px 16px 0' }}>
+            <DialogActions>
               <form className={classes.avatarFile} id="uploadForm1" onChange={uploadFileHandler}>
                 <input type="file" id="imgFile" />
                 <label for="imgFile">{l.importAvatar}</label>
@@ -677,7 +677,7 @@ const ContentUser = (props) => {
         aria-labelledby="form-dialog-title-update"
       >
         <DialogTitle id="form-dialog-title-update">{l.user}</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ maxWidth: 548 }}>
           {loadingDetails ? (
             <Loading />
           ) : errorDetails ? (
@@ -784,7 +784,7 @@ const ContentUser = (props) => {
                 onChange={(e) => setUserUpdateInfo({ ...userUpdateInfo, phone: e.target.value })}
               />
               <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userUpdateInfo.avatar} />
-              <DialogActions style={{ margin: '0 16px 16px 0' }}>
+              <DialogActions>
                 <form className={classes.avatarFile} id="uploadForm2" onChange={uploadFileUpdateHandler}>
                   <input type="file" id="imgFile" />
                   <label for="imgFile">{l.importAvatar}</label>

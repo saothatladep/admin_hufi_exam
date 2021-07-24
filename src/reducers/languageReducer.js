@@ -23,7 +23,7 @@ const vietnamese = {
   gender: 'Giới tính',
   birthday: 'Ngày sinh',
   phone: 'SĐT',
-  importAvatar: 'Nhập ảnh đại diện',
+  importAvatar: 'Thay đổi ảnh đại diện',
   update: 'cập nhật',
   cancel: 'Huỷ',
   male: 'Nam',
@@ -57,6 +57,9 @@ const vietnamese = {
   timeEnd: 'thời gian kết thúc',
   exportChapter: 'Xuất danh sách chương',
   exportResult: 'Xuất danh kết quả thi',
+  changePassword: 'Thay đổi mật khẩu',
+  confirmPassword: 'Xác nhận mật khẩu',
+  personalInfo: 'Thông tin cá nhân'
 };
 
 export const changeLanguageReducer = (state = {}, action) => {
@@ -87,7 +90,7 @@ export const changeLanguageReducer = (state = {}, action) => {
         gender: 'Gender',
         birthday: 'Birthday',
         phone: 'Phone',
-        importAvatar: 'Import avatar',
+        importAvatar: 'Change avatar',
         update: 'Update',
         cancel: 'Cancel',
         male: 'Male',
@@ -121,6 +124,9 @@ export const changeLanguageReducer = (state = {}, action) => {
         timeEnd: 'Time end',
         exportChapter: 'Export list chapters',
         exportResult: 'Export results',
+        changePassword: 'Change password',
+        confirmPassword: 'Confirm password',
+        personalInfo: 'Personal information'
       };
     default:
       return vietnamese;

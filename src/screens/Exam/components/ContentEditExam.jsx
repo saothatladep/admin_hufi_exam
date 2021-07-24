@@ -11,7 +11,7 @@ import { Pagination } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { listChapter } from '../../../actions/chapterActions';
+import { listChapter, listAllChapter } from '../../../actions/chapterActions';
 import { listQuestion } from '../../../actions/questionActions';
 import { listAllSubjects, listSubjects } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
@@ -192,8 +192,8 @@ const ContentEditExam = (props) => {
   const subjectListAll = useSelector((state) => state.subjectListAll);
   const { loading: loadingSubjects, error: errorSubjects, subjects: subjectsList } = subjectListAll;
 
-  const chapterList = useSelector((state) => state.chapterList);
-  const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterList;
+  const chapterListAll = useSelector((state) => state.chapterListAll);
+  const { loading: loadingChapters, error: errorChapters, chapters: chaptersList } = chapterListAll;
 
   const questionList = useSelector((state) => state.questionList);
   const { loading: loadingQuestions, error: errorQuestions, questions: QuestionsList } = questionList;
@@ -222,10 +222,10 @@ const ContentEditExam = (props) => {
   }, [subjectsList]);
 
   useEffect(() => {
-    if (chaptersList && chaptersList.chapters && !chapter) {
-      setChapter(chaptersList.chapters[0]._id);
-    } else if (chaptersList && chaptersList.chapters) {
-      setChapter(chaptersList.chapters[0]._id);
+    if (chaptersList && chaptersList.length > 0 && !chapter) {
+      setChapter(chaptersList[0]._id);
+    } else if (chaptersList && chaptersList.length > 0) {
+      setChapter(chaptersList[0]._id);
     }
   }, [chaptersList, subject]);
 
@@ -238,7 +238,7 @@ const ContentEditExam = (props) => {
   useEffect(() => {
     if (userInfo) {
       if (subject) {
-        dispatch(listChapter(subject));
+        dispatch(listAllChapter(subject));
       }
     } else {
       history.push('/');
@@ -398,8 +398,8 @@ const ContentEditExam = (props) => {
                       id: 'outlined-chapters-native-simple',
                     }}
                   >
-                    {chaptersList.chapters.length > 0 &&
-                      chaptersList.chapters.map((chapter) => (
+                    {chaptersList.length > 0 &&
+                      chaptersList.map((chapter) => (
                         <option key={chapter._id} value={chapter._id}>
                           {chapter.name}
                         </option>

@@ -11,6 +11,7 @@ import logo from '../../../assets/logo1.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import { ENGLISH, VIETNAMESE } from '../../../constants/languageConstants';
+import { red } from '@material-ui/core/colors';
 
 const usedStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +35,9 @@ const usedStyles = makeStyles((theme) => ({
     '& svg': {
       color: '#fff',
       fontSize: 32,
+      '&:hover': {
+        color: '#ffd04b',
+      }
     },
   },
   language: {
@@ -90,7 +94,7 @@ const Navbar = () => {
             <p>{l.english}</p>
           </div>
           <div className={classes.action}>
-            <Link to={''}>
+            <Link to='/information'>
               <AccountCircle />
             </Link>
             <Link to={''}>

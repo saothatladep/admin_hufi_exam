@@ -499,7 +499,7 @@ const ContentChapter = (props) => {
               style={{ width: 500 }}
               onChange={(e) => setTitleAdd(e.target.value)}
             />
-            <DialogActions style={{ margin: '0 16px 16px 0' }}>
+            <DialogActions>
               <Button type="submit" color="primary" variant="contained">
                 {l.add}
               </Button>
@@ -564,7 +564,7 @@ const ContentChapter = (props) => {
               style={{ width: 500 }}
               onChange={(e) => setTitleUpdate(e.target.value)}
             />
-            <DialogActions style={{ margin: '0 16px 16px 0' }}>
+            <DialogActions>
               <Button type="submit" color="primary" variant="contained">
                 {l.update}
               </Button>
