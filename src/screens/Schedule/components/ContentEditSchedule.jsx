@@ -8,9 +8,9 @@ import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import AlarmIcon from '@material-ui/icons/AddAlarm';
 import RemoveIcon from '@material-ui/icons/Remove';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { Pagination } from '@material-ui/lab';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +23,6 @@ import User from '../../../assets/user.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
 import { SCHEDULE_DETAILS_RESET, SCHEDULE_UPDATE_RESET } from '../../../constants/scheduleConstants';
-
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -214,6 +213,12 @@ const ContentEditSchedule = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (userInfo.role === 2) {
+      history.push('/subject');
+    }
+  }, [userInfo, history]);
+
+  useEffect(() => {
     if (userInfo) {
       dispatch(listExam('', ''));
     } else {
@@ -232,7 +237,7 @@ const ContentEditSchedule = (props) => {
       dispatch({ type: SCHEDULE_DETAILS_RESET });
       history.push('/schedule');
     }
-    
+
     if (!loadingDetails) {
       setSchedule({
         timeStart: schedulesDetails.data.timeStart,
@@ -529,6 +534,7 @@ const ContentEditSchedule = (props) => {
           </div>
 
           <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
+            <UpdateOutlinedIcon />
             {l.update}
           </Button>
         </form>

@@ -9,24 +9,29 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { Pagination } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import ReactExport from 'react-data-export';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   createChapter,
   deleteChapter,
   listAllChapter,
   listChapter,
   listChapterDetails,
-  updateChapter,
+  updateChapter
 } from '../../../actions/chapterActions';
-import ReactExport from 'react-data-export';
-import { listAllSubjects, listSubjects } from '../../../actions/subjectActions';
+import { listAllSubjects } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
@@ -167,13 +172,15 @@ const usedStyles = makeStyles((theme) => ({
   },
   export: {
     margin: '0 20px',
-    padding: '12px',
+    padding: '10px',
     borderRadius: 3,
     color: '#fff',
     background: '#3f51b5',
     textTransform: 'uppercase',
     border: 'none',
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
     '&:hover': {
       background: '#293a96',
     },
@@ -377,7 +384,8 @@ const ContentChapter = (props) => {
                   id: 'outlined-subjects-native-simple',
                 }}
               >
-                {subjectsList && subjectsList.length > 0 &&
+                {subjectsList &&
+                  subjectsList.length > 0 &&
                   subjectsList.map((subject) => (
                     <option key={subject._id} value={subject._id}>
                       {subject.name}
@@ -387,9 +395,17 @@ const ContentChapter = (props) => {
             )}
           </FormControl>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
+            <AddCircleIcon />
             {l.newChapter}
           </Button>
-          <ExcelFile element={<button className={classes.export}>{l.exportChapter}</button>}>
+          <ExcelFile
+            element={
+              <button className={classes.export}>
+                <InsertDriveFileIcon />
+                {l.exportChapter}
+              </button>
+            }
+          >
             <ExcelSheet data={chaptersListAll} name="chapter-list">
               <ExcelColumn label="ID chapter" value="_id" />
               <ExcelColumn label="Chapter name" value="name" />
@@ -476,7 +492,8 @@ const ContentChapter = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList && subjectsList.length > 0 &&
+                  {subjectsList &&
+                    subjectsList.length > 0 &&
                     subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
@@ -501,9 +518,11 @@ const ContentChapter = (props) => {
             />
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
+                <AddCircleOutlineIcon/>
                 {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
+                <CancelOutlinedIcon/>
                 {l.cancel}
               </Button>
             </DialogActions>
@@ -540,7 +559,8 @@ const ContentChapter = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList && subjectsList.length > 0 &&
+                  {subjectsList &&
+                    subjectsList.length > 0 &&
                     subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
@@ -566,9 +586,11 @@ const ContentChapter = (props) => {
             />
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
+                <UpdateOutlinedIcon/>
                 {l.update}
               </Button>
               <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
+                <CancelOutlinedIcon/>
                 {l.cancel}
               </Button>
             </DialogActions>

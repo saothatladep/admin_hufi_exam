@@ -22,6 +22,9 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGOUT,
   USER_UPDATE_FAIL,
+  USER_UPDATE_PASSWORD_FAIL,
+  USER_UPDATE_PASSWORD_REQUEST,
+  USER_UPDATE_PASSWORD_SUCCESS,
   USER_UPDATE_REQUEST,
   USER_UPDATE_RESET,
   USER_UPDATE_SUCCESS,
@@ -207,6 +210,37 @@ export const updateUser = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const updateUserPassword = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_PASSWORD_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axiosClient.put(`/api/users/password/${user._id}`, user, config);
+
+    dispatch({
+      type: USER_UPDATE_PASSWORD_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PASSWORD_FAIL,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }

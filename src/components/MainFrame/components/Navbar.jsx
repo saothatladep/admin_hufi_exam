@@ -37,7 +37,7 @@ const usedStyles = makeStyles((theme) => ({
       fontSize: 32,
       '&:hover': {
         color: '#ffd04b',
-      }
+      },
     },
   },
   language: {
@@ -66,12 +66,16 @@ const Navbar = () => {
       dispatch({
         type: ENGLISH,
       });
+      localStorage.setItem('type', JSON.stringify('ENGLISH'));
     } else {
       dispatch({
         type: VIETNAMESE,
       });
+      localStorage.setItem('type', JSON.stringify('VIETNAMESE'));
     }
   };
+
+  const type = JSON.parse(localStorage.getItem('type'));
 
   const logOutHandler = () => {
     dispatch(logout());
@@ -87,14 +91,14 @@ const Navbar = () => {
             <p>{l.vietnamese}</p>
             <Switch
               onChange={handleChange}
-              checked={languages}
+              checked={type === 'ENGLISH'}
               color="red"
               inputProps={{ 'aria-label': 'checkbox with default color' }}
             />
             <p>{l.english}</p>
           </div>
           <div className={classes.action}>
-            <Link to='/information'>
+            <Link to="/information">
               <AccountCircle />
             </Link>
             <Link to={''}>

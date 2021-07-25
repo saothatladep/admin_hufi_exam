@@ -9,33 +9,38 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { Pagination } from '@material-ui/lab';
 import 'date-fns';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { listAllChapter, listChapter } from '../../../actions/chapterActions';
-import _ from 'lodash';
+import * as XLSX from 'xlsx';
+import { listAllChapter } from '../../../actions/chapterActions';
 import {
   createQuestion,
   deleteQuestion,
   importQuestion,
   listQuestion,
   listQuestionDetails,
-  updateQuestion,
+  updateQuestion
 } from '../../../actions/questionActions';
-import { listAllSubjects, listSubjects } from '../../../actions/subjectActions';
+import { listAllSubjects } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
 import {
   QUESTION_CREATE_RESET,
   QUESTION_DETAILS_RESET,
-  QUESTION_UPDATE_RESET,
+  QUESTION_UPDATE_RESET
 } from '../../../constants/questionConstants';
-import * as XLSX from 'xlsx';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -186,8 +191,10 @@ const usedStyles = makeStyles((theme) => ({
       display: 'none',
     },
     '& label': {
-      padding: 11.6,
+      padding: 10,
       backgroundColor: '#3f51b5',
+      display: 'flex',
+      alignItems: 'center',
       borderRadius: 3,
       cursor: 'pointer',
       color: '#fff',
@@ -454,7 +461,8 @@ const ContentQuestion = (props) => {
                   id: 'outlined-subjects-native-simple',
                 }}
               >
-                {subjectsList && subjectsList.length > 0 &&
+                {subjectsList &&
+                  subjectsList.length > 0 &&
                   subjectsList.map((subject) => (
                     <option key={subject._id} value={subject._id}>
                       {subject.name}
@@ -517,11 +525,15 @@ const ContentQuestion = (props) => {
             </Select>
           </FormControl>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
+            <AddCircleIcon />
             {l.newQuestion}
           </Button>
           <form className={classes.files} id="uploadForm">
             <input type="file" id="excelFile" onChange={(e) => uploadFileImportHandler(e)} />
-            <label for="excelFile">{l.importFile}</label>
+            <label for="excelFile">
+              <InsertDriveFileIcon />
+              {l.importFile}
+            </label>
           </form>
         </div>
         {loadingQuestions ? (
@@ -603,7 +615,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList && subjectsList.length > 0 &&
+                  {subjectsList &&
+                    subjectsList.length > 0 &&
                     subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
@@ -743,9 +756,11 @@ const ContentQuestion = (props) => {
             </FormControl>
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
+                <AddCircleOutlineIcon/>
                 {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
+                <CancelOutlinedIcon/>
                 {l.cancel}
               </Button>
             </DialogActions>
@@ -783,7 +798,8 @@ const ContentQuestion = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList && subjectsList.length > 0 &&
+                  {subjectsList &&
+                    subjectsList.length > 0 &&
                     subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
@@ -928,9 +944,11 @@ const ContentQuestion = (props) => {
             </FormControl>
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
+                <UpdateOutlinedIcon/>
                 {l.update}
               </Button>
               <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
+                <CancelOutlinedIcon/>
                 {l.cancel}
               </Button>
             </DialogActions>

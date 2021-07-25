@@ -16,6 +16,11 @@ import { listAllSchedule } from '../../../actions/scheduleActions';
 import { listAllResult, listResult } from '../../../actions/resultActions';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -125,6 +130,8 @@ const usedStyles = makeStyles((theme) => ({
     textTransform: 'uppercase',
     border: 'none',
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
     '&:hover': {
       background: '#293a96',
     },
@@ -181,7 +188,14 @@ const ContentResult = (props) => {
     <div className={classes.root}>
       <>
         <div className={classes.action}>
-          <ExcelFile element={<button className={classes.export}>{l.exportResult}</button>}>
+          <ExcelFile
+            element={
+              <button className={classes.export}>
+                <InsertDriveFileIcon />
+                {l.exportResult}
+              </button>
+            }
+          >
             {/* <ExcelSheet data={chaptersListAll} name="chapter-list">
               <ExcelColumn label="ID chapter" value="_id" />
               <ExcelColumn label="Chapter name" value="name" />

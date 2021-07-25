@@ -7,6 +7,7 @@ import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import AlarmIcon from '@material-ui/icons/AddAlarm';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { Pagination } from '@material-ui/lab';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -203,6 +204,12 @@ const ContentDetailSchedule = (props) => {
   const { loading: loadingCreate, error: errorCreate, success: successCreate } = scheduleCreate;
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (userInfo.role === 2) {
+      history.push('/subject');
+    }
+  }, [userInfo, history]);
 
   useEffect(() => {
     if (userInfo) {
@@ -503,6 +510,7 @@ const ContentDetailSchedule = (props) => {
       </div>
 
       <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
+        <AddCircleOutlineIcon />
         {l.add}
       </Button>
     </form>

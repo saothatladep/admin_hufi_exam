@@ -10,6 +10,7 @@ import {
   userCreateReducer,
   userDeleteReducer,
   userImportReducer,
+  userUpdatePasswordReducer,
 } from './reducers/userReducers';
 import {
   subjectListReducer,
@@ -62,6 +63,7 @@ const reducer = combineReducers({
   userCreate: userCreateReducer,
   userDelete: userDeleteReducer,
   userImport: userImportReducer,
+  userUpdatePassword: userUpdatePasswordReducer,
   subjectList: subjectListReducer,
   subjectListAll: subjectListAllReducer,
   subjectDetails: subjectDetailsReducer,

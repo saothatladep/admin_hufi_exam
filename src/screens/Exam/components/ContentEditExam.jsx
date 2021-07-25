@@ -7,20 +7,20 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { Pagination } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { listChapter, listAllChapter } from '../../../actions/chapterActions';
+import { listAllChapter } from '../../../actions/chapterActions';
+import { listExamDetails, updateExam } from '../../../actions/examActions';
 import { listQuestion } from '../../../actions/questionActions';
-import { listAllSubjects, listSubjects } from '../../../actions/subjectActions';
+import { listAllSubjects } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
-import RemoveIcon from '@material-ui/icons/Remove';
-import { createExam, listExamDetails, updateExam } from '../../../actions/examActions';
-import { EXAM_CREATE_RESET, EXAM_DETAILS_RESET, EXAM_UPDATE_RESET } from '../../../constants/examConstants';
-
+import { EXAM_DETAILS_RESET, EXAM_UPDATE_RESET } from '../../../constants/examConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -207,6 +207,12 @@ const ContentEditExam = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (userInfo.role === 2) {
+      history.push('/subject');
+    }
+  }, [userInfo, history]);
+
+  useEffect(() => {
     if (userInfo) {
       dispatch(listAllSubjects());
     } else {
@@ -369,7 +375,8 @@ const ContentEditExam = (props) => {
                     id: 'outlined-subjects-native-simple',
                   }}
                 >
-                  {subjectsList && subjectsList.length > 0 &&
+                  {subjectsList &&
+                    subjectsList.length > 0 &&
                     subjectsList.map((subject) => (
                       <option key={subject._id} value={subject._id}>
                         {subject.name}
@@ -506,6 +513,7 @@ const ContentEditExam = (props) => {
       </div>
 
       <Button className={classes.buttonAdd} type="submit" color="primary" variant="contained">
+        <UpdateOutlinedIcon />
         {l.update}
       </Button>
     </form>

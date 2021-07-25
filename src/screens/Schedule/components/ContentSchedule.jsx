@@ -1,6 +1,8 @@
 import { Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Brightness1Icon from '@material-ui/icons/Brightness1';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Pagination } from '@material-ui/lab';
@@ -136,6 +138,12 @@ const ContentSchedule = (props) => {
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = scheduleDelete;
 
   useEffect(() => {
+    if (userInfo.role === 2) {
+      history.push('/subject');
+    }
+  }, [userInfo, history]);
+
+  useEffect(() => {
     if (userInfo) {
       dispatch(listSchedule(keyword, page));
     } else {
@@ -196,6 +204,7 @@ const ContentSchedule = (props) => {
         </div>
         <div className={classes.action}>
           <Button size="large" variant="contained" color="secondary" onClick={handleNewSchedule}>
+            <AddCircleIcon />
             {l.newSchedule}
           </Button>
         </div>
@@ -228,7 +237,13 @@ const ContentSchedule = (props) => {
                         <td>{moment(schedule.timeEnd).format('DD/MM/YYYY, HH:mm')}</td>
                         <td>{schedule.user.fullName}</td>
                         <td>{moment(schedule.createdAt).format('DD/MM/YYYY, HH:mm')}</td>
-                        <td>{schedule.status ? l.active : l.nonActive}</td>
+                        <td>
+                          {schedule.status ? (
+                            <Brightness1Icon style={{ color: '#00df00' }} />
+                          ) : (
+                            <Brightness1Icon style={{ color: '#ff6161' }} />
+                          )}
+                        </td>
                         <td>
                           <Link onClick={() => editSchedule(schedule._id)}>
                             <Button style={{ margin: '4px 4px' }}>

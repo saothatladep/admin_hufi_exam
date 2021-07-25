@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import MainFrame from '../../components/MainFrame/Index';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import axiosClient from '../../api/axiosClient.js';
 import moment from 'moment';
+import Messages from '../../components/Messages';
+import { logout, updateUserPassword } from '../../actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { USER_UPDATE_PASSWORD_RESET } from '../../constants/userConstants';
+
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -61,36 +65,59 @@ const usedStyles = makeStyles((theme) => ({
 }));
 const Information = (props) => {
   const classes = usedStyles();
-  const { location } = props;
+  const dispatch = useDispatch();
+  const { location, history } = props;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const userUpdatePassword = useSelector((state) => state.userUpdatePassword);
+  const { loading, error, success } = userUpdatePassword;
+
   const l = useSelector((state) => state.languageChange);
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [changePassword, setChangePassword] = useState({
+    _id: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [message, setMessage] = useState('');
 
-  const uploadFileUpdateHandler = async (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
+  useEffect(() => {
+    if (!userInfo) {
+      history.push('/');
+    } else {
+      if (success) {
+        setOpenUpdate(false);
+        dispatch({ type: USER_UPDATE_PASSWORD_RESET });
+        setMessage('');
+        setChangePassword({
+          _id: '',
+          oldPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+        dispatch(logout());
+      } else if (error) {
+        setMessage('Change password failed');
+      }
+    }
+    window.scrollTo(0, 0);
+    // window.location.reload(false);
+  }, [dispatch, history, userInfo, success, error]);
 
-    formData.append(`image`, file);
-
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      const { data } = await axiosClient.post('/api/upload', formData, config);
-
-      //   setUserUpdateInfo({ ...userUpdateInfo, avatar: data });
-    } catch (error) {
-      console.error(error);
+  const updatePasswordHandler = (e) => {
+    e.preventDefault();
+    if (changePassword.newPassword !== changePassword.confirmPassword) {
+      setMessage('Password do not match');
+    } else {
+      dispatch(updateUserPassword({ _id: userInfo._id, newPassword: changePassword.newPassword }));
     }
   };
 
-  const updatePasswordHandler = () => {};
-
   const handleCloseAdd = () => {
     setOpenUpdate(false);
+    setMessage('');
   };
   const openChangePassword = () => {
     setOpenUpdate(true);
@@ -106,10 +133,6 @@ const Information = (props) => {
             <h1>{l.personalInfo}</h1>
             <div className={classes.info}>
               <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userInfo.avatar} />
-              <form className={classes.avatarFile} id="uploadForm2" onChange={uploadFileUpdateHandler}>
-                <input type="file" id="imgFile" />
-                <label for="imgFile">{l.importAvatar}</label>
-              </form>
               <div className={classes.divide}>
                 <TextField
                   variant="outlined"
@@ -194,6 +217,7 @@ const Information = (props) => {
             aria-labelledby="form-dialog-title-add"
             // style={{ maxWidth: 546 }}
           >
+            {message && <Messages severity={'warning'} message={message} />}
             <DialogTitle id="form-dialog-title-add">{l.changePassword}</DialogTitle>
             <DialogContent style={{ maxWidth: 548 }}>
               <form onSubmit={updatePasswordHandler}>
@@ -201,24 +225,30 @@ const Information = (props) => {
                   variant="outlined"
                   margin="normal"
                   fullWidth
+                  type="password"
                   id="password"
-                  label={l.password}
+                  label={l.newPassword}
                   name="password"
                   required
-
-                  // onChange={(e) => setUserAdd({ ...userAdd, fullName: e.target.value })}
+                  onChange={(e) => {
+                    setChangePassword({ ...changePassword, newPassword: e.target.value });
+                    setMessage('');
+                  }}
                 />
                 <TextField
                   variant="outlined"
                   margin="normal"
                   fullWidth
+                  type="password"
                   id="confirmPassword"
                   label={l.confirmPassword}
                   name="confirmPassword"
-                  type="confirmPassword"
                   required
                   style={{ width: 500 }}
-                  // onChange={(e) => setUserAdd({ ...userAdd, email: e.target.value })}
+                  onChange={(e) => {
+                    setChangePassword({ ...changePassword, confirmPassword: e.target.value });
+                    setMessage('');
+                  }}
                 />
                 <DialogActions className={classes.dialog}>
                   <Button type="submit" color="primary" variant="contained">

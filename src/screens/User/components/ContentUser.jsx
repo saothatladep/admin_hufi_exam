@@ -9,14 +9,21 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { Pagination } from '@material-ui/lab';
-import axiosClient from '../../../api/axiosClient.js';
 import 'date-fns';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import PhotoCameraOutlinedIcon from '@material-ui/icons/PhotoCameraOutlined';
 import {
   createUser,
   deleteUser,
@@ -25,18 +32,12 @@ import {
   listUserDetails,
   updateUser,
 } from '../../../actions/userActions';
+import axiosClient from '../../../api/axiosClient.js';
 import search from '../../../assets/search.png';
 import User from '../../../assets/user.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
-import {
-  USER_CREATE_RESET,
-  USER_DETAILS_RESET,
-  USER_IMPORT_RESET,
-  USER_UPDATE_RESET,
-} from '../../../constants/userConstants';
-import * as XLSX from 'xlsx';
-import moment from 'moment';
+import { USER_CREATE_RESET, USER_DETAILS_RESET, USER_UPDATE_RESET } from '../../../constants/userConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
@@ -178,13 +179,15 @@ const usedStyles = makeStyles((theme) => ({
       display: 'none',
     },
     '& label': {
-      padding: 11.6,
+      padding: 10,
       backgroundColor: '#3f51b5',
       borderRadius: 3,
       cursor: 'pointer',
       color: '#fff',
       fontSize: '0.9375rem',
       textTransform: 'uppercase',
+      display: 'flex',
+      alignItems: 'center',
       '&:hover': {
         backgroundColor: '#1e3092',
       },
@@ -193,7 +196,26 @@ const usedStyles = makeStyles((theme) => ({
   avatarFile: {
     position: 'relative',
     top: -65,
-    left: -50,
+    left: 0,
+    '& input': {
+      display: 'none',
+    },
+    '& label': {
+      padding: 11.6,
+      backgroundColor: '#ff8a0c',
+      borderRadius: 3,
+      cursor: 'pointer',
+      color: '#fff',
+      fontSize: 16,
+      '&:hover': {
+        backgroundColor: '#d67002',
+      },
+    },
+  },
+  avatarFileUpdate: {
+    position: 'relative',
+    top: -65,
+    left: 30,
     '& input': {
       display: 'none',
     },
@@ -274,6 +296,12 @@ const ContentUser = (props) => {
 
   const userDelete = useSelector((state) => state.userDelete);
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = userDelete;
+
+  useEffect(() => {
+    if (userInfo.role === 2) {
+      history.push('/subject');
+    }
+  }, [userInfo, history]);
 
   useEffect(() => {
     if (userInfo) {
@@ -467,12 +495,21 @@ const ContentUser = (props) => {
               <option value={3}>{l.student}</option>
             </Select>
           </FormControl>
-          <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
-            {l.newUser}
+          <Button
+            style={{ padding: '8px 12px' }}
+            size="large"
+            variant="contained"
+            color="secondary"
+            onClick={() => handleClickOpenAdd()}
+          >
+            <AddCircleIcon /> {l.newUser}
           </Button>
           <form className={classes.files} id="uploadForm">
             <input type="file" id="excelFile" onChange={(e) => uploadFileImportHandler(e)} />
-            <label for="excelFile">{l.importFile}</label>
+            <label for="excelFile">
+              <InsertDriveFileIcon />
+              {l.importFile}
+            </label>
           </form>
         </div>
         {loadingUsers ? (
@@ -656,12 +693,17 @@ const ContentUser = (props) => {
             <DialogActions>
               <form className={classes.avatarFile} id="uploadForm1" onChange={uploadFileHandler}>
                 <input type="file" id="imgFile" />
-                <label for="imgFile">{l.importAvatar}</label>
+                <label for="imgFile">
+                  <PhotoCameraOutlinedIcon style={{ margin: '0 0 -7px 0', paddingRight: 4 }} />
+                  {l.importAvatar}
+                </label>
               </form>
               <Button type="submit" color="primary" variant="contained">
+                <AddCircleOutlineIcon />
                 {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
+                <CancelOutlinedIcon />
                 {l.cancel}
               </Button>
             </DialogActions>
@@ -785,14 +827,19 @@ const ContentUser = (props) => {
               />
               <Avatar style={{ width: 75, height: 75, marginTop: 4 }} alt="avatar" src={userUpdateInfo.avatar} />
               <DialogActions>
-                <form className={classes.avatarFile} id="uploadForm2" onChange={uploadFileUpdateHandler}>
+                <form className={classes.avatarFileUpdate} id="uploadForm2" onChange={uploadFileUpdateHandler}>
                   <input type="file" id="imgFile" />
-                  <label for="imgFile">{l.importAvatar}</label>
+                  <label for="imgFile">
+                    <PhotoCameraOutlinedIcon style={{ margin: '0 0 -7px 0', paddingRight: 4 }} />
+                    {l.importAvatar}
+                  </label>
                 </form>
                 <Button type="submit" color="primary" variant="contained">
+                  <UpdateOutlinedIcon />
                   {l.update}
                 </Button>
                 <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
+                  <CancelOutlinedIcon />
                   {l.cancel}
                 </Button>
               </DialogActions>

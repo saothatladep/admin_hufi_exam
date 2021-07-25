@@ -1,17 +1,18 @@
 import { Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Brightness1Icon from '@material-ui/icons/Brightness1';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Pagination } from '@material-ui/lab';
-import axios from 'axios';
 import 'date-fns';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import search from '../../../assets/search.png';
-import moment from 'moment';
 import { deleteExam, listExam } from '../../../actions/examActions';
+import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
 import Messages from '../../../components/Messages';
 const usedStyles = makeStyles((theme) => ({
@@ -137,6 +138,12 @@ const ContentExam = (props) => {
   const { loading: loadingDelete, error: errorDelete, success: successDelete } = examDelete;
 
   useEffect(() => {
+    if (userInfo.role === 2) {
+      history.push('/subject');
+    }
+  }, [userInfo, history]);
+
+  useEffect(() => {
     if (userInfo) {
       dispatch(listExam(keyword, page));
     } else {
@@ -197,6 +204,7 @@ const ContentExam = (props) => {
         </div>
         <div className={classes.action}>
           <Button size="large" variant="contained" color="secondary" onClick={handleNewExam}>
+            <AddCircleIcon/>
             {l.newExam}
           </Button>
         </div>
@@ -225,7 +233,13 @@ const ContentExam = (props) => {
                         <td>{exam.name}</td>
                         <td>{exam.user.fullName}</td>
                         <td>{moment(exam.createdAt).format('DD/MM/YYYY, HH:mm')}</td>
-                        <td>{exam.status ? l.active : l.nonActive}</td>
+                        <td>
+                          {exam.status ? (
+                            <Brightness1Icon style={{ color: '#00df00' }} />
+                          ) : (
+                            <Brightness1Icon style={{ color: '#ff6161' }} />
+                          )}
+                        </td>
                         <td>
                           <Link onClick={() => editExam(exam._id)}>
                             <Button>

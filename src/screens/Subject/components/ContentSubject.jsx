@@ -6,19 +6,22 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { Pagination } from '@material-ui/lab';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 import {
-  listSubjectDetails,
-  listSubjects,
-  updateSubject,
   createSubject,
-  deleteSubject,
+  deleteSubject, listSubjectDetails,
+  listSubjects,
+  updateSubject
 } from '../../../actions/subjectActions';
 import search from '../../../assets/search.png';
 import Loading from '../../../components/Loading';
@@ -269,6 +272,7 @@ const ContentSubject = (props) => {
             </form>
           </div>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
+            <AddCircleIcon/>
             {l.newSubject}
           </Button>
           <div>
@@ -347,9 +351,11 @@ const ContentSubject = (props) => {
               />
               <DialogActions>
                 <Button type="submit" color="primary" variant="contained">
+                  <UpdateOutlinedIcon/>
                   {l.update}
                 </Button>
                 <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
+                  <CancelOutlinedIcon/>
                   {l.cancel}
                 </Button>
               </DialogActions>
@@ -383,9 +389,11 @@ const ContentSubject = (props) => {
             />
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
+                <AddCircleOutlineIcon/>
                 {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
+                <CancelOutlinedIcon/>
                 {l.cancel}
               </Button>
             </DialogActions>

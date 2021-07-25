@@ -59,16 +59,13 @@ const vietnamese = {
   exportResult: 'Xuất danh kết quả thi',
   changePassword: 'Thay đổi mật khẩu',
   confirmPassword: 'Xác nhận mật khẩu',
-  personalInfo: 'Thông tin cá nhân'
+  personalInfo: 'Thông tin cá nhân',
+  newPassword: 'Mật khẩu mới',
+  oldPassword: 'Mật khẩu cũ',
 };
 
-export const changeLanguageReducer = (state = {}, action) => {
-  switch (action.type) {
-    case VIETNAMESE:
-      return vietnamese;
-    case ENGLISH:
-      return {
-        vietnamese: 'Vietnamese',
+const english = {
+  vietnamese: 'Vietnamese',
         english: 'English',
         search: 'Enter your search ...',
         roles: 'Roles',
@@ -103,7 +100,7 @@ export const changeLanguageReducer = (state = {}, action) => {
         subjectName: 'Subject name',
         chapterName: 'Chapter name',
         newChapter: 'New chapter',
-        newQuestion: 'Thêm câu hỏi mới',
+        newQuestion: 'New question',
         level: 'Level',
         allLevel: 'All level',
         easy: 'Easy',
@@ -126,9 +123,18 @@ export const changeLanguageReducer = (state = {}, action) => {
         exportResult: 'Export results',
         changePassword: 'Change password',
         confirmPassword: 'Confirm password',
-        personalInfo: 'Personal information'
-      };
-    default:
+        personalInfo: 'Personal information',
+        newPassword: 'New password',
+        oldPassword: 'Old password',
+};
+
+export const changeLanguageReducer = (state = {}, action) => {
+  switch (action.type) {
+    case VIETNAMESE:
       return vietnamese;
+    case ENGLISH:
+      return english;
+    default:
+      return JSON.parse(localStorage.getItem('type')) === 'ENGLISH' ? english : vietnamese;
   }
 };
