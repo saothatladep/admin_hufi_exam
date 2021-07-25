@@ -77,13 +77,11 @@ const usedStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     width: '100%',
     '& span': {
-      fontSize: 24,
       fontWeight: '700',
       color: '#111',
       margin: '4px 0 0 22px',
       textTransform: 'uppercase',
       fontSize: 22,
-      fontFamily: 'Quicksand, sans-serif',
     },
     '& img': {
       width: 30,
@@ -107,6 +105,12 @@ const usedStyles = makeStyles((theme) => ({
     '& img': {
       width: 100,
     },
+  },
+  license: {
+    borderTop: '2px solid #f3f3f3',
+    fontSize: 10,
+    textAlign: 'center',
+    padding: '16px 0 0 0',
   },
 }));
 const Dashboard = (props) => {
@@ -249,6 +253,9 @@ const Dashboard = (props) => {
               </ListItem>
             </List>
           )}
+        </div>
+        <div className={classes.license}>
+          Copyright © 2010-2021 TonTon All rights reserved
         </div>
       </div>
     </div>

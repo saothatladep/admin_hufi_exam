@@ -19,7 +19,7 @@ const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
     backgroundColor: '#fff',
-    width: 1271,
+    width: 1254,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

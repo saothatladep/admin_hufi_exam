@@ -42,7 +42,7 @@ const usedStyles = makeStyles((theme) => ({
   root: {
     margin: '74px 0 0 265px',
     backgroundColor: '#fff',
-    width: 1271,
+    width: 1270,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -196,7 +196,7 @@ const usedStyles = makeStyles((theme) => ({
   avatarFile: {
     position: 'relative',
     top: -65,
-    left: 0,
+    left: -40,
     '& input': {
       display: 'none',
     },
@@ -215,7 +215,7 @@ const usedStyles = makeStyles((theme) => ({
   avatarFileUpdate: {
     position: 'relative',
     top: -65,
-    left: 30,
+    left: -10,
     '& input': {
       display: 'none',
     },
