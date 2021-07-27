@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import MainFrame from '../../components/MainFrame/Index';
-import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
-import axiosClient from '../../api/axiosClient.js';
+import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import Messages from '../../components/Messages';
-import { logout, updateUserPassword } from '../../actions/userActions';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { logout, updateUserPassword } from '../../actions/userActions';
+import MainFrame from '../../components/MainFrame/Index';
+import Messages from '../../components/Messages';
+import Meta from '../../components/Meta';
 import { USER_UPDATE_PASSWORD_RESET } from '../../constants/userConstants';
 
 const usedStyles = makeStyles((theme) => ({
@@ -128,6 +128,7 @@ const Information = (props) => {
         ''
       ) : (
         <>
+          <Meta title={`TonTon | ${l.personalInfo}`} />
           <MainFrame location={location} />
           <div className={classes.root}>
             <h1>{l.personalInfo}</h1>

@@ -518,11 +518,11 @@ const ContentChapter = (props) => {
             />
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
-                <AddCircleOutlineIcon/>
+                <AddCircleOutlineIcon />
                 {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
-                <CancelOutlinedIcon/>
+                <CancelOutlinedIcon />
                 {l.cancel}
               </Button>
             </DialogActions>
@@ -586,11 +586,11 @@ const ContentChapter = (props) => {
             />
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
-                <UpdateOutlinedIcon/>
+                <UpdateOutlinedIcon />
                 {l.update}
               </Button>
               <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                <CancelOutlinedIcon/>
+                <CancelOutlinedIcon />
                 {l.cancel}
               </Button>
             </DialogActions>

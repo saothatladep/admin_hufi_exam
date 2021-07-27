@@ -64,6 +64,7 @@ const vietnamese = {
   oldPassword: 'Mật khẩu cũ',
   templateUser: 'Mẫu nhập dữ liệu người dùng',
   templateQuestion: 'Mẫu nhập dữ liệu câu hỏi',
+  logIn: 'Đăng nhập',
 };
 
 const english = {
@@ -130,6 +131,7 @@ const english = {
   oldPassword: 'Old password',
   templateUser: 'Template import user data',
   templateQuestion: 'Template import question data',
+  logIn: 'Log in',
 };
 
 export const changeLanguageReducer = (state = {}, action) => {

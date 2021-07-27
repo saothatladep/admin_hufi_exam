@@ -19,7 +19,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   createSubject,
-  deleteSubject, listSubjectDetails,
+  deleteSubject,
+  listSubjectDetails,
   listSubjects,
   updateSubject
 } from '../../../actions/subjectActions';
@@ -272,7 +273,7 @@ const ContentSubject = (props) => {
             </form>
           </div>
           <Button size="large" variant="contained" color="secondary" onClick={() => handleClickOpenAdd()}>
-            <AddCircleIcon/>
+            <AddCircleIcon />
             {l.newSubject}
           </Button>
           <div>
@@ -351,11 +352,11 @@ const ContentSubject = (props) => {
               />
               <DialogActions>
                 <Button type="submit" color="primary" variant="contained">
-                  <UpdateOutlinedIcon/>
+                  <UpdateOutlinedIcon />
                   {l.update}
                 </Button>
                 <Button onClick={handleCloseUpdate} color="secondary" variant="contained">
-                  <CancelOutlinedIcon/>
+                  <CancelOutlinedIcon />
                   {l.cancel}
                 </Button>
               </DialogActions>
@@ -389,11 +390,11 @@ const ContentSubject = (props) => {
             />
             <DialogActions>
               <Button type="submit" color="primary" variant="contained">
-                <AddCircleOutlineIcon/>
+                <AddCircleOutlineIcon />
                 {l.add}
               </Button>
               <Button onClick={handleCloseAdd} color="secondary" variant="contained">
-                <CancelOutlinedIcon/>
+                <CancelOutlinedIcon />
                 {l.cancel}
               </Button>
             </DialogActions>

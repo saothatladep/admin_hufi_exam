@@ -339,6 +339,7 @@ const ContentUser = (props) => {
     page,
     successDelete,
     successUpdate,
+    keyword,
     successImport,
   ]);
 

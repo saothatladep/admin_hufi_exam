@@ -15,6 +15,8 @@ import { ENGLISH, VIETNAMESE } from '../../../constants/languageConstants';
 import ReactExport from 'react-data-export';
 import xls from '../../../assets/action/xls.png';
 import moment from 'moment';
+import User from '../../../assets/user.png';
+
 const usedStyles = makeStyles((theme) => ({
   root: {
     height: 76,
@@ -120,8 +122,8 @@ const Navbar = () => {
       phone: '0903010101',
       code: 'NVA',
       password: '123456',
-      birthday: new Date(),
-      avatar: '',
+      birthday: moment(new Date()).format('YYYY-MM-DD'),
+      avatar: User,
     },
     {
       role: 2,
@@ -131,8 +133,8 @@ const Navbar = () => {
       phone: '0903020202',
       code: 'NVB',
       password: '123456',
-      birthday: new Date(),
-      avatar: '',
+      birthday: moment(new Date()).format('YYYY-MM-DD'),
+      avatar: User,
     },
     {
       role: 3,
@@ -142,8 +144,8 @@ const Navbar = () => {
       phone: '0903030303',
       code: 'NVC',
       password: '123456',
-      birthday: new Date(),
-      avatar: '',
+      birthday: moment(new Date()).format('YYYY-MM-DD'),
+      avatar: User,
     },
   ];
   const questionTemplate = [
