@@ -153,7 +153,29 @@ const ContentResult = (props) => {
   const scheduleListAll = useSelector((state) => state.scheduleListAll);
   const { loading: loadingSchedulesAll, error: errorSchedulesAll, schedules: schedulesListAll } = scheduleListAll;
 
+  const resultListAll = useSelector((state) => state.resultListAll);
+  const { loading: loadingResultsAll, results: resultsListAll } = resultListAll;
+
+  const resultList = useSelector((state) => state.resultList);
+  const { loading: loadingResultList, error: errorResultList, results: resultsList } = resultList;
+
   const l = useSelector((state) => state.languageChange);
+
+  const [exportResult, setExportResult] = useState([]);
+
+  useEffect(() => {
+    if (resultsListAll.length > 0) {
+      const data = [];
+      resultsListAll.map((result) =>
+        data.push({
+          code: result.user.code,
+          fullName: result.user.fullName,
+          score: result.score,
+        })
+      );
+      setExportResult(data);
+    }
+  }, [resultsListAll]);
 
   useEffect(() => {
     if (userInfo) {
@@ -196,10 +218,11 @@ const ContentResult = (props) => {
               </button>
             }
           >
-            {/* <ExcelSheet data={chaptersListAll} name="chapter-list">
-              <ExcelColumn label="ID chapter" value="_id" />
-              <ExcelColumn label="Chapter name" value="name" />
-            </ExcelSheet> */}
+            <ExcelSheet data={exportResult} name="result-list">
+              <ExcelColumn label={l.code} value="code" />
+              <ExcelColumn label={l.fullName} value="fullName" />
+              <ExcelColumn label={l.score} value="score" />
+            </ExcelSheet>
           </ExcelFile>
         </div>
         <FormControl variant="outlined" className={classes.formControl}>
@@ -232,25 +255,34 @@ const ContentResult = (props) => {
             </Select>
           )}
         </FormControl>
-        <div>
-          <table className={classes.table}>
-            <thead>
-              <tr>
-                <th>TEST NAME</th>
-                <th>CREATED BY</th>
-                <th>CREATED DATE</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr key={''}>
-                <td>{''}</td>
-                <td>{''}</td>
-                <td>{''}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {loadingResultList ? (
+          <Loading />
+        ) : errorResultList ? (
+          <Messages severity={'error'} message={errorResultList} />
+        ) : (
+          <div>
+            <table className={classes.table}>
+              <thead>
+                <tr>
+                  <th>{l.code}</th>
+                  <th>{l.fullName}</th>
+                  <th>{l.score}</th>
+                  <th>{l.createdDate}</th>
+                </tr>
+              </thead>
+              {resultsList.results.map((result) => (
+                <tbody>
+                  <tr key={result._id}>
+                    <td>{result.user.code}</td>
+                    <td>{result.user.fullName}</td>
+                    <td>{result.score}</td>
+                    <td>{moment(result.createdAt).format('DD-MM-YYYY')}</td>
+                  </tr>
+                </tbody>
+              ))}
+            </table>
+          </div>
+        )}
         <Pagination
           className={classes.pagination}
           color="primary"

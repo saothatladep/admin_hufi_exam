@@ -65,6 +65,7 @@ const vietnamese = {
   templateUser: 'Mẫu nhập dữ liệu người dùng',
   templateQuestion: 'Mẫu nhập dữ liệu câu hỏi',
   logIn: 'Đăng nhập',
+  score: 'Điểm',
 };
 
 const english = {
@@ -132,6 +133,7 @@ const english = {
   templateUser: 'Template import user data',
   templateQuestion: 'Template import question data',
   logIn: 'Log in',
+  score: 'Score',
 };
 
 export const changeLanguageReducer = (state = {}, action) => {
