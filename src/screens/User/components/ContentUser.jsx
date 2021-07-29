@@ -40,7 +40,7 @@ import Messages from '../../../components/Messages';
 import { USER_CREATE_RESET, USER_DETAILS_RESET, USER_UPDATE_RESET } from '../../../constants/userConstants';
 const usedStyles = makeStyles((theme) => ({
   root: {
-    margin: '74px 0 0 265px',
+    margin: '55px 0 0 265px',
     backgroundColor: '#fff',
     width: 1270,
     display: 'flex',
@@ -196,7 +196,7 @@ const usedStyles = makeStyles((theme) => ({
   avatarFile: {
     position: 'relative',
     top: -65,
-    left: -40,
+    left: 0,
     '& input': {
       display: 'none',
     },
@@ -215,7 +215,7 @@ const usedStyles = makeStyles((theme) => ({
   avatarFileUpdate: {
     position: 'relative',
     top: -65,
-    left: -10,
+    left: 30,
     '& input': {
       display: 'none',
     },
